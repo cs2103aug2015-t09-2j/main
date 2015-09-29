@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="katnote.ui.CommandBarController">
+   <bottom>
+      <AnchorPane prefHeight="94.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="commandBar" layoutX="14.0" layoutY="35.0" onKeyPressed="#onKeyPress" prefHeight="45.0" prefWidth="461.0" text="A">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </TextField>
+            <Label fx:id="response" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Label" />
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>
