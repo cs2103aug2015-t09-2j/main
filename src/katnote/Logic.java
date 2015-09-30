@@ -13,6 +13,16 @@ public class Logic {
 	private static final String MSG_ERR_INVALID_ARGS = "Invalid arguments: %s"; // %s is the string of arguments
 	
 	
+	
+	
+	private Model model;
+	
+	
+	public Logic(){
+		model = new Model("");
+	}
+	
+	
 	/**
 	 * Takes in String command from GUI, parse and process the command and return the response message
 	 * 
@@ -27,56 +37,67 @@ public class Logic {
 	}
 	
 	/**
-	 * Takes in a CommandDetails object containing the parsed command, pass it to Storage to handle the 
+	 * Takes in a CommandDetail object containing the parsed command, pass it to Storage to handle the 
 	 * respective command types, and return the response message.
 	 * 
-	 * @param parsedTask	CommandDetails object of the parsed command
+	 * @param commandDetail	CommandDetail object of the parsed command
 	 * @return String with the corresponding response after processing the command
 	 */
-	public String process(CommandDetail parsedTask) {
-		CommandType type = parsedTask.getCommandType();
+	public String process(CommandDetail commandDetail) {
+		CommandType type = commandDetail.getCommandType();
 		String response;
 		
 		switch (type) {
-			case ADD:
-				response = Storage.addNormalTask(parsedTask);
+			case ADD_NORMAL:
+				response = model.addNormalTask(commandDetail);
+				break;									
+			case ADD_FLOATING :
+				response = model.addFloatingTask(commandDetail);
 				break;
 									
-			case ADD_FLOATING : 	response = Storage.addFloatingTask(args);
-									break;
+			case ADD_EVENT :
+				response = model.addEventTask(commandDetail);
+				break;
 									
-			case ADD_EVENT : 		response = Storage.addEventTask(args);
-									break;
+			case ADD_RECURRING :
+				response = model.addRecurringTask(commandDetail);
+				break;
 									
-			case ADD_RECURRING : 	response = Storage.addRecurringTask(args);
-									break;
+			case EDIT_COMPLETE :
+				response = model.editComplete(commandDetail);
+				break;
 									
-			case EDIT_COMPLETE : 	response = Storage.editComplete(args);
-									break;
-									
-			case EDIT_MODIFY :		response = Storage.editModify(args);
-									break;
+			case EDIT_MODIFY :
+				response = model.editModify(commandDetail);
+				break;
 			
-			case EDIT_DELETE :		response = Storage.editDelete(args);
-									break;
+			case EDIT_DELETE :
+				response = model.editDelete(commandDetail);
+				break;
 				
-			case VIEW_TASK : 		response = Storage.viewTask(args);
-									break;
+			case VIEW_TASK : 
+				response = model.viewTask(commandDetail);
+				break;
 									
-			case UNDO:				response = Storage.undoLast();
-									break;
+			case UNDO:
+				response = model.undoLast();
+				break;
 									
-			case REDO:				response = Storage.redo();
-									break;
+			case REDO:
+				response = model.redo();
+				break;
 			
-			case FIND:				response = Storage.find(args);
-									break;
+			case FIND:
+				response = model.find(commandDetail);
+				break;
 			
-			case SET_LOCATION:		response = Storage.setLocation(args);
-									break;
+			case SET_LOCATION:
+				response = model.setLocation(commandDetail);
+				break;
 			
-			default :				response = String.format(MSG_ERR_INVALID_TYPE, type);
-									break;
+			default :
+				response = String.format(MSG_ERR_INVALID_TYPE, type);
+				break;
 		}
 		
 		return response;

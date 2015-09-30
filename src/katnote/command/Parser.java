@@ -33,8 +33,9 @@ public class Parser {
 	}
 
 	private static CommandDetail parseAddCommand(List<String> tokens) {
-		CommandDetail command = new CommandDetail(CommandType.ADD);
-		command.setProperty(CommandConstants.TASK_NAME, tokens.get(TOKENS_TASK_NAME_POS));
+		// TODO: support for other types of ADD
+		CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);
+		command.setProperty(CommandProperties.TASK_TITLE, tokens.get(TOKENS_TASK_NAME_POS));
 		int pos = TOKENS_PROPERTIES_START_POS;
 		try{
 			while (pos < tokens.size()){

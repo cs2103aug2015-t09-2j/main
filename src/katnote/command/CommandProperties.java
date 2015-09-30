@@ -1,12 +1,16 @@
 package katnote.command;
 
-public class CommandConstants {
-	public static final String TASK_NAME = "task_name";
+public class CommandProperties {
+	public static final String TASK_TITLE = "task_title";
+	public static final String TASK_ID = "task_id";
+	
 	public static final String TIME_BY = "by";
 	public static final String TIME_TO = "to";
 	public static final String TIME_FROM = "from";
 	public static final String TIME_REPEAT = "repeat";
 	public static final String TIME_UNTIL = "until";
+	
+	public static final String SAVE_LOCATION = "save_location";
 	
 	// TODO: Command Types
 
@@ -29,5 +33,5 @@ public class CommandConstants {
 
 	/* Others */
 	private static final String UNDO = "undo";
-	private static final String REDO = "redo"; 
+	private static final String REDO = "redo";	
 }
