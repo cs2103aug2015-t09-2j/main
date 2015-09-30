@@ -5,14 +5,10 @@ import katnote.command.CommandType;
 import katnote.command.Parser;
 
 public class Logic {
-	
-	private static final String SET_LOCATION = "set_location"; //set save location
 
 	// Error Messages
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; //%s is the command type
 	private static final String MSG_ERR_INVALID_ARGS = "Invalid arguments: %s"; // %s is the string of arguments
-	
-	
 	
 	
 	private Model model;

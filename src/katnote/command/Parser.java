@@ -20,15 +20,15 @@ public class Parser {
 	public static CommandDetail parseCommand(String commandStr){		
 		List<String> tokens = getTokensFromCommand(commandStr);		
 		if (tokens.isEmpty()){
-			return null;
-		}
+			return new CommandDetail(CommandType.UNKNOWN);
+		}		
 		
 		String commandType = tokens.get(0);
 		switch (commandType){
 			case COMMAND_ADD:
 				return parseAddCommand(tokens);
 			default:
-				return null;
+				return new CommandDetail(CommandType.UNKNOWN);
 		}		
 	}
 
@@ -47,7 +47,7 @@ public class Parser {
 			}
 		}
 		catch (IndexOutOfBoundsException e){
-			return null;
+			return new CommandDetail(CommandType.UNKNOWN);
 		}
 		return command;
 	}
@@ -61,7 +61,7 @@ public class Parser {
 			String token = m.group(1);			
 			boolean isKeyword = CommandKeywords.isKeyword(token);
 			
-			if (currentToken == null || isKeyword == isLastTokenKeyword){
+			if (currentToken == null || isKeyword != isLastTokenKeyword){
 				if (currentToken != null){
 					tokens.add(currentToken.toString());
 				}

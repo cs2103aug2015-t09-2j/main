@@ -21,5 +21,8 @@ public enum CommandType {
 	// Others
 	UNDO,
 	REDO,
-	SET_LOCATION
+	SET_LOCATION,
+	
+	// Unkown or invalid command
+	UNKNOWN
 }
