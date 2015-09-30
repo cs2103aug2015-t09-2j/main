@@ -1,7 +1,7 @@
 package katnote.ui;
 
 import katnote.KatNote;
-
+import katnote.Logic;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,11 +14,13 @@ import javafx.scene.layout.BorderPane;
 public class GraphicalUserInterface extends Application  {
 	private BorderPane rootLayout;
 	private Stage primaryStage;	
+	private Logic logic;
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("KatNote");
+		logic = new Logic();
 		
 		initRootLayout();
 	}
@@ -41,7 +43,8 @@ public class GraphicalUserInterface extends Application  {
     }	
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
-		commandBarController.setResponseText("you typed: " + inputText);
+		String response = logic.execute(inputText);
+		commandBarController.setResponseText(response);
 	}
 	
 
