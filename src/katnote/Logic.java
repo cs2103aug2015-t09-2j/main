@@ -1,29 +1,11 @@
 package katnote;
 
+import katnote.command.CommandDetail;
+import katnote.command.CommandType;
+import katnote.command.Parser;
+
 public class Logic {
 	
-	// Command Types
-
-	/* Create */
-	private static final String ADD_NORMAL = "add_normal";
-	private static final String ADD_FLOATING = "add_floating";
-	private static final String ADD_EVENT = "add_event";
-	private static final String ADD_RECURRING = "add_recurring";
-
-	/* Read */
-	private static final String VIEW_TASK = "view_task";
-	private static final String FIND = "find";
-
-	/* Update */
-	private static final String EDIT_COMPLETE = "edit_complete";
-	private static final String EDIT_MODIFY = "edit_modify";
-
-	/* Delete */
-	private static final String EDIT_DELETE = "edit_delete";
-
-	/* Others */
-	private static final String UNDO = "undo";
-	private static final String REDO = "redo"; 
 	private static final String SET_LOCATION = "set_location"; //set save location
 
 	// Error Messages
@@ -39,7 +21,7 @@ public class Logic {
 	 */
 	public String execute(String command) {
 		String response;
-		CommandDetails parsedTask = Parser.getCommandDetails(command);	
+		CommandDetail parsedTask = Parser.parseCommand(command);	
 		response = process(parsedTask);		
 		return response;
 	}
@@ -51,14 +33,14 @@ public class Logic {
 	 * @param parsedTask	CommandDetails object of the parsed command
 	 * @return String with the corresponding response after processing the command
 	 */
-	public String process(CommandDetails parsedTask) {
-		String type = parsedTask.getType();
-		String args = parsedTask.getArgs();
+	public String process(CommandDetail parsedTask) {
+		CommandType type = parsedTask.getCommandType();
 		String response;
 		
 		switch (type) {
-			case ADD_NORMAL : 		response = Storage.addNormalTask(args);
-									break;
+			case ADD:
+				response = Storage.addNormalTask(parsedTask);
+				break;
 									
 			case ADD_FLOATING : 	response = Storage.addFloatingTask(args);
 									break;

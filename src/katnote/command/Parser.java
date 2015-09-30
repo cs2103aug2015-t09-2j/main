@@ -17,7 +17,7 @@ public class Parser {
 	 * 
 	 * @param commandStr the command you want to parse
 	 */
-	public CommandDetail parseCommand(String commandStr){		
+	public static CommandDetail parseCommand(String commandStr){		
 		List<String> tokens = getTokensFromCommand(commandStr);		
 		if (tokens.isEmpty()){
 			return null;
@@ -32,7 +32,7 @@ public class Parser {
 		}		
 	}
 
-	private CommandDetail parseAddCommand(List<String> tokens) {
+	private static CommandDetail parseAddCommand(List<String> tokens) {
 		CommandDetail command = new CommandDetail(CommandType.ADD);
 		command.setProperty(CommandConstants.TASK_NAME, tokens.get(TOKENS_TASK_NAME_POS));
 		int pos = TOKENS_PROPERTIES_START_POS;
