@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -15,7 +16,7 @@
                   <Font size="24.0" />
                </font>
             </TextField>
-            <Label fx:id="response" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Welcome!" />
+            <Label fx:id="responseLabel" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Welcome!" />
          </children>
       </AnchorPane>
    </bottom>
@@ -27,6 +28,7 @@
                   <Font size="21.0" />
                </font>
             </Label>
+            <Line endX="580.0" layoutY="81.0" startX="20.0" stroke="#ff8300" />
          </children></AnchorPane>
    </top>
 </BorderPane>

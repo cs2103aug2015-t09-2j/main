@@ -12,7 +12,7 @@ public class CommandBarController {
     @FXML
     private TextField commandBar;
     @FXML
-    private Label response;
+    private Label responseLabel;
 
     @FXML
     void onKeyPress(KeyEvent event) {
@@ -24,8 +24,17 @@ public class CommandBarController {
     public void setMainUI(GraphicalUserInterface mainUI){
     	this.mainUI = mainUI;
     }
-    public void setResponseText(String text){
-    	response.setText(text);
+    public void setResponseText(String response){
+        setResponseText(response, false);
+    }
+    
+    public void setResponseText(String response, boolean isError){
+        if(isError){
+            responseLabel.setStyle("-fx-text-fill: red;");            
+        } else {
+            responseLabel.setStyle("-fx-text-fill: black;");              
+        }
+    	responseLabel.setText(response);
     }
 
 }
