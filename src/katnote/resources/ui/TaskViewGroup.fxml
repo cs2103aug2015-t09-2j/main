@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<fx:root prefWidth="350.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="groupHeader" contentDisplay="CENTER" layoutX="25.0" prefHeight="30.0" prefWidth="325.0" styleClass="TaskGroupHeaderText" stylesheets="@application.css" text="today">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <VBox fx:id="taskViewList" layoutX="25.0" layoutY="30.0" prefHeight="0.0" prefWidth="325.0" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" />
+   </padding>
+</fx:root>

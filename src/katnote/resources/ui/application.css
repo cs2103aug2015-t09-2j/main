@@ -1,1 +1,18 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.TaskRowIcon {
+	-fx-background-color: red;
+}
+.TaskRowText {
+    -fx-font-family: "Frankfurter Medium Plain";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 18pt;	
+}
+.TaskGroupHeaderText {
+    -fx-font-family: "Frankfurter Medium Plain";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 20pt;	
+}
+.title1 {
+    -fx-font-family: "Frankfurter Medium Plain";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 24pt;
+}
