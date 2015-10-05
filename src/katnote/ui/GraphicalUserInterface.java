@@ -9,37 +9,36 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application  {
-	private BorderPane rootLayout;
+	private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
+    private BorderPane rootLayout;
 	private Stage primaryStage;	
 	private Logic logic;
 	private TaskViewer taskViewer;
 
 	@Override
 	public void start(Stage primaryStage) {
-	    Font f = Font.loadFont(
+	    loadResources();
+		initialize(primaryStage);
+		
+		initRootLayout();
+		setUpTaskViewer();
+	}
+    private void initialize(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+		this.primaryStage.setTitle("KatNote");
+		logic = new Logic();
+    }
+    private void loadResources() {
+        Font f = Font.loadFont(
 	            getClass().getResource("/katnote/resources/ui/LT.ttf").toExternalForm(), 
 	            10
 	          );
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("KatNote");
-		logic = new Logic();
-		
-		initRootLayout();
-		addTaskViewer();
-		updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-        updateTaskViewer();
-	}
+    }
 	public void initRootLayout() {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/katnote/resources/ui/RootLayout.fxml"));
+            loader.setLocation(getClass().getResource(ROOT_LAYOUT_FXML));
             rootLayout = (BorderPane) loader.load();
             CommandBarController commandBarController = loader.getController();
             commandBarController.setMainUI(this);
@@ -53,19 +52,24 @@ public class GraphicalUserInterface extends Application  {
         }
     }	
 	
-	public void addTaskViewer(){
+	public void setUpTaskViewer(){
 	    taskViewer = new TaskViewer();
 	    rootLayout.setCenter(taskViewer);
 	}
 	
 	public void updateTaskViewer(){
+        taskViewer.clearTaskGroups();
 	    String[] tasks = { "do A", "do B" };
 	    taskViewer.addNewTaskViewGroup(new TaskViewGroup("today", tasks));
 	}
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
 		String response = logic.execute(inputText);
-		commandBarController.setResponseText(response);
+		boolean isErrorMsg = response.contains("Invalid");
+        commandBarController.setResponseText(response, isErrorMsg); 
+		if(!isErrorMsg){		    
+	        updateTaskViewer();		    
+		}
 	}
 	
 

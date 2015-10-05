@@ -25,6 +25,10 @@ public class TaskViewer extends AnchorPane{
             e.printStackTrace();
         }
     }
+    public void clearTaskGroups(){
+        taskViewGroupList.getChildren().clear();
+    }
+    
     public void addNewTaskViewGroup(TaskViewGroup taskViewGroup){
         taskViewGroupList.getChildren().add(taskViewGroup);
     }
