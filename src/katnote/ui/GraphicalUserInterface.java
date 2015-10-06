@@ -1,6 +1,8 @@
 package katnote.ui;
 
 import katnote.Logic;
+import katnote.Task;
+import katnote.UIFeedback;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -57,18 +59,23 @@ public class GraphicalUserInterface extends Application  {
 	    rootLayout.setCenter(taskViewer);
 	}
 	
-	public void updateTaskViewer(){
-        taskViewer.clearTaskGroups();
-	    String[] tasks = { "do A", "do B" };
-	    taskViewer.addNewTaskViewGroup(new TaskViewGroup("today", tasks));
+	public void updateTaskViewer(Task[] tasks){
+        taskViewer.clearViewer();
+        String[] descriptions = new String[tasks.length];
+        for(int i = 0; i<tasks.length; i++){
+            descriptions[i] = tasks[i].getTitle();
+        }       
+        
+	    taskViewer.addNewTaskViewGroup(new TaskViewGroup("today", descriptions));
 	}
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
-		String response = logic.execute(inputText);
-		boolean isErrorMsg = response.contains("Invalid");
-        commandBarController.setResponseText(response, isErrorMsg); 
-		if(!isErrorMsg){		    
-	        updateTaskViewer();		    
+		UIFeedback feedback = logic.execute(inputText);
+		
+        commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
+		if(!feedback.isAnError()){		 
+		    Task[] tasks = feedback.getTaskList().toArray(new Task[1]);
+		    updateTaskViewer(tasks);
 		}
 	}
 	

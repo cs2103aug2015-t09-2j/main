@@ -26,7 +26,7 @@ public class TaskViewer extends AnchorPane{
         }
         taskViewGroupList.setFillWidth(true);
     }
-    public void clearTaskGroups(){
+    public void clearViewer(){
         taskViewGroupList.getChildren().clear();
     }
     

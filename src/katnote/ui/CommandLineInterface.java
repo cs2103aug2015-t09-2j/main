@@ -3,6 +3,7 @@ package katnote.ui;
 import java.util.Scanner;
 
 import katnote.Logic;
+import katnote.UIFeedback;
 
 public class CommandLineInterface {
     private Logic logic;
@@ -18,8 +19,8 @@ public class CommandLineInterface {
         while(!toExit){
             printMessage("Enter your input: ");
             String input = readInput();
-            String response = logic.execute(input);
-            printMessageLine(response);
+            UIFeedback feedback = logic.execute(input);
+            printMessageLine(feedback.getMessage());
         }
     }
 
