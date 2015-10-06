@@ -5,6 +5,9 @@ import java.util.Date;
 
 import org.json.simple.JSONArray;
 
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
+
 /**
  * This will be the association class used across KatNote. It will be the standardized task object that will be passed between components.
  * @author sk
@@ -69,6 +72,27 @@ public class Task {
             setDescription(args[INDEX_DESCRIPTION]);
             setCategory(args[INDEX_CATEGORY]);
             setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
+        } catch (Exception e) {
+            throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
+        }
+    }
+    
+    /*
+     * Constructor using CommandDetail
+     */
+    public Task(CommandDetail commandDetail) throws Exception {                
+        // Currently choosing DATE_FORMAT_LONG for all dates.
+        try {
+            //TODO: setID(some_number);
+            setTitle(commandDetail.getString(CommandProperties.TASK_TITLE));
+            //TODO: setTaskType(commandDetail.getString(CommandProperties.TASK_TYPE));
+            setStartDate(commandDetail.getDate(CommandProperties.TIME_FROM));
+            setEndDate(commandDetail.getDate(CommandProperties.TIME_TO));
+            //TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
+            setTerminateDate(commandDetail.getDate(CommandProperties.TIME_BY));
+            //TODO: setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
+            //TODO: setCategory(args[INDEX_CATEGORY]);
+            //TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
