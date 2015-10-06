@@ -1,5 +1,6 @@
 package katnote.command;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class CommandDetail {
@@ -28,6 +29,22 @@ public class CommandDetail {
 	public Object getProperty(String key){
 		return commandData.get(key);
 	}
+	
+	/*
+     * Return value of string property with given key
+     * @param key 
+     */
+    public String getString(String key){
+        return (String) commandData.get(key);
+    }
+    
+    /*
+     * Return value of Date property with given key
+     * @param key 
+     */
+    public Date getDate(String key){
+        return (Date) commandData.get(key);
+    }
 	
 	/*
 	 * 
