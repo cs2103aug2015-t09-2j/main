@@ -1,103 +1,101 @@
 package katnote;
 
+import java.util.ArrayList;
+
 import katnote.command.CommandDetail;
 import katnote.command.CommandType;
 import katnote.command.Parser;
 
 public class Logic {
 
+    private Model model;
+    
 	// Error Messages
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; //%s is the command type
 	private static final String MSG_ERR_INVALID_ARGS = "Invalid arguments: %s"; // %s is the string of arguments
 	
 	
-	private Model model;
-	
-	
+	// Constructor
 	public Logic(){
 		model = new Model("");
 	}
 	
+	// Public methods 
 	
 	/**
-	 * Takes in String command from GUI, parse and process the command and return the response message
+	 * Takes in String command from GUI, parse and process the command and return feedback to GUI
 	 * 
 	 * @param command	String input from GUI command line interface
-	 * @return	String with the message to be displayed by the GUI after the command is executed
+	 * @return	returns a UIFeedback object containing information for the GUI to display. 
 	 */
-	public String execute(String command) {
-		String response;
+	public UIFeedback execute(String command) {
+		UIFeedback response;
 		CommandDetail parsedTask = Parser.parseCommand(command);	
 		response = process(parsedTask);		
 		return response;
 	}
 	
-	/**
-	 * Takes in a CommandDetail object containing the parsed command, pass it to Storage to handle the 
-	 * respective command types, and return the response message.
-	 * 
-	 * @param commandDetail	CommandDetail object of the parsed command
-	 * @return String with the corresponding response after processing the command
-	 */
-	public String process(CommandDetail commandDetail) {
+	public UIFeedback process(CommandDetail commandDetail) {
 		CommandType type = commandDetail.getCommandType();
-		String response;
-		
+		UIFeedback response = new UIFeedback();
+			
 		switch (type) {
 			case ADD_NORMAL:
-				response = model.addNormalTask(commandDetail);
+			    task = new Task(commandDetail); //TODO: constructor for task, para: cmdDetail
+				response.setMessage(model.addTask(task));
 				break;									
-			case ADD_FLOATING :
-				response = model.addFloatingTask(commandDetail);
+									
+			case EDIT_COMPLETE : //pass cmdDetails (give Model the ID)
+			    response.setMessage(model.editComplete(task));
 				break;
 									
-			case ADD_EVENT :
-				response = model.addEventTask(commandDetail);
-				break;
-									
-			case ADD_RECURRING :
-				response = model.addRecurringTask(commandDetail);
-				break;
-									
-			case EDIT_COMPLETE :
-				response = model.editComplete(commandDetail);
-				break;
-									
-			case EDIT_MODIFY :
-				response = model.editModify(commandDetail);
+			case EDIT_MODIFY : // create new Task object
+			    task = new Task(commandDetail); // this new task will contain the fields that are modified, rest is null fields
+			    response.setMessage(model.editModify(task));
 				break;
 			
-			case EDIT_DELETE :
-				response = model.editDelete(commandDetail);
+			case EDIT_DELETE : // pass cmdDetails
+			    response.setMessage(model.editDelete(task));
 				break;
 				
 			case VIEW_TASK : 
-				response = model.viewTask(commandDetail);
+				response.setTaskList(viewTask(commandDetail)); // returns ArrayList
 				break;
 									
 			case UNDO:
-				response = model.undoLast();
+			    response.setResponse(model.undoLast());
 				break;
 									
 			case REDO:
-				response = model.redo();
+			    response.setResponse(model.redo());
 				break;
 			
 			case FIND:
-				response = model.find(commandDetail);
+				response.setTaskList(find(commandDetail)); // returns ArrayList
 				break;
 			
 			case SET_LOCATION:
-				response = model.setLocation(commandDetail);
+			    response.setResponse(model.setLocation(commandDetail));
 				break;
 			
 			default :
-				response = String.format(MSG_ERR_INVALID_TYPE, type);
+			    response.setError(true);
+				response.setResponse(String.format(MSG_ERR_INVALID_TYPE, type));
 				break;
 		}
-		
 		return response;
+		
 	}
+
+    private ArrayList<Task> find(CommandDetail commandDetail) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private ArrayList<Task> viewTask(CommandDetail commandDetail) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 	
 	
 }
