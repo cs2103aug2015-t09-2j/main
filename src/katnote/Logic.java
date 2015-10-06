@@ -39,7 +39,8 @@ public class Logic {
 		CommandType type = commandDetail.getCommandType();
 		UIFeedback response = new UIFeedback();
 			
-		switch (type) {
+		Task task;
+        switch (type) {
 			case ADD_NORMAL:
 			    task = new Task(commandDetail); //TODO: constructor for task, para: cmdDetail
 				response.setMessage(model.addTask(task));

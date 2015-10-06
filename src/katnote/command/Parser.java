@@ -1,6 +1,7 @@
 package katnote.command;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,12 @@ public class Parser {
 		}		
 	}
 
+	/*
+	 * Parse Add command including:
+	 *     - TASK_TITLE
+	 *     - 
+	 * 
+	 */
 	private static CommandDetail parseAddCommand(List<String> tokens) {
 		// TODO: support for other types of ADD
 		CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);
@@ -43,10 +50,23 @@ public class Parser {
 				pos++;
 				String value = tokens.get(pos);	
 				pos++;
-				command.setProperty(key, value);			
+				switch (key){
+				    case CommandProperties.TIME_BY:
+				    case CommandProperties.TIME_FROM:
+				    case CommandProperties.TIME_TO:
+				    case CommandProperties.TIME_UNTIL:
+				        //Date time value
+				        Date date = DateParser.parseDate(value);
+				        command.setProperty(key, date);
+				        break;
+				    default:
+				        //String value
+				        command.setProperty(key, value);
+				        break;
+				}						
 			}
 		}
-		catch (IndexOutOfBoundsException e){
+		catch (Exception e){
 			return new CommandDetail(CommandType.UNKNOWN);
 		}
 		return command;
