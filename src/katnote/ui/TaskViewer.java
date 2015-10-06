@@ -24,6 +24,7 @@ public class TaskViewer extends AnchorPane{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        taskViewGroupList.setFillWidth(true);
     }
     public void clearTaskGroups(){
         taskViewGroupList.getChildren().clear();

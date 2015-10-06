@@ -28,6 +28,7 @@ public class TaskViewGroup extends AnchorPane {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        taskViewList.setFillWidth(true);
         groupHeader.setText(header);
         addTaskRows(taskDescriptions);
     }
