@@ -1,8 +1,10 @@
 package katnote;
 
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +44,10 @@ public class Model {
 	private static final int INDEX_ID = 0;
 	private static final int INDEX_TITLE = 1;
 	private static final int INDEX_TRANSLATION = 1; // For translating internal indexing to displayed indexing.
+	
+	private static final String NULL_DATE = "null";
+	private static final String STR_TRUE = "true";
+	private static final String STR_FALSE = "false";
 	
 	// Messages
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
@@ -307,24 +313,24 @@ public class Model {
 		        array.add(jsonMap.get(KEY_ID));
 		        array.add(jsonMap.get(KEY_TITLE));
 		        array.add(jsonMap.get(KEY_TASK_TYPE));
-		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_START_DATE)));
-		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_END_DATE)));
+		        array.add(jsonMap.get(KEY_START_DATE));
+		        array.add(jsonMap.get(KEY_END_DATE));
 		        array.add(jsonMap.get(KEY_REPEAT_OPTION));
-		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_TERMINATE_DATE)));
+		        array.add(jsonMap.get(KEY_TERMINATE_DATE));
 		        array.add(jsonMap.get(KEY_DESCRIPTION));
 		        array.add(jsonMap.get(KEY_CATEGORY));
 		        array.add(jsonMap.get(KEY_COMPLETED));
-		      
+		        
 		        // Create new Task and return
 		        newTask = new Task(array);
 		        return newTask;
+		        
 		    } catch(Exception e){
 		        handleException(e, MSG_ERR_JSON_PARSE_ERROR);
 		    }
 		     
 		    return newTask;
-		}
-		
+		}		
 	}
 	
 	/**
@@ -380,18 +386,36 @@ public class Model {
         private String getJSONTaskString(Task t) {
 		    
 		    Map taskMap = new LinkedHashMap();
-            taskMap.put(KEY_ID, t.getID());
+            taskMap.put(KEY_ID, t.getID().toString());
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, t.getTaskType());
-            taskMap.put(KEY_START_DATE, t.getStartDate().toString());
-            taskMap.put(KEY_END_DATE, t.getEndDate().toString());
+            taskMap.put(KEY_START_DATE, dateToString(t.getStartDate()));
+            taskMap.put(KEY_END_DATE, dateToString(t.getEndDate()));
             taskMap.put(KEY_REPEAT_OPTION, t.getRepeatOption());
-            taskMap.put(KEY_TERMINATE_DATE, t.getTerminateDate().toString());
+            taskMap.put(KEY_TERMINATE_DATE, dateToString(t.getTerminateDate()));
             taskMap.put(KEY_DESCRIPTION, t.getDescription());
             taskMap.put(KEY_CATEGORY, t.getCategory());
-            taskMap.put(KEY_COMPLETED, t.isCompleted());
+            taskMap.put(KEY_COMPLETED, boolToString(t.isCompleted()));
             String jsonText = JSONValue.toJSONString(taskMap);
             return jsonText;
+		}
+		
+		// Helper Methods
+		private String dateToString(Date date) {
+		    if (date == null) {
+		        return NULL_DATE;
+		    } else {
+		        String dateStr = DATE_FORMAT.format(date);
+		        return dateStr;
+		    }
+		}
+		
+		private String boolToString(boolean bool) {
+		    if (bool) {
+		        return STR_TRUE;
+		    } else {
+		        return STR_FALSE;
+		    }
 		}
 	}
 	

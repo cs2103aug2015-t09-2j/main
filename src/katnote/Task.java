@@ -1,5 +1,6 @@
 package katnote;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -30,6 +31,9 @@ public class Task {
     
     // Constants
     private static final int MAX_ARG_SIZE = 10;
+    private static final String NULL_DATE = "null";
+    private static final String STR_TRUE = "true";
+    private static final String STR_FALSE = "false";
     
     private static final int INDEX_ID = 0;
     private static final int INDEX_TITLE = 1;
@@ -47,9 +51,7 @@ public class Task {
     
     
     // Format
-    private static final SimpleDateFormat DATE_FORMAT_LONG = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a"); // Eg: "Friday, Jun 7, 2013 12:10:56 PM"
-    private static final SimpleDateFormat DATE_FORMAT_DAY = new SimpleDateFormat("E, MMM dd yyyy"); // Eg: "Fri, June 7 2013"
-    private static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("MMM dd, yyyy"); // Eg: "Jun 7, 2013"
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     
     // Constructor using JSONArray
@@ -66,13 +68,13 @@ public class Task {
             setID(Integer.parseInt(args[INDEX_ID]));
             setTitle(args[INDEX_TITLE]);
             setTaskType(args[INDEX_TASK_TYPE]);
-            setStartDate(DATE_FORMAT_LONG.parse(args[INDEX_START_DATE]));
-            setEndDate(DATE_FORMAT_LONG.parse(args[INDEX_END_DATE]));
+            setStartDate(stringToDate(args[INDEX_START_DATE]));
+            setEndDate(stringToDate(args[INDEX_END_DATE]));
             setRepeatOption(args[INDEX_REPEAT_OPTION]);
-            setTerminateDate(DATE_FORMAT_LONG.parse(args[INDEX_TERMINATE_DATE]));
+            setTerminateDate(stringToDate(args[INDEX_TERMINATE_DATE]));
             setDescription(args[INDEX_DESCRIPTION]);
             setCategory(args[INDEX_CATEGORY]);
-            setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
+            setCompleted(stringToBool(args[INDEX_COMPLETED]));
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
@@ -100,6 +102,25 @@ public class Task {
             //TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
+        }
+    }
+    
+    // Helper Methods
+    
+    private Date stringToDate(String dateStr) throws ParseException {
+        if (dateStr.equals(NULL_DATE)) {
+            return null;
+        } else {
+            Date date = DATE_FORMAT.parse(dateStr);
+            return date;
+        }
+    }
+    
+    private Boolean stringToBool(String bool) {
+        if (bool.equals(STR_TRUE)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
