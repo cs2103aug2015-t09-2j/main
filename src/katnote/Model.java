@@ -40,9 +40,9 @@ public class Model {
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
 	private static final String MSG_DATA_FILE_READY = "data.txt is ready for use in %s";
 	private static final String MSG_TASK_ADDED = "Task: %s added.";
-	private static final String MSG_EDIT_TASK_COMPLETED = "Task %i: %s is marked completed.";
-	private static final String MSG_EDIT_TASK_MODIFIED = "Task %i: %s is successfully modified.";
-	private static final String MSG_EDIT_TASK_DELETED = "Task %i: %s is successfully deleted.";
+	private static final String MSG_EDIT_TASK_COMPLETED = "Task %d: %s is marked completed.";
+	private static final String MSG_EDIT_TASK_MODIFIED = "Task %d: %s is successfully modified.";
+	private static final String MSG_EDIT_TASK_DELETED = "Task %d: %s is successfully deleted.";
 	private static final String MSG_UNDO_CONFIRM = "%s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s redone.";
 	
