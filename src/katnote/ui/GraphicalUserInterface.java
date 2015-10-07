@@ -66,12 +66,7 @@ public class GraphicalUserInterface extends Application  {
 	
 	public void updateTaskViewer(Task[] tasks){
         taskViewer.clearViewer();
-        String[] descriptions = new String[tasks.length];
-        for(int i = 0; i<tasks.length; i++){
-            descriptions[i] = tasks[i].getTitle();
-        }       
-        
-	    taskViewer.addNewTaskViewGroup(new TaskViewGroup("today", descriptions));
+        taskViewer.loadDetailedListOfTask(tasks);
 	}
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
