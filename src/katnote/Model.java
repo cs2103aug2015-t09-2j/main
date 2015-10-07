@@ -28,7 +28,6 @@ public class Model {
 	private ArrayList<Task> _dataLog;
 	private ArrayList<String> _editOldTaskState;
 	private String _response;
-	private int _nextID;
 		
 	// Constants
 	private static final String DATA_FILENAME = "data.txt";
@@ -63,7 +62,6 @@ public class Model {
 		_actionLog = new ArrayList<String>();
 		_editOldTaskState = new ArrayList<String>();
 		_dataLog = _decoder.decode();
-		_nextID = getNextID();
 	}
 	
 
@@ -201,6 +199,11 @@ public class Model {
 		}
 		_response = _data.setPath(newSaveLocation);
 		return _response;
+	}
+	
+	// Get all tasks.
+	public ArrayList<Task> getData() {
+	    return _dataLog;
 	}
 
 	// Helper Methods
