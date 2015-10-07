@@ -31,10 +31,14 @@ public class GraphicalUserInterface extends Application  {
 		logic = new Logic();
     }
     private void loadResources() {
-        Font f = Font.loadFont(
-	            getClass().getResource("/katnote/resources/ui/LT.ttf").toExternalForm(), 
+        Font.loadFont(
+	            getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 
 	            10
 	          );
+        Font f = Font.loadFont(
+	                  getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 
+	                  10
+	                );
     }
 	public void initRootLayout() {
         try {
@@ -48,6 +52,7 @@ public class GraphicalUserInterface extends Application  {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
