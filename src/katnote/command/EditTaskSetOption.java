@@ -1,5 +1,7 @@
 package katnote.command;
 
+import java.util.Date;
+
 public class EditTaskSetOption {
     private String taskOptionName;
     private String taskOptionValue;
@@ -25,5 +27,9 @@ public class EditTaskSetOption {
     
     public Object getOptionValueObject(){
         return Parser.parseOptionValue(taskOptionName, taskOptionValue);
+    }
+    
+    public Date getOptionValueDate(){
+        return (Date) Parser.parseOptionValue(taskOptionName, taskOptionValue);
     }
 }
