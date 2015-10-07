@@ -9,20 +9,20 @@ public enum CommandType {
 
 	// READ
 	VIEW_TASK,
-	FIND,
+	VIEW_TASK_WITH_ID,
+	FIND_TASKS,
 
 	// UPDATE
-	EDIT_COMPLETE,
-	EDIT_MODIFY,
+	EDIT_TASK,
 
 	// DELETE
-	EDIT_DELETE,
+	DELETE_TASK,
 
 	// Others
 	UNDO,
 	REDO,
 	SET_LOCATION,
 	
-	// Unkown or invalid command
+	// Unknown or invalid command
 	UNKNOWN
 }

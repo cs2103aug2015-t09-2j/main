@@ -23,6 +23,13 @@ public class CommandDetail {
 	}
 	
 	/*
+	 * Set the type of command
+	 */
+	public void setCommandType(CommandType commandType){
+	    this.commandType = commandType;
+	}
+	
+	/*
 	 * Return value of property with given key
 	 * @param key 
 	 */

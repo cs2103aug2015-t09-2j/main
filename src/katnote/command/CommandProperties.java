@@ -3,12 +3,19 @@ package katnote.command;
 public class CommandProperties {
 	public static final String TASK_TITLE = "task_title";
 	public static final String TASK_ID = "task_id";
+	public static final String FIND_KEYWORDS = "find_keywords";
+	public static final String TASKS_COMPLETED_OPTION = "view_tasks_completed";
+	
 	
 	public static final String TIME_BY = "by";
 	public static final String TIME_TO = "to";
 	public static final String TIME_FROM = "from";
+	public static final String TIME_ON = "on";
 	public static final String TIME_REPEAT = "repeat";
 	public static final String TIME_UNTIL = "until";
 	
-	public static final String SAVE_LOCATION = "save_location";
+	public static final String EDIT_SET_PROPERTY = "set";
+	
+		
+	public static final String SAVE_LOCATION = "save_location";    
 }
