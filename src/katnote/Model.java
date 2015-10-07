@@ -14,6 +14,7 @@ import org.json.simple.parser.JSONParser;
 
 import katnote.command.CommandProperties;
 import katnote.command.CommandDetail;
+import katnote.command.EditTaskSetOption;
 
 /**
  * The main class in the Storage component.
@@ -57,7 +58,7 @@ public class Model {
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	
-	private static final String MSG_LOG_START = "<start>\n";
+	private static final String MSG_LOG_START = "<start>";
 	
 	// Task Property Keys
 	private static final String KEY_ID = "id";
@@ -135,6 +136,17 @@ public class Model {
 	 * @return the response message of a successful modification to the specified task.
 	 * @throws Exception 
 	 */
+	public String editModify(int taskID, EditTaskSetOption editOption) {
+	    
+	    Task editedTask = _dataLog.get(taskID);
+	    String optionName = editOption.getOptionName();
+	    switch (optionName) {
+	        case CommandProperties.TASK_ID :
+	            // TODO:
+	    }
+	    
+	    return null;
+	}
 	public String editModify(Task task) throws Exception { //TODO: Integrate editComplete inside this method
 		
 		int oldTaskID = task.getID();
@@ -381,6 +393,7 @@ public class Model {
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, t.getTaskType());
             taskMap.put(KEY_START_DATE, t.getStartDate());
+            // TODO:
             taskMap.put(KEY_END_DATE, t.getEndDate());
             taskMap.put(KEY_REPEAT_OPTION, t.getRepeatOption());
             taskMap.put(KEY_TERMINATE_DATE, t.getTerminateDate());
