@@ -1,18 +1,23 @@
 .TaskRowIcon {
-	-fx-background-color: red;
+	/*-fx-background-image: url('./catbulletblack.png');*/
 }
 .TaskRowText {
-    -fx-font-family: "Frankfurter Medium Plain";
+    -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 18pt;	
 }
+.TaskRowDateText {
+    -fx-font-family: "Sen Bold";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 12pt;	
+}
 .TaskGroupHeaderText {
-    -fx-font-family: "Frankfurter Medium Plain";
+    -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 20pt;	
 }
-.title1 {
-    -fx-font-family: "Frankfurter Medium Plain";
+.title {
+    -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 24pt;
 }

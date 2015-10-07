@@ -1,6 +1,8 @@
 package katnote.ui;
 
 import katnote.Logic;
+import katnote.Task;
+import katnote.UIFeedback;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -29,10 +31,14 @@ public class GraphicalUserInterface extends Application  {
 		logic = new Logic();
     }
     private void loadResources() {
-        Font f = Font.loadFont(
-	            getClass().getResource("/katnote/resources/ui/LT.ttf").toExternalForm(), 
+        Font.loadFont(
+	            getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 
 	            10
 	          );
+        Font f = Font.loadFont(
+	                  getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 
+	                  10
+	                );
     }
 	public void initRootLayout() {
         try {
@@ -46,6 +52,7 @@ public class GraphicalUserInterface extends Application  {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,18 +64,18 @@ public class GraphicalUserInterface extends Application  {
 	    rootLayout.setCenter(taskViewer);
 	}
 	
-	public void updateTaskViewer(){
-        taskViewer.clearTaskGroups();
-	    String[] tasks = { "do A", "do B" };
-	    taskViewer.addNewTaskViewGroup(new TaskViewGroup("today", tasks));
+	public void updateTaskViewer(Task[] tasks){
+        taskViewer.clearViewer();
+        taskViewer.loadDetailedListOfTask(tasks);
 	}
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
-		String response = logic.execute(inputText);
-		boolean isErrorMsg = response.contains("Invalid");
-        commandBarController.setResponseText(response, isErrorMsg); 
-		if(!isErrorMsg){		    
-	        updateTaskViewer();		    
+		UIFeedback feedback = logic.execute(inputText);
+		
+        commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
+		if(!feedback.isAnError()){		 
+		    Task[] tasks = feedback.getTaskList().toArray(new Task[1]);
+		    updateTaskViewer(tasks);
 		}
 	}
 	
