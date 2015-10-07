@@ -13,7 +13,8 @@ public enum CommandType {
 	FIND_TASKS,
 
 	// UPDATE
-	EDIT_TASK,
+	EDIT_MODIFY,
+	EDIT_COMPLETE,
 
 	// DELETE
 	DELETE_TASK,

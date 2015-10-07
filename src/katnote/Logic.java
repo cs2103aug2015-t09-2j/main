@@ -62,7 +62,7 @@ public class Logic {
 			    response.setResponse(model.editModify(task));
 				break;
 			
-			case EDIT_DELETE :
+			case DELETE_TASK :
 			    response.setResponse(model.editDelete(commandDetail)); // Model will only require the Task ID in commandDetail
 				break;
 				
@@ -78,7 +78,7 @@ public class Logic {
 			    response.setResponse(model.redo());
 				break;
 			
-			case FIND:
+			case FIND_TASKS:
 				response.setTaskList(find(commandDetail));
 				break;
 			

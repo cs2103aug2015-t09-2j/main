@@ -132,13 +132,15 @@ public class Parser {
      * 
      */
     private static CommandDetail parseEditCommand(List<String> tokens) {
-        CommandDetail command = new CommandDetail(CommandType.EDIT_TASK);               
+        CommandDetail command = new CommandDetail(CommandType.EDIT_MODIFY);               
         try{
             // read edit option ("task TASK_ID")
             readTaskIdFromTokens(tokens, command);
             // add set or mark option
             addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-            
+            if (command.hasProperty(CommandProperties.EDIT_MARK)){
+                command.setCommandType(CommandType.EDIT_COMPLETE);
+            }
         }
         catch (Exception e){
             return new CommandDetail(CommandType.UNKNOWN);
