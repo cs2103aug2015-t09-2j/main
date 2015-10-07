@@ -84,7 +84,7 @@ public class GraphicalUserInterface extends Application  {
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
             if(!feedback.isAnError()){       
                 ArrayList<Task> taskList = feedback.getTaskList();
-                if(taskList.size() == 0){
+                if(taskList.size() != 0){
                     Task[] tasks = taskList.toArray(new Task[taskList.size()]);
                     updateTaskViewer(tasks);
                 }

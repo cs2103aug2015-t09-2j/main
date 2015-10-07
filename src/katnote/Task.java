@@ -88,9 +88,13 @@ public class Task {
             setTitle(commandDetail.getString(CommandProperties.TASK_TITLE));
             //TODO: setTaskType(commandDetail.getString(CommandProperties.TASK_TYPE));
             setStartDate(commandDetail.getDate(CommandProperties.TIME_FROM));
-            setEndDate(commandDetail.getDate(CommandProperties.TIME_TO));
             //TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
-            setTerminateDate(commandDetail.getDate(CommandProperties.TIME_BY));
+            if(commandDetail.getDate(CommandProperties.TIME_TO) != null){
+                setEndDate(commandDetail.getDate(CommandProperties.TIME_TO));                
+            }
+            if(commandDetail.getDate(CommandProperties.TIME_BY) != null){
+                setEndDate(commandDetail.getDate(CommandProperties.TIME_BY));
+            }
             //TODO: setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
             //TODO: setCategory(args[INDEX_CATEGORY]);
             //TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
