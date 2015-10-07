@@ -3,10 +3,14 @@ package katnote;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.ContainerFactory;
+import org.json.simple.parser.JSONParser;
 
 import katnote.command.CommandProperties;
 import katnote.command.CommandDetail;
@@ -51,8 +55,21 @@ public class Model {
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid task type: ";
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
+	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	
 	private static final String MSG_LOG_START = "<start>\n";
+	
+	// Task Property Keys
+	private static final String KEY_ID = "id";
+	private static final String KEY_TITLE= "title";
+	private static final String KEY_TASK_TYPE = "task_type";
+	private static final String KEY_START_DATE = "start_date";
+	private static final String KEY_END_DATE = "end_date";
+	private static final String KEY_REPEAT_OPTION = "repeat_option";
+	private static final String KEY_TERMINATE_DATE = "terminate_date";
+	private static final String KEY_DESCRIPTION = "description";
+	private static final String KEY_CATEGORY = "category";
+	private static final String KEY_COMPLETED = "completed";
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -244,7 +261,6 @@ public class Model {
 		    // Setup Environment
 		    ArrayList<Task> taskArray = new ArrayList<Task>();
 		    String line;
-		    int lastID = 0;
 		    
 			BufferedReader bReader = new BufferedReader(new FileReader(_data.getDataFilePath()));
 			
@@ -254,11 +270,7 @@ public class Model {
 			}
 			
 			while ((line = bReader.readLine()) != null) {
-			    lastID++;
-			    Object obj = JSONValue.parse(line);
-			    JSONArray array = (JSONArray) obj;
-			    array.set(INDEX_ID, lastID);
-			    Task newTask = new Task(array);
+			    Task newTask = parseLineToTask(line);
 			    taskArray.add(newTask);
 			}
 			
@@ -267,6 +279,47 @@ public class Model {
 			
 			// return taskArray
 			return taskArray;
+		}
+		
+		// Helper Method
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+        private Task parseLineToTask(String line) throws Exception {
+		    
+		    // Setup Environment
+            String jsonText = line;
+            JSONParser parser = new JSONParser();
+            ContainerFactory containerFactory = new ContainerFactory(){
+                public List creatArrayContainer() {
+                    return new LinkedList();
+                }
+                public Map createObjectContainer() {
+                    return new LinkedHashMap();
+                }                    
+            };
+		    Task newTask = null;
+		    try {		         	        
+		        // Push parse details to JSONArray
+		        Map jsonMap = (Map) parser.parse(jsonText, containerFactory);
+		        JSONArray array = new JSONArray();
+		        array.add(jsonMap.get(KEY_ID));
+		        array.add(jsonMap.get(KEY_TITLE));
+		        array.add(jsonMap.get(KEY_TASK_TYPE));
+		        array.add(jsonMap.get(KEY_START_DATE));
+		        array.add(jsonMap.get(KEY_END_DATE));
+		        array.add(jsonMap.get(KEY_REPEAT_OPTION));
+		        array.add(jsonMap.get(KEY_TERMINATE_DATE));
+		        array.add(jsonMap.get(KEY_DESCRIPTION));
+		        array.add(jsonMap.get(KEY_CATEGORY));
+		        array.add(jsonMap.get(KEY_COMPLETED));
+		      
+		        // Create new Task and return
+		        newTask = new Task(array);
+		        return newTask;
+		    } catch(Exception e){
+		        handleException(e, MSG_ERR_JSON_PARSE_ERROR);
+		    }
+		     
+		    return newTask;
 		}
 		
 	}
@@ -324,16 +377,16 @@ public class Model {
         private String getJSONTaskString(Task t) {
 		    
 		    Map taskMap = new LinkedHashMap();
-            taskMap.put("id", t.getID());
-            taskMap.put("title", t.getTitle());
-            taskMap.put("task type", t.getTaskType());
-            taskMap.put("start date", t.getStartDate());
-            taskMap.put("end date", t.getEndDate());
-            taskMap.put("repeat option", t.getRepeatOption());
-            taskMap.put("terminate date", t.getTerminateDate());
-            taskMap.put("description", t.getDescription());
-            taskMap.put("category", t.getCategory());
-            taskMap.put("completed", t.isCompleted());
+            taskMap.put(KEY_ID, t.getID());
+            taskMap.put(KEY_TITLE, t.getTitle());
+            taskMap.put(KEY_TASK_TYPE, t.getTaskType());
+            taskMap.put(KEY_START_DATE, t.getStartDate());
+            taskMap.put(KEY_END_DATE, t.getEndDate());
+            taskMap.put(KEY_REPEAT_OPTION, t.getRepeatOption());
+            taskMap.put(KEY_TERMINATE_DATE, t.getTerminateDate());
+            taskMap.put(KEY_DESCRIPTION, t.getDescription());
+            taskMap.put(KEY_CATEGORY, t.getCategory());
+            taskMap.put(KEY_COMPLETED, t.isCompleted());
             String jsonText = JSONValue.toJSONString(taskMap);
             return jsonText;
 		}
