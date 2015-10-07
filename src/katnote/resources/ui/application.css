@@ -6,6 +6,11 @@
     -fx-text-fill: #FF9933;
     -fx-font-size: 18pt;	
 }
+.TaskRowDateText {
+    -fx-font-family: "Sen Bold";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 12pt;	
+}
 .TaskGroupHeaderText {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;

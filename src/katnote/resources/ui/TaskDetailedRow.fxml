@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="taskDescriptionLabel" text="Task" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Label fx:id="dateTimeLabel" text="Date: " AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="30.0" />
+            <Label fx:id="taskDescriptionLabel" styleClass="TaskRowText" text="Task" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label fx:id="dateTimeLabel" styleClass="TaskRowDateText" text="Date: " AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="30.0" />
          </children>
       </AnchorPane>
-      <Pane prefHeight="20.0" prefWidth="20.0" styleClass="TaskRowIcon" stylesheets="@application.css" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+      <Pane prefHeight="20.0" prefWidth="20.0" styleClass="TaskRowIcon" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
    </children>
 </fx:root>
