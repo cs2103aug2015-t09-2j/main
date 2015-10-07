@@ -116,7 +116,7 @@ public class Model {
 	 * @return the response message of a successful modification to the specified task.
 	 * @throws Exception 
 	 */
-	public String editModify(Task task) throws Exception {
+	public String editModify(Task task) throws Exception { //TODO: Integrate editComplete inside this method
 		
 		int oldTaskID = task.getID();
 		Task oldTask = _dataLog.get(oldTaskID);
@@ -154,18 +154,17 @@ public class Model {
 	
 	/**
 	 * Delete a certain task by task id.
-	 * @param commandDetail with the TASK_ID property.
+	 * @param iDOfTaskToDelete with the TASK_ID property.
 	 * @return the response message of a deletion of the specified task.
 	 * @throws Exception 
 	 */
-	public String editDelete(CommandDetail commandDetail) throws Exception {
+	public String editDelete(int idOfTaskToDelete) throws Exception {
 		
-		Integer taskID = (Integer) commandDetail.getProperty(CommandProperties.TASK_ID);
-		_dataLog.remove(taskID);
+		_dataLog.remove(idOfTaskToDelete);
 		
 		_encoder.encode();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, taskID, "<title>");
+		_response = String.format(MSG_EDIT_TASK_DELETED, idOfTaskToDelete, "<title>");
 		return _response;
 	}
 	
@@ -352,6 +351,7 @@ public class Model {
 		public StorageData(String path) throws Exception {
 			
 			_sourcePath = path;
+            _dataFilePath = path + DATA_FILENAME;
 			_response = createFiles();
 			System.out.println(_response);
 		}

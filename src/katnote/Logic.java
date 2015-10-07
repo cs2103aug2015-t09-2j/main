@@ -1,6 +1,5 @@
 package katnote;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -9,12 +8,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
 import katnote.command.CommandType;
 import katnote.command.Parser;
 
 public class Logic {
 
     private Model model;
+    private ArrayList<Integer> listOfTaskIDLastDisplayed;
     
 	// Error Messages
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; //%s is the command type
@@ -24,6 +25,7 @@ public class Logic {
 	// Constructor
 	public Logic() throws Exception{
 		model = new Model("");
+		listOfTaskIDLastDisplayed = new ArrayList<Integer>();
 	}
 	
 	// Public methods 
@@ -52,22 +54,22 @@ public class Logic {
 			    task = new Task(commandDetail);
 				response.setResponse(model.addTask(task));
 				break;									
-									
-			case EDIT_COMPLETE :
-			    response.setResponse(model.editComplete(commandDetail)); // Model will only require the Task ID in commandDetail
-				break;
-									
-			case EDIT_MODIFY :
+				
+			case EDIT_TASK :
 			    task = new Task(commandDetail); // this new task will contain the fields that are modified, rest is null fields
 			    response.setResponse(model.editModify(task));
 				break;
 			
-			case EDIT_DELETE :
-			    response.setResponse(model.editDelete(commandDetail)); // Model will only require the Task ID in commandDetail
+			case DELETE_TASK :
+			    int indexOfTaskToDelete = Integer.valueOf(commandDetail.getString(CommandProperties.TASK_ID)) - 1;
+			    int IDOfTaskToDelete = listOfTaskIDLastDisplayed.get(indexOfTaskToDelete);
+			    listOfTaskIDLastDisplayed.remove(indexOfTaskToDelete); // remove from internal ID list
+			    response.setResponse(model.editDelete(IDOfTaskToDelete)); // pass ID to Model
 				break;
 				
 			case VIEW_TASK : 
 				response.setTaskList(viewTask(commandDetail));
+				getID(response.getTaskList());
 				break;
 									
 			case UNDO:
@@ -78,8 +80,9 @@ public class Logic {
 			    response.setResponse(model.redo());
 				break;
 			
-			case FIND:
+			case FIND_TASKS:
 				response.setTaskList(find(commandDetail));
+				getID(response.getTaskList());
 				break;
 			
 			case SET_LOCATION:
@@ -97,18 +100,29 @@ public class Logic {
 	
 	/*-- Main Functions --*/
 	
-	/**
+	
+	private void getID(ArrayList<Task> taskList) {
+	    listOfTaskIDLastDisplayed = new ArrayList<Integer>(); // clear list
+	    
+        if (!taskList.isEmpty()) {
+            for (int i = 0; i < taskList.size(); i++) {
+                listOfTaskIDLastDisplayed.add(taskList.get(i).getID());
+            }
+        }
+    }
+
+    /**
 	 * Search for tasks that match the specifications in the commandDetail input
 	 * 
 	 * @param commandDetail Contains the criteria for searching
 	 * @return An ArrayList of tasks that match the search criteria
 	 */
-    private ArrayList<Task> find(CommandDetail commandDetail) {
+	
+    private ArrayList<Task> find(CommandDetail commandDetail) {     
         ArrayList<Task> data = model.getData(); // Retrieves ArrayList of tasks currently in memory from model
-        
-        
-        String keyword = commandDetail.getProperty(key); //TODO
-        return findByKeyword(data, keyword);
+               
+        String keyword = commandDetail.getString(CommandProperties.FIND_KEYWORDS);
+        return findByKeyword(data, keyword);    
     }
     
     
@@ -123,7 +137,8 @@ public class Logic {
         
         // For now, we assume that there is only the "view incomplete tasks by due date" view request
         
-        return findIncompleteTaskDueOn(data, commandDetail.getDate(key)); //TODO
+        return findIncompleteTaskDueOn(data, (Date) commandDetail.getDate(CommandProperties.TIME_BY));
+        
     }
     
     
