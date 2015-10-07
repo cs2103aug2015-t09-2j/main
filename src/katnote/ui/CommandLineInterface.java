@@ -19,13 +19,23 @@ public class CommandLineInterface {
         while(!toExit){
             printMessage("Enter your input: ");
             String input = readInput();
-            UIFeedback feedback = logic.execute(input);
-            printMessageLine(feedback.getMessage());
+            UIFeedback feedback;
+            try {
+                feedback = logic.execute(input);
+                printMessageLine(feedback.getMessage());
+            } catch (Exception e) {
+                printMessageLine(e.getMessage());
+            }
         }
     }
 
     private void initialize() {
-        logic = new Logic();
+        try {
+            logic = new Logic();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         toExit = false;
         scanner = new Scanner(System.in);
     }

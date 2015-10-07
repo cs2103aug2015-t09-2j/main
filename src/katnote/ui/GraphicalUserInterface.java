@@ -28,7 +28,12 @@ public class GraphicalUserInterface extends Application  {
     private void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("KatNote");
-		logic = new Logic();
+		try {
+            logic = new Logic();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
     private void loadResources() {
         Font.loadFont(
@@ -70,13 +75,19 @@ public class GraphicalUserInterface extends Application  {
 	}
 	
 	public void handleCommandInput(CommandBarController commandBarController, String inputText){
-		UIFeedback feedback = logic.execute(inputText);
+		UIFeedback feedback;
+        try {
+            feedback = logic.execute(inputText);
+            commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
+            if(!feedback.isAnError()){       
+                Task[] tasks = feedback.getTaskList().toArray(new Task[1]);
+                updateTaskViewer(tasks);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            commandBarController.setResponseText(e.getMessage(), true); 
+        }
 		
-        commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
-		if(!feedback.isAnError()){		 
-		    Task[] tasks = feedback.getTaskList().toArray(new Task[1]);
-		    updateTaskViewer(tasks);
-		}
 	}
 	
 

@@ -57,7 +57,7 @@ public class TaskViewer extends AnchorPane{
         for(Task t : tasks){
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-            Date taskDate = t.getTerminateDate();
+            Date taskDate = t.getEndDate();
             String dateString = dateFormat.format(taskDate);
             String timeString = timeFormat.format(taskDate);
             String dateTime = "Due: " + dateString + " " + timeString;            
