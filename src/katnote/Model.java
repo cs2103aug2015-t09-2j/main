@@ -170,13 +170,13 @@ public class Model {
 	            editedTask.setTerminateDate(editOption.getOptionValueDate());
 	            break;
 	        default:
-	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID, editedTask.getTitle());
+	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
 	            return _response;
 	    }
 	    
 	    _encoder.encode();
 	    
-	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID, editedTask.getTitle());
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
 	    return _response;
 	}
 	
@@ -342,6 +342,7 @@ public class Model {
 	class StorageEncoder {
 	    
 	    // Private Variables
+	    int _id;
 	    
 	    // Constructor
 	    public StorageEncoder() {
@@ -352,6 +353,7 @@ public class Model {
 
 			// Setup environment
 		    ArrayList<Task> taskArray = _dataLog;
+		    _id = 0;
 		    
 		    PrintWriter pWriter = createNewDataLog(_data.getDataFilePath());
 		    pWriter.println(MSG_LOG_START);
@@ -359,6 +361,7 @@ public class Model {
 		    // Iterate through Log
 		    for (Task t : taskArray) {
 		        pWriter.println(getJSONTaskString(t));
+		        _id++;
 		    }
 		    
 		    pWriter.close();
@@ -386,7 +389,7 @@ public class Model {
         private String getJSONTaskString(Task t) {
 		    
 		    Map taskMap = new LinkedHashMap();
-            taskMap.put(KEY_ID, t.getID().toString());
+            taskMap.put(KEY_ID, _id);
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, t.getTaskType());
             taskMap.put(KEY_START_DATE, dateToString(t.getStartDate()));
