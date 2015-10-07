@@ -30,6 +30,18 @@ public class CommandDetail {
 	}
 	
 	/*
+     * Returns <tt>true</tt> if this map contains a mapping for the
+     * specified key.
+     *
+     * @param   key   The key whose presence in this map is to be tested
+     * @return <tt>true</tt> if this map contains a mapping for the specified
+     * key.
+     */
+	public boolean hasProperty(String key) {
+        return commandData.containsKey(key);
+    }
+	
+	/*
 	 * Return value of property with given key
 	 * @param key 
 	 */
@@ -59,5 +71,7 @@ public class CommandDetail {
 	public void setProperty(String key, Object value){
 		commandData.put(key, value);
 	}
+
+    
 
 }

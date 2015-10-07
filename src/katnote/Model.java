@@ -245,7 +245,7 @@ public class Model {
 			BufferedReader bReader = new BufferedReader(new FileReader(_data.getDataFilePath()));
 			
 			// Read through data.txt
-			while (!(line = bReader.readLine()).equals(MSG_LOG_START)) {
+			while ((line = bReader.readLine()) != null && !line.equals(MSG_LOG_START)) {
 			    // Read till start of task logs
 			}
 			

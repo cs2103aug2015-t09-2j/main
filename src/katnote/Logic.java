@@ -53,9 +53,9 @@ public class Logic {
 			case ADD_NORMAL:
 			    task = new Task(commandDetail);
 				response.setResponse(model.addTask(task));
-				break;									
+				break;
 				
-			case EDIT_TASK :
+			case EDIT_MODIFY :
 			    task = new Task(commandDetail); // this new task will contain the fields that are modified, rest is null fields
 			    response.setResponse(model.editModify(task));
 				break;
