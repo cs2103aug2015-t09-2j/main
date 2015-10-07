@@ -23,7 +23,7 @@
    <top>
       <AnchorPane prefHeight="65.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="34.0" prefHeight="31.0" prefWidth="600.0" styleClass="title1" text="katnote" textAlignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="0.0" layoutY="34.0" prefHeight="31.0" prefWidth="600.0" styleClass="title" text="katnote" textAlignment="CENTER">
                <font>
                   <Font size="21.0" />
                </font>
