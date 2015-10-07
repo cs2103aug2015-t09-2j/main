@@ -84,6 +84,10 @@ public class Logic {
 			    response.setResponse(model.editModify(task));
 				break;
 			
+			case EDIT_COMPLETE :
+                response.setResponse(model.editComplete(commandDetail));
+                break;
+				
 			case DELETE_TASK :
 			    
 			    // getting index from commandDetail
