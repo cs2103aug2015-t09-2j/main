@@ -2,6 +2,8 @@ package katnote.command;
 
 import java.util.Date;
 
+import katnote.utils.StringUtils;
+
 public class EditTaskSetOption {
     private String taskOptionName;
     private String taskOptionValue;
@@ -12,9 +14,8 @@ public class EditTaskSetOption {
     }
     
     public EditTaskSetOption(String editTaskOption){
-        String[] options = editTaskOption.split(" ");
-        taskOptionName = options[0];
-        taskOptionValue = options[1];
+        taskOptionName = StringUtils.getFirstWord(editTaskOption);
+        taskOptionValue = StringUtils.removeFirstWord(editTaskOption);
     }
     
     public String getOptionName(){

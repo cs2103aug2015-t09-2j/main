@@ -243,7 +243,7 @@ public class Parser {
 		StringBuilder currentToken = null;
 		boolean isLastTokenKeyword = false;
 		while (m.find()){
-			String token = m.group(1);			
+			String token = m.group(1).replace("\"", "");
 			boolean isKeyword = CommandKeywords.isKeyword(token);
 			
 			if (currentToken == null || isKeyword != isLastTokenKeyword){
