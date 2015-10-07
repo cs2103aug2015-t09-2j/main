@@ -181,28 +181,58 @@ public class Parser {
             pos++;
             String value = tokens.get(pos); 
             pos++;
-            Date date;
             switch (key){
-                case CommandProperties.TIME_BY:
-                case CommandProperties.TIME_FROM:
-                case CommandProperties.TIME_TO:
-                case CommandProperties.TIME_UNTIL:                
-                    //Date time value
-                    date = DateParser.parseDate(value);
-                    command.setProperty(key, date);
+                case CommandKeywords.KW_FROM:
+                    command.setProperty(CommandProperties.TIME_FROM, parseOptionValue(CommandProperties.TIME_FROM, value));
                     break;
-                case CommandProperties.TIME_ON:
-                    //TODO: take the begin of day to FROM and end of day to TO
-                    date = DateParser.parseDate(value);
-                    command.setProperty(key, date);
+                case CommandKeywords.KW_BY:
+                    command.setProperty(CommandProperties.TIME_BY, parseOptionValue(CommandProperties.TIME_BY, value));
+                    break;
+                case CommandKeywords.KW_TO:
+                    command.setProperty(CommandProperties.TIME_TO, parseOptionValue(CommandProperties.TIME_TO, value));
+                    break;
+                case CommandKeywords.KW_UNTIL:                
+                    command.setProperty(CommandProperties.TIME_UNTIL, parseOptionValue(CommandProperties.TIME_UNTIL, value));
+                    break;
+                case CommandKeywords.KW_ON:
+                    //take the begin of day to TIME_FROM and end of day to TIME_TO
+                    command.setProperty(CommandProperties.TIME_FROM, parseOptionValue(CommandProperties.TIME_FROM, value));
+                    command.setProperty(CommandProperties.TIME_TO, parseOptionValue(CommandProperties.TIME_TO, value));
+                    break;
+                case CommandKeywords.KW_SET:
+                    command.setProperty(CommandProperties.EDIT_SET_PROPERTY, new EditTaskSetOption(value));
+                    break;
+                case CommandKeywords.KW_MARK:
+                    command.setProperty(CommandProperties.EDIT_MARK, value);
                     break;
                 default:
-                    //String value
-                    command.setProperty(key, value);
+                    //unknown property, do nothing
                     break;
             }
         }        
         return command;
+    }
+    
+    /*
+     * convert string value to Object based on option name
+     */
+    public static Object parseOptionValue(String optionName, String optionValue){
+        Date date;
+        switch (optionName){
+            case CommandProperties.TIME_FROM:
+                //Date time value
+                date = DateParser.parseDate(optionValue, DateParser.BEGIN_OF_DAY);
+                return date;
+            case CommandProperties.TIME_BY:                
+            case CommandProperties.TIME_TO:
+            case CommandProperties.TIME_UNTIL:                
+                //Date time value
+                date = DateParser.parseDate(optionValue, DateParser.END_OF_DAY);
+                return date;
+            default:
+                //String value
+                return optionValue;
+        }
     }
 	
 	public static List<String> getTokensFromCommand(String commandStr){

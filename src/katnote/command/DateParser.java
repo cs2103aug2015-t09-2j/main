@@ -31,6 +31,11 @@ public class DateParser {
     private static final int DAY_NUMBER_OF_HOURS = 24;
     private static final int DAY_HALF_NUMBER_OF_HOURS = 12;
     
+    // default hours of day when no hour given
+    public static final int MIDDLE_OF_DAY = 0;
+    public static final int BEGIN_OF_DAY = 1;
+    public static final int END_OF_DAY = 2;
+    
     /*
      * get today Date time
      */
@@ -124,9 +129,11 @@ public class DateParser {
     /*
      * convert string (absolute time format) to string
      */
-    private static Date parseAbsoluteTime(String time) {
+    private static Date parseAbsoluteTime(String time, int defaultHourOption) {
         // today
         Calendar calendar = Calendar.getInstance();
+        int defaultHourOfDay = getDefaultHourOfDay(defaultHourOption);
+        int defaultMinute = getDefaultMinute(defaultHourOption);
         // matcher
         Matcher m = Pattern.compile(ABSOLUTE_TIME_PATTERN).matcher(time);
         if (m.find()){
@@ -135,8 +142,9 @@ public class DateParser {
             int year = m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR) != null ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR)) : calendar.get(Calendar.YEAR);
             
             int hourOfDay = m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR) != null
-                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR)) : 0;
-            int minute = m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE) != null ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE)) : 0;
+                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR)) : defaultHourOfDay;
+            int minute = m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE) != null
+                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE)) : defaultMinute;
             boolean isPM = DAY_PERIOD_PM.equals(m.group(ABSOLUTE_TIME_PATTERN_POS_DAY_PM));
             
             if (isPM){
@@ -153,21 +161,59 @@ public class DateParser {
         
         return null;
     }
+    
+    private static int getDefaultMinute(int defaultHourOption) {
+        if (defaultHourOption == END_OF_DAY){
+            return 59;
+        }
+        return 0;
+    }
+
+    private static int getDefaultHourOfDay(int defaultHourOption) {
+        switch (defaultHourOption){
+            case BEGIN_OF_DAY:
+                return 0;
+            case MIDDLE_OF_DAY:
+                return 12;
+            case END_OF_DAY:
+                return 23;
+        }
+        return 0;
+    }
 
     /*
-     * 
+     * change the hour of date based on hour option
+     */
+    private static Date addHourOption(Date date, int defaultHourOption){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, getDefaultHourOfDay(defaultHourOption));
+        calendar.set(Calendar.MINUTE, getDefaultMinute(defaultHourOption));
+        return calendar.getTime();
+    }
+
+    /*
+     * convert string to date
      */
     public static Date parseDate(String time){ 
+        return parseDate(time, MIDDLE_OF_DAY);
+    }
+    
+    /*
+     * convert string to date
+     */
+    public static Date parseDate(String time, int defaultHourOption){ 
         // check if time is relative time
         Date date = parseRelativeTime(time);
         if (date != null){ // date == null means it is not relative time
+            date = addHourOption(date, defaultHourOption);
             return date;
         }
         // check some absolute time format
-        date = parseAbsoluteTime(time);
+        date = parseAbsoluteTime(time, defaultHourOption);        
         return date;
         
-    }     
+    }
 
     /*
     // use for testing, will be removed soon 
