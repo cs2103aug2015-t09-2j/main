@@ -35,6 +35,7 @@ public class Model {
 	private static final int MAX_ARG_SIZE = 10;
 	private static final int INDEX_ID = 0;
 	private static final int INDEX_TITLE = 1;
+	private static final boolean TASK_DEFAULT_COMPLETED = false;
 	
 	// Messages
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
@@ -74,6 +75,7 @@ public class Model {
 	public String addTask(Task task) throws Exception {
 		
 	    task.setID(getNextID());
+	    task.setCompleted(TASK_DEFAULT_COMPLETED);
 	    _dataLog.add(task);
 	    
 		_encoder.encode();
