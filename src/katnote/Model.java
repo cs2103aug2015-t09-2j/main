@@ -35,6 +35,7 @@ public class Model {
 	private static final int MAX_ARG_SIZE = 10;
 	private static final int INDEX_ID = 0;
 	private static final int INDEX_TITLE = 1;
+	private static final int INDEX_TRANSLATION = 1; // For translating internal indexing to displayed indexing.
 	
 	// Messages
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
@@ -161,11 +162,13 @@ public class Model {
 	 */
 	public String editDelete(int idOfTaskToDelete) throws Exception {
 		
-		_dataLog.remove(idOfTaskToDelete);
+		String title = _dataLog.get(idOfTaskToDelete).getTitle();
+		int displayedID = idOfTaskToDelete + INDEX_TRANSLATION;
+	    _dataLog.remove(idOfTaskToDelete);
 		
 		_encoder.encode();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, idOfTaskToDelete, "<title>");
+		_response = String.format(MSG_EDIT_TASK_DELETED, idOfTaskToDelete + 1, title);
 		return _response;
 	}
 	
