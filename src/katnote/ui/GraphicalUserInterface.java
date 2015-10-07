@@ -3,6 +3,9 @@ package katnote.ui;
 import katnote.Logic;
 import katnote.Task;
 import katnote.UIFeedback;
+
+import java.util.ArrayList;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -80,14 +83,16 @@ public class GraphicalUserInterface extends Application  {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
             if(!feedback.isAnError()){       
-                Task[] tasks = feedback.getTaskList().toArray(new Task[0]);
-                if(tasks.length == 0){
+                ArrayList<Task> taskList = feedback.getTaskList();
+                if(taskList.size() == 0){
+                    Task[] tasks = taskList.toArray(new Task[taskList.size()]);
                     updateTaskViewer(tasks);
                 }
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             commandBarController.setResponseText(e.getMessage(), true); 
+            e.printStackTrace();
         }
 		
 	}
