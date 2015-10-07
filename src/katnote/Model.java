@@ -1,6 +1,7 @@
 package katnote;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -57,6 +58,7 @@ public class Model {
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid task type: ";
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
+	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -71,6 +73,9 @@ public class Model {
 	private static final String KEY_DESCRIPTION = "description";
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_COMPLETED = "completed";
+	
+	// Format
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -107,10 +112,9 @@ public class Model {
 	 * @return the response message of a successful change in the completed flag.
 	 * @throws Exception 
 	 */
-	public String editComplete(CommandDetail commandDetail) throws Exception {
+	public String editComplete(int editTaskID) throws Exception {
 		
-	    Integer taskID = (Integer) commandDetail.getProperty(CommandProperties.TASK_ID);
-		Task editedTask = _dataLog.get(taskID);
+		Task editedTask = _dataLog.get(editTaskID);
 	    editedTask.setCompleted(true);
 	    
 	    _encoder.encode();
@@ -136,51 +140,38 @@ public class Model {
 	 * @return the response message of a successful modification to the specified task.
 	 * @throws Exception 
 	 */
-	public String editModify(int taskID, EditTaskSetOption editOption) {
+	public String editModify(int taskID, EditTaskSetOption editOption) throws Exception {
 	    
 	    Task editedTask = _dataLog.get(taskID);
 	    String optionName = editOption.getOptionName();
 	    switch (optionName) {
 	        case CommandProperties.TASK_ID :
-	            // TODO: abc
+	            editedTask.setID(Integer.parseInt(editOption.getOptionValue()));
+	            break;
+	        case CommandProperties.TASK_TITLE :
+	            editedTask.setTitle(editOption.getOptionValue());
+	            break;
+	        case CommandProperties.TIME_FROM :
+	            editedTask.setStartDate(editOption.getOptionValueDate());
+	            break;
+	        case CommandProperties.TIME_BY :
+	            editedTask.setEndDate(editOption.getOptionValueDate());
+	            break;
+	        case CommandProperties.TIME_REPEAT :
+	            editedTask.setRepeatOption(editOption.getOptionValue());
+	            break;
+	        case CommandProperties.TIME_UNTIL :
+	            editedTask.setTerminateDate(editOption.getOptionValueDate());
+	            break;
+	        default:
+	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID, editedTask.getTitle());
+	            return _response;
 	    }
 	    
-	    return null;
-	}
-	public String editModify(Task task) throws Exception { //TODO: Integrate editComplete inside this method
-		
-		int oldTaskID = task.getID();
-		Task oldTask = _dataLog.get(oldTaskID);
-		
-		if (task.getTitle() != null) {
-		    oldTask.setTitle(task.getTitle());
-		}
-		if (task.getTaskType() != null) {
-            oldTask.setTaskType(task.getTaskType());
-        }
-		if (task.getStartDate() != null) {
-            oldTask.setStartDate(task.getStartDate());
-        }
-		if (task.getEndDate() != null) {
-            oldTask.setEndDate(task.getEndDate());
-        }
-		if (task.getRepeatOption() != null) {
-            oldTask.setRepeatOption(task.getRepeatOption());
-        }
-		if (task.getTerminateDate() != null) {
-            oldTask.setTerminateDate(task.getTerminateDate());
-        }
-		if (task.getDescription() != null) {
-            oldTask.setDescription(task.getDescription());
-        }
-		if (task.getCategory() != null) {
-            oldTask.setCategory(task.getCategory());
-        }
-		
-		_encoder.encode();
-		
-		_response = String.format(MSG_EDIT_TASK_MODIFIED, oldTaskID, task.getTitle());
-		return _response;
+	    _encoder.encode();
+	    
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID, editedTask.getTitle());
+	    return _response;
 	}
 	
 	/**
@@ -316,10 +307,10 @@ public class Model {
 		        array.add(jsonMap.get(KEY_ID));
 		        array.add(jsonMap.get(KEY_TITLE));
 		        array.add(jsonMap.get(KEY_TASK_TYPE));
-		        array.add(jsonMap.get(KEY_START_DATE));
-		        array.add(jsonMap.get(KEY_END_DATE));
+		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_START_DATE)));
+		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_END_DATE)));
 		        array.add(jsonMap.get(KEY_REPEAT_OPTION));
-		        array.add(jsonMap.get(KEY_TERMINATE_DATE));
+		        array.add(jsonMap.get(DATE_FORMAT.parseObject(KEY_TERMINATE_DATE)));
 		        array.add(jsonMap.get(KEY_DESCRIPTION));
 		        array.add(jsonMap.get(KEY_CATEGORY));
 		        array.add(jsonMap.get(KEY_COMPLETED));
@@ -392,11 +383,10 @@ public class Model {
             taskMap.put(KEY_ID, t.getID());
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, t.getTaskType());
-            taskMap.put(KEY_START_DATE, t.getStartDate());
-            // TODO:
-            taskMap.put(KEY_END_DATE, t.getEndDate());
+            taskMap.put(KEY_START_DATE, t.getStartDate().toString());
+            taskMap.put(KEY_END_DATE, t.getEndDate().toString());
             taskMap.put(KEY_REPEAT_OPTION, t.getRepeatOption());
-            taskMap.put(KEY_TERMINATE_DATE, t.getTerminateDate());
+            taskMap.put(KEY_TERMINATE_DATE, t.getTerminateDate().toString());
             taskMap.put(KEY_DESCRIPTION, t.getDescription());
             taskMap.put(KEY_CATEGORY, t.getCategory());
             taskMap.put(KEY_COMPLETED, t.isCompleted());
