@@ -1,6 +1,7 @@
 package katnote;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.json.simple.JSONArray;
@@ -22,7 +23,7 @@ public class Task {
     private Date _startDate;
     private Date _endDate;
     private String _repeatOption;
-    private Date _terminateDate;
+    private Date _terminateDate; //only for recurring tasks
     private String _description;
     private String _category;
     private Boolean _completed;
@@ -172,10 +173,11 @@ public class Task {
         this._category = _category;
     }
 
-    public Boolean getCompleted() {
+    public boolean isCompleted() {
         return _completed;
     }
-
+    
+    
     public void setCompleted(Boolean _completed) {
         this._completed = _completed;
     }
