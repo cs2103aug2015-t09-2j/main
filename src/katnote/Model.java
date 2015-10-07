@@ -342,7 +342,7 @@ public class Model {
 	class StorageEncoder {
 	    
 	    // Private Variables
-	    int _id;
+	    Integer _id;
 	    
 	    // Constructor
 	    public StorageEncoder() {
@@ -389,7 +389,7 @@ public class Model {
         private String getJSONTaskString(Task t) {
 		    
 		    Map taskMap = new LinkedHashMap();
-            taskMap.put(KEY_ID, _id);
+            taskMap.put(KEY_ID, _id.toString());
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, t.getTaskType());
             taskMap.put(KEY_START_DATE, dateToString(t.getStartDate()));
