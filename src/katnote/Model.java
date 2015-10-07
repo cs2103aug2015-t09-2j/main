@@ -51,7 +51,7 @@ public class Model {
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid task type: ";
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
 	
-	private static final String MSG_LOG_START = "<start>";
+	private static final String MSG_LOG_START = "<start>\n";
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -74,6 +74,7 @@ public class Model {
 	public String addTask(Task task) throws Exception {
 		
 	    task.setID(getNextID());
+	    _dataLog.add(task);
 	    
 		_encoder.encode();
 		
@@ -154,7 +155,7 @@ public class Model {
 	
 	/**
 	 * Delete a certain task by task id.
-	 * @param iDOfTaskToDelete with the TASK_ID property.
+	 * @param iDOfTaskToDelete which will correspond to the index of the task in the dataLog.
 	 * @return the response message of a deletion of the specified task.
 	 * @throws Exception 
 	 */
