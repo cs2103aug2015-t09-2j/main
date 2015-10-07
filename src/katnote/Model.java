@@ -330,7 +330,7 @@ public class Model {
             taskMap.put("terminate date", t.getTerminateDate());
             taskMap.put("description", t.getDescription());
             taskMap.put("category", t.getCategory());
-            taskMap.put("completed", t.getCompleted());
+            taskMap.put("completed", t.isCompleted());
             String jsonText = JSONValue.toJSONString(taskMap);
             return jsonText;
 		}
