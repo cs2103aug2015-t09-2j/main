@@ -1,5 +1,5 @@
 .TaskRowIcon {
-	-fx-background-image: url('./catbulletblack.png');
+	/*-fx-background-image: url('./catbulletblack.png');*/
 }
 .TaskRowText {
     -fx-font-family: "Sen ExtraBold";

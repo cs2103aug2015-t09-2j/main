@@ -40,18 +40,20 @@ public class TaskViewer extends AnchorPane{
     //To-do: modify TaskRow to allow for more details such as time
     public void loadListOfGroupedTasks(Task[][] arrayOfTaskGroups, String[] groupHeadings){
         assert(arrayOfTaskGroups.length == groupHeadings.length);
-        
+        int counter = 1;
         for(int i = 0; i < arrayOfTaskGroups.length; i++){
             TaskViewGroup viewGroup = new TaskViewGroup(groupHeadings[i]);
             Task[] tasksInGroup = arrayOfTaskGroups[i];
             for(Task t : tasksInGroup){
-                viewGroup.addTaskRow(t.getTitle());
+                viewGroup.addTaskRow(counter + ". " + t.getTitle());
+                counter++;
             }
             addNewTaskViewGroup(viewGroup);
         }
     }
     
     public void loadDetailedListOfTask(Task[] tasks){
+        int counter = 1;
         for(Task t : tasks){
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
@@ -59,9 +61,9 @@ public class TaskViewer extends AnchorPane{
             String dateString = dateFormat.format(taskDate);
             String timeString = timeFormat.format(taskDate);
             String dateTime = "Due: " + dateString + " " + timeString;            
-            TaskDetailedRow row = new TaskDetailedRow(t.getTitle(), dateTime);
+            TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime);
             taskViewGroupList.getChildren().add(row);
-            
+            counter++;
         }
     }
 }
