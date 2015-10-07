@@ -26,7 +26,7 @@ public class Task {
     private Date _terminateDate; //only for recurring tasks
     private String _description;
     private String _category;
-    private Boolean _completed;
+    private Boolean _completed = false;
     
     // Constants
     private static final int MAX_ARG_SIZE = 10;
