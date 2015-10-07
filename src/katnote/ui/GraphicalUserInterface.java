@@ -80,8 +80,10 @@ public class GraphicalUserInterface extends Application  {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError()); 
             if(!feedback.isAnError()){       
-                Task[] tasks = feedback.getTaskList().toArray(new Task[1]);
-                updateTaskViewer(tasks);
+                Task[] tasks = feedback.getTaskList().toArray(new Task[0]);
+                if(tasks.length == 0){
+                    updateTaskViewer(tasks);
+                }
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
