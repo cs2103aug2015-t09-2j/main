@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.command.CommandType;
+import katnote.command.EditTaskSetOption;
 import katnote.command.Parser;
 
 public class Logic {
@@ -80,22 +81,23 @@ public class Logic {
 				break;
 				
 			case EDIT_MODIFY :
-			    task = new Task(commandDetail); // this new task will contain the fields that are modified, rest is null fields
-			    response.setResponse(model.editModify(task));
+			    int idTaskToEdit = getTaskIDFromIndex(getTaskIndex(commandDetail));
+			    EditTaskSetOption editOptions = getEditTaskOption(commandDetail);
+			    response.setResponse(model.editModify(idTaskToEdit, editOptions)); //TODO
 				break;
 			
 			case EDIT_COMPLETE :
-                response.setResponse(model.editComplete(commandDetail));
+			    int idTaskToComplete = getTaskIDFromIndex(getTaskIndex(commandDetail));
+                response.setResponse(model.editComplete(idTaskToComplete)); //TODO
                 break;
 				
 			case DELETE_TASK :
-			    
 			    // getting index from commandDetail
-			    int indexOfTaskToDelete = Integer.valueOf(commandDetail.getString(CommandProperties.TASK_ID)) - 1;
-			    int IDOfTaskToDelete = listOfTaskIDLastDisplayed.get(indexOfTaskToDelete);
+			    int indexDelete = getTaskIndex(commandDetail);
+			    int idOfTaskToDelete = getTaskIDFromIndex(indexDelete);
 			    
-			    listOfTaskIDLastDisplayed.remove(indexOfTaskToDelete); // remove from internal ID list
-			    response.setResponse(model.editDelete(IDOfTaskToDelete)); // pass ID to Model
+			    // listOfTaskIDLastDisplayed.remove(indexDelete); // remove from internal ID list
+			    response.setResponse(model.editDelete(idOfTaskToDelete)); // pass ID to Model
 				break;
 				
 			case VIEW_TASK : 
@@ -176,6 +178,20 @@ public class Logic {
     }
       
     /*-- Helper Functions --*/
+    
+    private EditTaskSetOption getEditTaskOption(CommandDetail commandDetail) {
+        return (EditTaskSetOption)commandDetail.getProperty(CommandProperties.EDIT_SET_PROPERTY);
+    }
+   
+    // Returns the ID of the task specified by the index based on listOfTaskIDLastDisplayed 
+    private int getTaskIDFromIndex(int index) {
+        return listOfTaskIDLastDisplayed.get(index);
+    }
+    
+    // Returns the INDEX of the task specified in commandDetail based on what's displayed
+    private int getTaskIndex(CommandDetail commandDetail) {
+        return Integer.valueOf(commandDetail.getString(CommandProperties.TASK_ID)) - 1;
+    }
     
     private void setSourcePath(String newPath) throws FileNotFoundException {
         
