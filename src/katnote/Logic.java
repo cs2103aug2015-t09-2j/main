@@ -135,15 +135,30 @@ public class Logic {
     private ArrayList<Task> viewTask(CommandDetail commandDetail) {
         ArrayList<Task> data = model.getData(); // Retrieves ArrayList of tasks currently in memory from model
         
-        // For now, we assume that there is only the "view incomplete tasks by due date" view request
-        
-        return findIncompleteTaskDueOn(data, (Date) commandDetail.getDate(CommandProperties.TIME_BY));
+        return findAllTasks(data);
+        //return findAllIncompleteTasks(data);     
+        //return findIncompleteTaskDueOn(data, (Date) commandDetail.getDate(CommandProperties.TIME_BY));
         
     }
-    
-    
+      
     /*-- Helper Functions --*/
     
+    private ArrayList<Task> findAllIncompleteTasks(ArrayList<Task> data) {
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < data.size(); i++) {
+            Task task = data.get(i);
+            if (!task.isCompleted()) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;      
+    }
+
+    private ArrayList<Task> findAllTasks(ArrayList<Task> data) {
+        return data;
+    }
+
     /**
      * Finds all the tasks that contains the keyword (either in the task's name or description) NOTE: This is case insensitive
      * 
