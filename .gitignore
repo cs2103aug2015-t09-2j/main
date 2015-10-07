@@ -11,3 +11,4 @@
 hs_err_pid*
 /bin/
 src/katnote/resources/json/json-simple-1.1.1.jar
+.classpath

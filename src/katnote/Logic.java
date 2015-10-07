@@ -1,5 +1,11 @@
 package katnote;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -16,15 +22,33 @@ public class Logic {
 
     private Model model;
     private ArrayList<Integer> listOfTaskIDLastDisplayed;
+    private String sourcePathStr;
     
 	// Error Messages
 	private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; //%s is the command type
 	private static final String MSG_ERR_INVALID_ARGS = "Invalid arguments: %s"; // %s is the string of arguments
+	private static final String MSG_SOURCE_PATH = "sourcepath.txt";
+	private static final String MSG_DEFAULT_SOURCE_PATH = "";
 	
 	
 	// Constructor
 	public Logic() throws Exception{
-		model = new Model("");
+	    
+	    File sourcePath = new File(MSG_SOURCE_PATH);
+	    if (!sourcePath.exists()) {
+	        sourcePath.createNewFile();
+	    }
+	    BufferedReader br = new BufferedReader(new FileReader(sourcePath));
+	    String line;
+	    line = br.readLine();
+	    if (line == null) {
+	        sourcePathStr = MSG_DEFAULT_SOURCE_PATH; 
+	    }
+	    else {
+	       sourcePathStr = line;
+	    }
+	    br.close();   
+		model = new Model(sourcePathStr);
 		listOfTaskIDLastDisplayed = new ArrayList<Integer>();
 	}
 	
@@ -61,8 +85,11 @@ public class Logic {
 				break;
 			
 			case DELETE_TASK :
+			    
+			    // getting index from commandDetail
 			    int indexOfTaskToDelete = Integer.valueOf(commandDetail.getString(CommandProperties.TASK_ID)) - 1;
 			    int IDOfTaskToDelete = listOfTaskIDLastDisplayed.get(indexOfTaskToDelete);
+			    
 			    listOfTaskIDLastDisplayed.remove(indexOfTaskToDelete); // remove from internal ID list
 			    response.setResponse(model.editDelete(IDOfTaskToDelete)); // pass ID to Model
 				break;
@@ -86,7 +113,10 @@ public class Logic {
 				break;
 			
 			case SET_LOCATION:
+			    String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.SAVE_LOCATION);
+			    setSourcePath(newSaveLocation);
 			    response.setResponse(model.setLocation(commandDetail));
+			    
 				break;
 			
 			default :
@@ -142,6 +172,14 @@ public class Logic {
     }
       
     /*-- Helper Functions --*/
+    
+    private void setSourcePath(String newPath) throws FileNotFoundException {
+        
+        File sourcePath = new File(MSG_SOURCE_PATH);
+        PrintWriter pw = new PrintWriter(sourcePath);
+        pw.println(newPath);
+        pw.close();
+    }
     
     private ArrayList<Task> findAllIncompleteTasks(ArrayList<Task> data) {
         ArrayList<Task> tasksFound = new ArrayList<Task>();
