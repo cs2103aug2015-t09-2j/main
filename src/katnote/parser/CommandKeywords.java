@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 import java.util.Arrays;
 import java.util.HashSet;

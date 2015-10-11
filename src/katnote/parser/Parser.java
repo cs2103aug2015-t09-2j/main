@@ -1,7 +1,6 @@
-package katnote.command;
+package katnote.parser;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,20 +15,19 @@ public class Parser {
 	
 	private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
 	private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
-
-	private static final String COMMAND_ADD = "add";
-	private static final String COMMAND_VIEW = "view";
-	private static final String COMMAND_EDIT = "edit";
-	private static final String COMMAND_FIND = "find";
-	private static final String COMMAND_DELETE = "delete";
 	
 	private static final String PROPERTY_SINGLE_TASK = "task";
 	private static final String PROPERTY_TASKS = "tasks";
 	private static final String PROPERTY_COMPLETED = "completed";
 	
 	/*
+	 * Convert the input command string into CommandDetail format
+	 * containing command type as well as all data field related
+	 * to that type of command.
 	 * 
 	 * @param commandStr the command you want to parse
+	 * @return CommandDetail object containing the command type
+	 * and all data fields related to that type of command
 	 */
 	public static CommandDetail parseCommand(String commandStr){		
 		List<String> tokens = getTokensFromCommand(commandStr);		
@@ -39,20 +37,55 @@ public class Parser {
 		
 		String commandType = tokens.get(0);
 		switch (commandType){
-			case COMMAND_ADD:
+			case CommandKeywords.KW_ADD:
 				return parseAddCommand(tokens);
-			case COMMAND_VIEW:
+			case CommandKeywords.KW_VIEW:
 			    return parseViewCommand(tokens);
-			case COMMAND_FIND:
+			case CommandKeywords.KW_FIND:
 			    return parseFindCommand(tokens);
-			case COMMAND_DELETE:
+			case CommandKeywords.KW_DELETE:
 			    return parseDeleteCommand(tokens);
-			case COMMAND_EDIT:
+			case CommandKeywords.KW_EDIT:
 			    return parseEditCommand(tokens);
 			default:
 				return new CommandDetail(CommandType.UNKNOWN);
 		}		
 	}
+	
+
+    /*
+     * Split the command string based on space but take quoted substrings as one word
+     * 
+     * @param commandStr The command string passed from Logic
+     * @return List of result tokens
+     */
+    public static List<String> getTokensFromCommand(String commandStr){
+        Matcher m = Pattern.compile(COMMAND_SPLIT_PATTERN).matcher(commandStr);
+        List<String> tokens = new ArrayList<String>();
+        StringBuilder currentToken = null;
+        boolean isLastTokenKeyword = false;
+        while (m.find()){
+            String token = m.group(1).replace("\"", "");
+            boolean isKeyword = CommandKeywords.isKeyword(token);
+            
+            if (currentToken == null || isKeyword != isLastTokenKeyword){
+                if (currentToken != null){
+                    tokens.add(currentToken.toString());
+                }
+                currentToken = new StringBuilder(token);
+            }
+            else{                   
+                currentToken.append(" " + token);
+            }
+            
+            isLastTokenKeyword = isKeyword;
+        }       
+        if (currentToken != null){
+            tokens.add(currentToken.toString());
+        }
+        
+        return tokens;
+    }
 
 	/*
 	 * Parse Add command. Command format:
@@ -183,85 +216,8 @@ public class Parser {
             pos++;
             String value = tokens.get(pos); 
             pos++;
-            switch (key){
-                case CommandKeywords.KW_FROM:
-                    command.setProperty(CommandProperties.TIME_FROM, parseOptionValue(CommandProperties.TIME_FROM, value));
-                    break;
-                case CommandKeywords.KW_BY:
-                    command.setProperty(CommandProperties.TIME_BY, parseOptionValue(CommandProperties.TIME_BY, value));
-                    break;
-                case CommandKeywords.KW_TO:
-                    command.setProperty(CommandProperties.TIME_TO, parseOptionValue(CommandProperties.TIME_TO, value));
-                    break;
-                case CommandKeywords.KW_UNTIL:                
-                    command.setProperty(CommandProperties.TIME_UNTIL, parseOptionValue(CommandProperties.TIME_UNTIL, value));
-                    break;
-                case CommandKeywords.KW_ON:
-                    //take the begin of day to TIME_FROM and end of day to TIME_TO
-                    command.setProperty(CommandProperties.TIME_FROM, parseOptionValue(CommandProperties.TIME_FROM, value));
-                    command.setProperty(CommandProperties.TIME_TO, parseOptionValue(CommandProperties.TIME_TO, value));
-                    break;
-                case CommandKeywords.KW_SET:
-                    command.setProperty(CommandProperties.EDIT_SET_PROPERTY, new EditTaskSetOption(value));
-                    break;
-                case CommandKeywords.KW_MARK:
-                    command.setProperty(CommandProperties.EDIT_MARK, value);
-                    break;
-                default:
-                    //unknown property, do nothing
-                    break;
-            }
+            PropertyParser.parseProperty(key, value, command);
         }        
         return command;
-    }
-    
-    /*
-     * convert string value to Object based on option name
-     */
-    public static Object parseOptionValue(String optionName, String optionValue){
-        Date date;
-        switch (optionName){
-            case CommandProperties.TIME_FROM:
-                //Date time value
-                date = DateParser.parseDate(optionValue, DateParser.BEGIN_OF_DAY);
-                return date;
-            case CommandProperties.TIME_BY:                
-            case CommandProperties.TIME_TO:
-            case CommandProperties.TIME_UNTIL:                
-                //Date time value
-                date = DateParser.parseDate(optionValue, DateParser.END_OF_DAY);
-                return date;
-            default:
-                //String value
-                return optionValue;
-        }
-    }
-	
-	public static List<String> getTokensFromCommand(String commandStr){
-		Matcher m = Pattern.compile(COMMAND_SPLIT_PATTERN).matcher(commandStr);
-		List<String> tokens = new ArrayList<String>();
-		StringBuilder currentToken = null;
-		boolean isLastTokenKeyword = false;
-		while (m.find()){
-			String token = m.group(1).replace("\"", "");
-			boolean isKeyword = CommandKeywords.isKeyword(token);
-			
-			if (currentToken == null || isKeyword != isLastTokenKeyword){
-				if (currentToken != null){
-					tokens.add(currentToken.toString());
-				}
-				currentToken = new StringBuilder(token);
-			}
-			else{					
-				currentToken.append(" " + token);
-			}
-			
-			isLastTokenKeyword = isKeyword;
-		}		
-		if (currentToken != null){
-			tokens.add(currentToken.toString());
-		}
-		
-		return tokens;
-	}
+    }    	
 }

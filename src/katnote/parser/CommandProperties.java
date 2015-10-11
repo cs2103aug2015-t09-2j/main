@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 public class CommandProperties {
 	public static final String TASK_TITLE = "task_title";

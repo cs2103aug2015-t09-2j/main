@@ -7,8 +7,8 @@ import java.util.Date;
 
 import org.json.simple.JSONArray;
 
-import katnote.command.CommandDetail;
-import katnote.command.CommandProperties;
+import katnote.parser.CommandDetail;
+import katnote.parser.CommandProperties;
 
 /**
  * This will be the association class used across KatNote. It will be the standardized task object that will be passed between components.

@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -8,12 +8,19 @@ public class CommandDetail {
 	private HashMap<String, Object> commandData;
 	
 	/*
-	 * 
+	 * Create new CommandDetail object of corresponding command type
 	 */
 	public CommandDetail(CommandType commandType){
 		this.commandType = commandType;
 		commandData = new HashMap<String, Object>();
 	}
+		
+    /*
+     * Set the type of command
+     */
+    public void setCommandType(CommandType commandType){
+        this.commandType = commandType;
+    }
 	
 	/*
 	 * Return type of command
@@ -23,11 +30,14 @@ public class CommandDetail {
 	}
 	
 	/*
-	 * Set the type of command
-	 */
-	public void setCommandType(CommandType commandType){
-	    this.commandType = commandType;
-	}
+     * Associates the specified value with the specified key in the
+     * properties map. If the map previously contained a mapping for
+     * the key, the old value is replaced.
+     * 
+     */
+    public void setProperty(String key, Object value){
+        commandData.put(key, value);
+    }
 	
 	/*
      * Returns <tt>true</tt> if this map contains a mapping for the
@@ -64,14 +74,16 @@ public class CommandDetail {
     public Date getDate(String key){
         return (Date) commandData.get(key);
     }
-	
-	/*
-	 * 
-	 */
-	public void setProperty(String key, Object value){
-		commandData.put(key, value);
-	}
-
     
+    public EditTaskOption getEditTaskOption(){
+        return (EditTaskOption) commandData.get(CommandProperties.EDIT_SET_PROPERTY);
+    }
+    
+    /*
+     * Returns the TASK_ID value of the task specified in commandDetail
+     */
+    public int getTaskIndex() {
+        return (Integer) commandData.get(CommandProperties.TASK_ID) - 1;
+    }
 
 }

@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 public enum CommandType {
 	// ADD

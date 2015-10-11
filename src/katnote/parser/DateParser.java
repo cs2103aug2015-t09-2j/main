@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 import java.util.Calendar;
 import java.util.Date;
