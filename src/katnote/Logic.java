@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import katnote.command.CommandDetail;
-import katnote.command.CommandProperties;
-import katnote.command.CommandType;
-import katnote.command.EditTaskSetOption;
-import katnote.command.Parser;
+import katnote.parser.CommandDetail;
+import katnote.parser.CommandProperties;
+import katnote.parser.CommandType;
+import katnote.parser.EditTaskOption;
+import katnote.parser.Parser;
 
 public class Logic {
 
@@ -82,7 +82,7 @@ public class Logic {
 				
 			case EDIT_MODIFY :
 			    int idTaskToEdit = getTaskIDFromIndex(getTaskIndex(commandDetail));
-			    EditTaskSetOption editOptions = getEditTaskOption(commandDetail);
+			    EditTaskOption editOptions = getEditTaskOption(commandDetail);
 			    response.setResponse(model.editModify(idTaskToEdit, editOptions)); //TODO
 				break;
 			
@@ -179,8 +179,8 @@ public class Logic {
       
     /*-- Helper Functions --*/
     
-    private EditTaskSetOption getEditTaskOption(CommandDetail commandDetail) {
-        return (EditTaskSetOption)commandDetail.getProperty(CommandProperties.EDIT_SET_PROPERTY);
+    private EditTaskOption getEditTaskOption(CommandDetail commandDetail) {
+        return (EditTaskOption)commandDetail.getProperty(CommandProperties.EDIT_SET_PROPERTY);
     }
    
     // Returns the ID of the task specified by the index based on listOfTaskIDLastDisplayed 

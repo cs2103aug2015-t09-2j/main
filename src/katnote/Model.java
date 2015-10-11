@@ -15,9 +15,9 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 
-import katnote.command.CommandProperties;
-import katnote.command.CommandDetail;
-import katnote.command.EditTaskSetOption;
+import katnote.parser.CommandDetail;
+import katnote.parser.CommandProperties;
+import katnote.parser.EditTaskOption;
 
 /**
  * The main class in the Storage component.
@@ -146,7 +146,7 @@ public class Model {
 	 * @return the response message of a successful modification to the specified task.
 	 * @throws Exception 
 	 */
-	public String editModify(int taskID, EditTaskSetOption editOption) throws Exception {
+	public String editModify(int taskID, EditTaskOption editOption) throws Exception {
 	    
 	    Task editedTask = _dataLog.get(taskID);
 	    String optionName = editOption.getOptionName();

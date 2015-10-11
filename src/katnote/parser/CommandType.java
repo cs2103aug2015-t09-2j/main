@@ -1,4 +1,4 @@
-package katnote.command;
+package katnote.parser;
 
 public enum CommandType {
 	// ADD
@@ -25,5 +25,5 @@ public enum CommandType {
 	SET_LOCATION,
 	
 	// Unknown or invalid command
-	UNKNOWN
+	UNKNOWN, 
 }
