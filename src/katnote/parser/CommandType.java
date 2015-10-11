@@ -25,5 +25,5 @@ public enum CommandType {
 	SET_LOCATION,
 	
 	// Unknown or invalid command
-	UNKNOWN
+	UNKNOWN, 
 }

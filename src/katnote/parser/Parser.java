@@ -16,10 +16,6 @@ public class Parser {
 	private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
 	private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
 	
-	private static final String PROPERTY_SINGLE_TASK = "task";
-	private static final String PROPERTY_TASKS = "tasks";
-	private static final String PROPERTY_COMPLETED = "completed";
-	
 	/*
 	 * Convert the input command string into CommandDetail format
 	 * containing command type as well as all data field related
@@ -35,21 +31,26 @@ public class Parser {
 			return new CommandDetail(CommandType.UNKNOWN);
 		}		
 		
-		String commandType = tokens.get(0);
-		switch (commandType){
-			case CommandKeywords.KW_ADD:
-				return parseAddCommand(tokens);
-			case CommandKeywords.KW_VIEW:
-			    return parseViewCommand(tokens);
-			case CommandKeywords.KW_FIND:
-			    return parseFindCommand(tokens);
-			case CommandKeywords.KW_DELETE:
-			    return parseDeleteCommand(tokens);
-			case CommandKeywords.KW_EDIT:
-			    return parseEditCommand(tokens);
-			default:
-				return new CommandDetail(CommandType.UNKNOWN);
-		}		
+		try{
+    		String commandType = tokens.get(0);
+    		switch (commandType){
+    			case CommandKeywords.KW_ADD:
+    				return parseAddCommand(tokens);
+    			case CommandKeywords.KW_VIEW:
+    			    return parseViewCommand(tokens);
+    			case CommandKeywords.KW_FIND:
+    			    return parseFindCommand(tokens);
+    			case CommandKeywords.KW_DELETE:
+    			    return parseDeleteCommand(tokens);
+    			case CommandKeywords.KW_EDIT:
+    			    return parseEditCommand(tokens);
+    			default:
+    				return new CommandDetail(CommandType.UNKNOWN);
+    		}	
+		}
+		catch (Exception e){
+		    return new CommandDetail(CommandType.UNKNOWN);
+		}
 	}
 	
 
@@ -66,7 +67,7 @@ public class Parser {
         boolean isLastTokenKeyword = false;
         while (m.find()){
             String token = m.group(1).replace("\"", "");
-            boolean isKeyword = CommandKeywords.isKeyword(token);
+            boolean isKeyword = CommandKeywords.isMainKeyword(token);
             
             if (currentToken == null || isKeyword != isLastTokenKeyword){
                 if (currentToken != null){
@@ -93,68 +94,63 @@ public class Parser {
 	 *         
 	 * 
 	 */
-	private static CommandDetail parseAddCommand(List<String> tokens) {
+	private static CommandDetail parseAddCommand(List<String> tokens) throws Exception {
 		// TODO: support for other types of ADD
 		CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);	
-		try{
-		    String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
-	        command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
-            addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-        }
-        catch (Exception e){
-            return new CommandDetail(CommandType.UNKNOWN);
-        }
+	    String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
+        command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
+        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         return command;
 	}
 	
 	/*
-     * Parse view command. Command format:
+     * Parse view tasks (view multiple tasks) command. Command format:
      *     - view tasks [completed] [on TIME_ON] [from TIME_FROM to TIME_TO]
-     *         
+     *     - view task TASK_ID    
      * 
      */
-    private static CommandDetail parseViewCommand(List<String> tokens) {
+    private static CommandDetail parseViewCommand(List<String> tokens) throws Exception  {
         CommandDetail command = new CommandDetail(CommandType.VIEW_TASK);               
-        try{
-            // Parse view options ("tasks", "tasks completed" or "task TASK_ID")
-            String[] viewOptions = tokens.get(TOKENS_VIEW_TASK_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
-            switch (viewOptions[TASK_OPTION_VIEW_TYPE_POS].toLowerCase()){
-                case PROPERTY_SINGLE_TASK:
-                    command.setCommandType(CommandType.VIEW_TASK_WITH_ID);
-                    command.setProperty(CommandProperties.TASK_ID, viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);
-                    break;
-                case PROPERTY_TASKS:
-                    boolean viewCompleted = TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length && viewOptions[TASK_OPTION_VIEW_DETAIL_POS].equals(PROPERTY_COMPLETED);
-                    command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, viewCompleted);
-                    break;
-                default:
-                    return new CommandDetail(CommandType.UNKNOWN);
-            }
-            //add time properties
-            addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        // Parse view options ("tasks", "tasks completed" or "task TASK_ID")
+        String[] viewOptions = tokens.get(TOKENS_VIEW_TASK_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
+        switch (viewOptions[TASK_OPTION_VIEW_TYPE_POS].toLowerCase()){
+            case CommandKeywords.KW_SINGLE_TASK:
+                command.setCommandType(CommandType.VIEW_TASK_WITH_ID);
+                command.setProperty(CommandProperties.TASK_ID, viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);
+                break;
+            case CommandKeywords.KW_TASKS:
+                ViewTaskOption viewOption = ViewTaskOption.ALL;
+                if (TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length){
+                    switch (viewOptions[TASK_OPTION_VIEW_DETAIL_POS]){
+                        case CommandKeywords.KW_COMPLETED:
+                            viewOption = ViewTaskOption.COMPLETED;
+                            break;
+                        case CommandKeywords.KW_INCOMPLETED:
+                            viewOption = ViewTaskOption.INCOMPLETED;
+                            break;
+                    }
+                }
+                command.setProperty(CommandProperties.TASKS_VIEW_OPTION, viewOption);
+                break;
+            default:
+                return new CommandDetail(CommandType.UNKNOWN);
         }
-        catch (Exception e){
-            return new CommandDetail(CommandType.UNKNOWN);
-        }
+        //add time properties
+        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         return command;
     }
-    
+        
     /*
      * Parse find command. Command format:
      *     - find KEYWORDS [in CATEGORY]
      * 
      */
-    private static CommandDetail parseFindCommand(List<String> tokens) {
+    private static CommandDetail parseFindCommand(List<String> tokens) throws Exception  {
         CommandDetail command = new CommandDetail(CommandType.FIND_TASKS);
-        try{
-            String keywords = tokens.get(TOKENS_TASK_NAME_POS);
-            command.setProperty(CommandProperties.FIND_KEYWORDS, keywords);
-            // add set or mark option
-            addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);            
-        }
-        catch (Exception e){
-            return new CommandDetail(CommandType.UNKNOWN);
-        }
+        String keywords = tokens.get(TOKENS_TASK_NAME_POS);
+        command.setProperty(CommandProperties.FIND_KEYWORDS, keywords);
+        // add set or mark option
+        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         return command;
     }
     
@@ -164,19 +160,14 @@ public class Parser {
      *     - edit task TASK_ID mark completed
      * 
      */
-    private static CommandDetail parseEditCommand(List<String> tokens) {
+    private static CommandDetail parseEditCommand(List<String> tokens) throws Exception  {
         CommandDetail command = new CommandDetail(CommandType.EDIT_MODIFY);               
-        try{
-            // read edit option ("task TASK_ID")
-            readTaskIdFromTokens(tokens, command);
-            // add set or mark option
-            addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-            if (command.hasProperty(CommandProperties.EDIT_MARK)){
-                command.setCommandType(CommandType.EDIT_COMPLETE);
-            }
-        }
-        catch (Exception e){
-            return new CommandDetail(CommandType.UNKNOWN);
+        // read edit option ("task TASK_ID")
+        readTaskIdFromTokens(tokens, command);
+        // add set or mark option
+        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        if (command.hasProperty(CommandProperties.EDIT_MARK)){
+            command.setCommandType(CommandType.EDIT_COMPLETE);
         }
         return command;
     }
@@ -186,15 +177,10 @@ public class Parser {
      *     - delete task TASK_ID
      * 
      */
-    private static CommandDetail parseDeleteCommand(List<String> tokens) {
+    private static CommandDetail parseDeleteCommand(List<String> tokens) throws Exception  {
         CommandDetail command = new CommandDetail(CommandType.DELETE_TASK);               
-        try{
-            // read delete option ("task TASK_ID")
-            readTaskIdFromTokens(tokens, command);
-        }
-        catch (Exception e){
-            return new CommandDetail(CommandType.UNKNOWN);
-        }
+        // read delete option ("task TASK_ID")
+        readTaskIdFromTokens(tokens, command);
         return command;
     }
     
@@ -202,7 +188,7 @@ public class Parser {
     private static void readTaskIdFromTokens(List<String> tokens, CommandDetail command) throws Exception {
         String[] viewOptions = tokens.get(TOKENS_VIEW_TASK_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
         switch (viewOptions[TASK_OPTION_VIEW_TYPE_POS].toLowerCase()){
-            case PROPERTY_SINGLE_TASK:
+            case CommandKeywords.KW_SINGLE_TASK:
                 command.setProperty(CommandProperties.TASK_ID, viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);
                 break;
             default:
