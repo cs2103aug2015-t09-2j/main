@@ -34,11 +34,11 @@ public class TaskViewGroup extends AnchorPane {
     
     public void addTaskRows(String[] taskDescriptions){
         for(String d : taskDescriptions){
-            taskViewList.getChildren().add(new TaskRow(d));
+            taskViewList.getChildren().add(new TaskRow(d, false));
         }
     } 
-    public void addTaskRow(String taskDescription){
-        taskViewList.getChildren().add(new TaskRow(taskDescription));
+    public void addTaskRow(String taskDescription, boolean isDone){
+        taskViewList.getChildren().add(new TaskRow(taskDescription, isDone));
     }
 
 }
