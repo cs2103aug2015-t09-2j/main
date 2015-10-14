@@ -20,7 +20,7 @@ public class Task {
     // Private Variables
     private Integer _id;
     private String _title;
-    private String _taskType;
+    private Type _taskType;
     private Date _startDate;
     private Date _endDate;
     private String _repeatOption;
@@ -53,12 +53,17 @@ public class Task {
     // Format
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
+    public enum Type {
+        EVENT, NORMAL, FLOATING
+    }
     
     // Constructor using JSONArray
     public Task(JSONArray array) throws Exception {
         
         assert(array.size() == MAX_ARG_SIZE);
         
+        //ideally this segment should be moved to the loading part and not within
+        // the tasks
         String[] args = new String[MAX_ARG_SIZE];
         for (int i=0; i<MAX_ARG_SIZE; i++) {
             args[i] = (String) array.get(i);
@@ -67,7 +72,20 @@ public class Task {
         try {
             setID(Integer.parseInt(args[INDEX_ID]));
             setTitle(args[INDEX_TITLE]);
-            setTaskType(args[INDEX_TASK_TYPE]);
+            //impomptu code to allow the code to still work
+            if(args[INDEX_TASK_TYPE] != null){
+                switch(args[INDEX_TASK_TYPE]){
+                    case "EVENT" :
+                        setTaskType(Type.EVENT);
+                        break;
+                    case "FLOATING" :
+                        setTaskType(Type.FLOATING);
+                        break;
+                    case "NORMAL" :
+                    default :
+                        setTaskType(Type.NORMAL);                  
+                }                
+            }
             setStartDate(stringToDate(args[INDEX_START_DATE]));
             setEndDate(stringToDate(args[INDEX_END_DATE]));
             setRepeatOption(args[INDEX_REPEAT_OPTION]);
@@ -103,6 +121,11 @@ public class Task {
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
+    }
+    
+    public Task(String taskTitle, Task.Type type){
+        setTitle(taskTitle);
+        setTaskType(type);
     }
     
     // Helper Methods
@@ -142,12 +165,12 @@ public class Task {
         this._title = _title;
     }
 
-    public String getTaskType() {
+    public Task.Type getTaskType() {
         return _taskType;
     }
 
-    public void setTaskType(String _taskType) {
-        this._taskType = _taskType;
+    public void setTaskType(Task.Type taskType) {
+        _taskType = taskType;
     }
 
     public Date getStartDate() {
