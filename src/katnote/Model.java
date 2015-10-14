@@ -114,13 +114,13 @@ public class Model {
 	
 	/** 
 	 * Edit a task and marks it as completed.
-	 * @param commandDetail with the TASK_ID property.
+	 * @param taskID which will correspond to the index of the task in the dataLog.
 	 * @return the response message of a successful change in the completed flag.
 	 * @throws Exception 
 	 */
-	public String editComplete(int editTaskID) throws Exception {
+	public String editComplete(int taskID) throws Exception {
 		
-		Task editedTask = _dataLog.get(editTaskID);
+		Task editedTask = _dataLog.get(taskID);
 	    editedTask.setCompleted(true);
 	    
 	    _encoder.encode();
@@ -182,19 +182,19 @@ public class Model {
 	
 	/**
 	 * Delete a certain task by task id.
-	 * @param iDOfTaskToDelete which will correspond to the index of the task in the dataLog.
+	 * @param taskID which will correspond to the index of the task in the dataLog.
 	 * @return the response message of a deletion of the specified task.
 	 * @throws Exception 
 	 */
-	public String editDelete(int idOfTaskToDelete) throws Exception {
+	public String editDelete(int taskID) throws Exception {
 		
-		String title = _dataLog.get(idOfTaskToDelete).getTitle();
-		int displayedID = idOfTaskToDelete + INDEX_TRANSLATION;
-	    _dataLog.remove(idOfTaskToDelete);
+		String title = _dataLog.get(taskID).getTitle();
+		int displayedID = taskID + INDEX_TRANSLATION;
+	    _dataLog.remove(taskID);
 		
 		_encoder.encode();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, idOfTaskToDelete + 1, title);
+		_response = String.format(MSG_EDIT_TASK_DELETED, taskID + 1, title);
 		return _response;
 	}
 	
