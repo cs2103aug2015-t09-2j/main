@@ -16,3 +16,4 @@ src/katnote/resources/json/json-simple-1.1.1.jar
 *.classpath
 sourcepath.txt
 *.txt
+data.txt

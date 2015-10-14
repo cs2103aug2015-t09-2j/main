@@ -1,19 +1,19 @@
-package katnote.command;
+package katnote.parser;
 
 import java.util.Date;
 
 import katnote.utils.StringUtils;
 
-public class EditTaskSetOption {
+public class EditTaskOption {
     private String taskOptionName;
     private String taskOptionValue;
     
-    public EditTaskSetOption(String taskOptionName, String taskOptionValue){
+    public EditTaskOption(String taskOptionName, String taskOptionValue){
         this.taskOptionName = taskOptionName;
         this.taskOptionValue = taskOptionValue;
     }
     
-    public EditTaskSetOption(String editTaskOption){
+    public EditTaskOption(String editTaskOption){
         taskOptionName = StringUtils.getFirstWord(editTaskOption);
         taskOptionValue = StringUtils.removeFirstWord(editTaskOption);
     }
@@ -27,10 +27,10 @@ public class EditTaskSetOption {
     }
     
     public Object getOptionValueObject(){
-        return Parser.parseOptionValue(taskOptionName, taskOptionValue);
+        return PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
     
     public Date getOptionValueDate(){
-        return (Date) Parser.parseOptionValue(taskOptionName, taskOptionValue);
+        return (Date) PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
 }
