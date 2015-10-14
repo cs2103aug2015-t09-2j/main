@@ -1,10 +1,13 @@
 package katnote.ui;
 
+import katnote.KatNoteLogger;
 import katnote.Logic;
 import katnote.Task;
 import katnote.UIFeedback;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +16,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
+
+
 public class GraphicalUserInterface extends Application  {
+    private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
+    
 	private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
     private BorderPane rootLayout;
 	private Stage primaryStage;	
@@ -39,6 +46,7 @@ public class GraphicalUserInterface extends Application  {
         }
     }
     private void loadResources() {
+        log.log(Level.INFO, "loading resources");
         Font.loadFont(
 	            getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 
 	            10
@@ -49,6 +57,7 @@ public class GraphicalUserInterface extends Application  {
 	                );
     }
 	public void initRootLayout() {
+        log.log(Level.FINE, "initilizing rootLayout");        
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
