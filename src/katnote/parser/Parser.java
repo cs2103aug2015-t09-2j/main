@@ -2,8 +2,11 @@ package katnote.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import katnote.KatNoteLogger;
 
 public class Parser {	
 	private static final String COMMAND_SPLIT_PATTERN = "([^\"]\\S*|\".+?\")\\s*";
@@ -16,6 +19,9 @@ public class Parser {
 	private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
 	private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
 	
+	// Class logger
+	private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());
+	
 	/*
 	 * Convert the input command string into CommandDetail format
 	 * containing command type as well as all data field related
@@ -25,8 +31,9 @@ public class Parser {
 	 * @return CommandDetail object containing the command type
 	 * and all data fields related to that type of command
 	 */
-	public static CommandDetail parseCommand(String commandStr){		
-		List<String> tokens = getTokensFromCommand(commandStr);		
+	public static CommandDetail parseCommand(String commandStr){
+	    log.info(String.format("Parse command: %1$s", commandStr));
+		List<String> tokens = getTokensFromCommand(commandStr);
 		if (tokens.isEmpty()){
 			return new CommandDetail(CommandType.UNKNOWN);
 		}		

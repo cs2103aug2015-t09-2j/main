@@ -13,7 +13,8 @@ hs_err_pid*
 src/katnote/resources/json/json-simple-1.1.1.jar
 .classpath
 *.classpath
-*.classpath
+
+# project data and logs
 sourcepath.txt
-*.txt
 data.txt
+katnote.log
