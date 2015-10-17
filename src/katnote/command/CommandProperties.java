@@ -17,5 +17,7 @@ public class CommandProperties {
 	public static final String EDIT_MARK = "edit_mark";
 	
 		
-	public static final String SAVE_LOCATION = "location";    
+	public static final String LOCATION = "location";
+    public static final String FILE_PATH = "file_path";
+    public static final String MAIN_CONTENT = "main_content";
 }

@@ -19,8 +19,12 @@ public enum CommandType {
 	// Others
 	UNDO,
 	REDO,
+	IMPORT,
+	EXPORT,
+	HELP,
 	SET_LOCATION,
+	EXIT,
 	
 	// Unknown or invalid command
-	UNKNOWN, 
+	UNKNOWN,
 }

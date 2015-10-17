@@ -94,7 +94,7 @@ public class CommandDetail {
      * Returns the TASK_ID value of the task specified in commandDetail
      */
     public int getTaskIndex() {
-        return (Integer) commandData.get(CommandProperties.TASK_ID) - 1;
+        return (Integer) commandData.get(CommandProperties.TASK_ID);
     }
     
     /*
@@ -137,6 +137,17 @@ public class CommandDetail {
      */
     public String getFindKeywords(){
         return getString(CommandProperties.FIND_KEYWORDS);
+    }
+
+    /*
+     * Return main content of command for command type FIND, HELP
+     */
+    public String getMainContent() {
+        return getString(CommandProperties.MAIN_CONTENT);
+    }
+
+    public String getFilePath() {
+        return getString(CommandProperties.FILE_PATH);
     }
 
 }
