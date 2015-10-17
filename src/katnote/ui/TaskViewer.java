@@ -9,7 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import katnote.Task;
+import katnote.task.Task;
 
 public class TaskViewer extends AnchorPane{
 

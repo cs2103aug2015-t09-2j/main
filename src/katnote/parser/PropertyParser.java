@@ -2,6 +2,9 @@ package katnote.parser;
 
 import java.util.Date;
 
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
+
 public class PropertyParser {
     
     /*

@@ -2,8 +2,8 @@ package katnote.ui;
 
 import katnote.KatNoteLogger;
 import katnote.Logic;
-import katnote.Task;
 import katnote.UIFeedback;
+import katnote.task.Task;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
