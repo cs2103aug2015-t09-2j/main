@@ -3,6 +3,7 @@ package katnote.command;
 public class CommandProperties {
 	public static final String TASK_TITLE = "task_title";
 	public static final String TASK_ID = "task_id";
+	public static final String TASK_TYPE = "task_type";
 	public static final String FIND_KEYWORDS = "find_keywords";
 	public static final String TASKS_VIEW_OPTION = "view_tasks_option";	
 	
@@ -16,5 +17,7 @@ public class CommandProperties {
 	public static final String EDIT_MARK = "edit_mark";
 	
 		
-	public static final String SAVE_LOCATION = "location";
+	public static final String LOCATION = "location";
+    public static final String FILE_PATH = "file_path";
+    public static final String MAIN_CONTENT = "main_content";
 }

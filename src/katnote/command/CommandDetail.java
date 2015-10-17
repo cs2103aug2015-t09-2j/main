@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import katnote.parser.EditTaskOption;
+import katnote.task.TaskType;
 
 public class CommandDetail {
-	private CommandType commandType;
-	private HashMap<String, Object> commandData;
+	protected CommandType commandType;
+	protected HashMap<String, Object> commandData;
 	
 	/*
 	 * Create new CommandDetail object of corresponding command type
@@ -93,7 +94,60 @@ public class CommandDetail {
      * Returns the TASK_ID value of the task specified in commandDetail
      */
     public int getTaskIndex() {
-        return (Integer) commandData.get(CommandProperties.TASK_ID) - 1;
+        return (Integer) commandData.get(CommandProperties.TASK_ID);
+    }
+    
+    /*
+     * Return type of task
+     */
+    public TaskType getTaskType(){
+        return (TaskType) commandData.get(CommandProperties.TASK_TYPE);
+    }    
+    
+    /*
+     * Return title of task
+     */
+    public String getTitle(){
+        return getString(CommandProperties.TASK_TITLE);
+    }
+    
+    /*
+     * Return start date
+     */
+    public Date getStartDate(){
+        return getDate(CommandProperties.TIME_FROM);
+    }
+    
+    /*
+     * Return end date
+     */
+    public Date getEndDate(){
+        return getDate(CommandProperties.TIME_TO);
+    }
+    
+    /*
+     * Return due date
+     */
+    public Date getDueDate(){
+        return getDate(CommandProperties.TIME_BY);
+    }
+    
+    /*
+     * Return keywords for command type FIND
+     */
+    public String getFindKeywords(){
+        return getString(CommandProperties.FIND_KEYWORDS);
+    }
+
+    /*
+     * Return main content of command for command type FIND, HELP
+     */
+    public String getMainContent() {
+        return getString(CommandProperties.MAIN_CONTENT);
+    }
+
+    public String getFilePath() {
+        return getString(CommandProperties.FILE_PATH);
     }
 
 }

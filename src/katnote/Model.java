@@ -222,7 +222,7 @@ public class Model {
 	 */
 	public String setLocation(CommandDetail commandDetail) throws Exception {
 		
-		String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.SAVE_LOCATION);
+		String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
 		
 		if (newSaveLocation == null) {
 			return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
