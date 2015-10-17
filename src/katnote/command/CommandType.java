@@ -3,9 +3,6 @@ package katnote.command;
 public enum CommandType {
 	// ADD
 	ADD_NORMAL,
-	ADD_FLOATING,
-	ADD_EVENT,
-	ADD_RECURRING,
 
 	// READ
 	VIEW_TASK,

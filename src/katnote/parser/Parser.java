@@ -10,8 +10,9 @@ import katnote.KatNoteLogger;
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.command.CommandType;
+import katnote.task.TaskType;
 
-public class Parser {	
+public class Parser {
 	private static final String COMMAND_SPLIT_PATTERN = "([^\"]\\S*|\".+?\")\\s*";
 	private static final String DEFAULT_SPLIT_PATTERN = "\\s+";
 	
@@ -105,19 +106,19 @@ public class Parser {
 	 * 
 	 */
 	private static CommandDetail parseAddCommand(List<String> tokens) throws Exception {
-		CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);	
+	    CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);
 	    String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
         command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         if (command.hasProperty(CommandProperties.TIME_BY)){
-            command.setCommandType(CommandType.ADD_NORMAL);
+            command.setProperty(CommandProperties.TASK_TYPE, TaskType.NORMAL);
         }
         else if (command.hasProperty(CommandProperties.TIME_FROM)
                 && command.hasProperty(CommandProperties.TIME_TO)){
-            command.setCommandType(CommandType.ADD_EVENT);
+            command.setProperty(CommandProperties.TASK_TYPE, TaskType.EVENT);
         }
         else{
-            command.setCommandType(CommandType.ADD_FLOATING);
+            command.setProperty(CommandProperties.TASK_TYPE, TaskType.FLOATING);
         }
         return command;
 	}

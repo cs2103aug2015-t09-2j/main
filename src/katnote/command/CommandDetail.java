@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import katnote.parser.EditTaskOption;
+import katnote.task.TaskType;
 
 public class CommandDetail {
-	private CommandType commandType;
-	private HashMap<String, Object> commandData;
+	protected CommandType commandType;
+	protected HashMap<String, Object> commandData;
 	
 	/*
 	 * Create new CommandDetail object of corresponding command type
@@ -94,6 +95,48 @@ public class CommandDetail {
      */
     public int getTaskIndex() {
         return (Integer) commandData.get(CommandProperties.TASK_ID) - 1;
+    }
+    
+    /*
+     * Return type of task
+     */
+    public TaskType getTaskType(){
+        return (TaskType) commandData.get(CommandProperties.TASK_TYPE);
+    }    
+    
+    /*
+     * Return title of task
+     */
+    public String getTitle(){
+        return getString(CommandProperties.TASK_TITLE);
+    }
+    
+    /*
+     * Return start date
+     */
+    public Date getStartDate(){
+        return getDate(CommandProperties.TIME_FROM);
+    }
+    
+    /*
+     * Return end date
+     */
+    public Date getEndDate(){
+        return getDate(CommandProperties.TIME_TO);
+    }
+    
+    /*
+     * Return due date
+     */
+    public Date getDueDate(){
+        return getDate(CommandProperties.TIME_BY);
+    }
+    
+    /*
+     * Return keywords for command type FIND
+     */
+    public String getFindKeywords(){
+        return getString(CommandProperties.FIND_KEYWORDS);
     }
 
 }
