@@ -1,7 +1,9 @@
-package katnote.parser;
+package katnote.command;
 
 import java.util.Date;
 import java.util.HashMap;
+
+import katnote.parser.EditTaskOption;
 
 public class CommandDetail {
 	private CommandType commandType;
@@ -14,7 +16,15 @@ public class CommandDetail {
 		this.commandType = commandType;
 		commandData = new HashMap<String, Object>();
 	}
-		
+	
+	/*
+     * Create new CommandDetail object with unknown command type
+     */
+    public CommandDetail(){
+        this.commandType = CommandType.UNKNOWN;
+        commandData = new HashMap<String, Object>();
+    }
+	
     /*
      * Set the type of command
      */

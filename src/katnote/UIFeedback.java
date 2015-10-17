@@ -4,6 +4,8 @@ package katnote;
 
 import java.util.ArrayList;
 
+import katnote.task.Task;
+
 public class UIFeedback {
     private boolean isError_; // true if UIFeedback contains an error reponseMessage
     private ArrayList<Task> taskList_;

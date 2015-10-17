@@ -15,9 +15,10 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 
-import katnote.parser.CommandDetail;
-import katnote.parser.CommandProperties;
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
 import katnote.parser.EditTaskOption;
+import katnote.task.Task;
 
 /**
  * The main class in the Storage component.

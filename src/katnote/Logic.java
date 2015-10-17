@@ -13,11 +13,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import katnote.parser.CommandDetail;
-import katnote.parser.CommandProperties;
-import katnote.parser.CommandType;
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
+import katnote.command.CommandType;
 import katnote.parser.EditTaskOption;
 import katnote.parser.Parser;
+import katnote.task.Task;
 
 public class Logic {
 

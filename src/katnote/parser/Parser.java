@@ -7,6 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import katnote.KatNoteLogger;
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
+import katnote.command.CommandType;
 
 public class Parser {	
 	private static final String COMMAND_SPLIT_PATTERN = "([^\"]\\S*|\".+?\")\\s*";
@@ -102,11 +105,20 @@ public class Parser {
 	 * 
 	 */
 	private static CommandDetail parseAddCommand(List<String> tokens) throws Exception {
-		// TODO: support for other types of ADD
 		CommandDetail command = new CommandDetail(CommandType.ADD_NORMAL);	
 	    String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
         command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        if (command.hasProperty(CommandProperties.TIME_BY)){
+            command.setCommandType(CommandType.ADD_NORMAL);
+        }
+        else if (command.hasProperty(CommandProperties.TIME_FROM)
+                && command.hasProperty(CommandProperties.TIME_TO)){
+            command.setCommandType(CommandType.ADD_EVENT);
+        }
+        else{
+            command.setCommandType(CommandType.ADD_FLOATING);
+        }
         return command;
 	}
 	
