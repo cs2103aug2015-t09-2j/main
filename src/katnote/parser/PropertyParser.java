@@ -1,6 +1,6 @@
 package katnote.parser;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
@@ -66,7 +66,7 @@ public class PropertyParser {
      * 
      */
     public static Object parseOptionValue(String optionName, String optionValue) {
-        Date date;
+        LocalDateTime date;
         switch (optionName) {
             case CommandProperties.TIME_FROM :
                 // Date time value

@@ -1,7 +1,7 @@
 package katnote.parser;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,42 +39,41 @@ public class DateParser {
     /*
      * get today Date time
      */
-    public static Date getToday() {
-        Date today = Calendar.getInstance().getTime();
+    public static LocalDateTime getToday() {
+        LocalDateTime today = LocalDateTime.now();
         return today;
     }
 
     /*
      * get tomorrow Date time
      */
-    public static Date getTomorrow() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);
-        return calendar.getTime();
+    public static LocalDateTime getTomorrow() {
+        LocalDateTime date = LocalDateTime.now();
+        date.plusDays(1);
+        return date;
     }
 
     /*
      * get next week Date time
      */
-    public static Date getNextWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, Calendar.DAY_OF_WEEK);
-        return calendar.getTime();
+    public static LocalDateTime getNextWeek() {
+        LocalDateTime date = LocalDateTime.now();
+        date.plusWeeks(1);
+        return date;
     }
 
     /*
      * Find the next desired weekday
      * 
-     * @param desiredWeekday the next desired weekday, 1->7 is Sunday,
-     * Monday,... Saturday, respectively
+     * @param desiredWeekday the next desired weekday
+     * 
      */
-    public static Date getNextWeekDay(int desiredWeekday) {
-        Calendar calendar = Calendar.getInstance();
+    public static LocalDateTime getNextWeekDay(DayOfWeek desiredWeekday) {
+        LocalDateTime date = LocalDateTime.now();
         while (true) {
-            calendar.add(Calendar.DATE, 1);
-            int weekday = calendar.get(Calendar.DAY_OF_WEEK);
-            if (weekday == desiredWeekday) {
-                return calendar.getTime();
+            date.plusDays(1);
+            if (date.getDayOfWeek() == desiredWeekday) {
+                return date;
             }
         }
     }
@@ -82,22 +81,22 @@ public class DateParser {
     /*
      * get next month Date time
      */
-    public static Date getNextMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1);
-        return calendar.getTime();
+    public static LocalDateTime getNextMonth() {
+        LocalDateTime date = LocalDateTime.now();
+        date.plusMonths(1);
+        return date;
     }
 
     /*
      * get next year Date time
      */
-    public static Date getNextYear() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, 1);
-        return calendar.getTime();
+    public static LocalDateTime getNextYear() {
+        LocalDateTime date = LocalDateTime.now();
+        date.plusYears(1);
+        return date;
     }
 
-    private static Date parseRelativeTime(String time) {
+    private static LocalDateTime parseRelativeTime(String time) {
         switch (time.toLowerCase()) {
             case RELATIVE_TIME_TODAY :
                 return getToday();
@@ -110,19 +109,19 @@ public class DateParser {
             case RELATIVE_TIME_NEXT_YEAR :
                 return getNextYear();
             case RELATIVE_TIME_MONDAY :
-                return getNextWeekDay(Calendar.MONDAY);
+                return getNextWeekDay(DayOfWeek.MONDAY);
             case RELATIVE_TIME_TUESDAY :
-                return getNextWeekDay(Calendar.TUESDAY);
+                return getNextWeekDay(DayOfWeek.TUESDAY);
             case RELATIVE_TIME_WEDNESDAY :
-                return getNextWeekDay(Calendar.WEDNESDAY);
+                return getNextWeekDay(DayOfWeek.WEDNESDAY);
             case RELATIVE_TIME_THURSDAY :
-                return getNextWeekDay(Calendar.THURSDAY);
+                return getNextWeekDay(DayOfWeek.THURSDAY);
             case RELATIVE_TIME_FRIDAY :
-                return getNextWeekDay(Calendar.FRIDAY);
+                return getNextWeekDay(DayOfWeek.FRIDAY);
             case RELATIVE_TIME_SATURDAY :
-                return getNextWeekDay(Calendar.SATURDAY);
+                return getNextWeekDay(DayOfWeek.SATURDAY);
             case RELATIVE_TIME_SUNDAY :
-                return getNextWeekDay(Calendar.SUNDAY);
+                return getNextWeekDay(DayOfWeek.SUNDAY);
         }
         return null;
     }
@@ -130,18 +129,18 @@ public class DateParser {
     /*
      * convert string (absolute time format) to string
      */
-    private static Date parseAbsoluteTime(String time, int defaultHourOption) {
-        // today
-        Calendar calendar = Calendar.getInstance();
+    private static LocalDateTime parseAbsoluteTime(String time, int defaultHourOption) {
+        // default values
         int defaultHourOfDay = getDefaultHourOfDay(defaultHourOption);
         int defaultMinute = getDefaultMinute(defaultHourOption);
+        int currentYear = LocalDateTime.now().getYear();
         // matcher
         Matcher m = Pattern.compile(ABSOLUTE_TIME_PATTERN).matcher(time);
         if (m.find()) {
-            int day = Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_DAY));
+            int dayOfMonth = Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_DAY));
             int month = Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_MONTH));
             int year = m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR) != null
-                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR)) : calendar.get(Calendar.YEAR);
+                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR)) : currentYear;
 
             int hourOfDay = m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR) != null
                     ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR)) : defaultHourOfDay;
@@ -157,8 +156,8 @@ public class DateParser {
                 return null;
             }
 
-            calendar.set(year, month - 1, day, hourOfDay, minute);
-            return calendar.getTime();
+            LocalDateTime date = LocalDateTime.of(year, month, dayOfMonth, hourOfDay, minute);
+            return date;
         }
 
         return null;
@@ -186,27 +185,25 @@ public class DateParser {
     /*
      * change the hour of date based on hour option
      */
-    private static Date addHourOption(Date date, int defaultHourOption) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, getDefaultHourOfDay(defaultHourOption));
-        calendar.set(Calendar.MINUTE, getDefaultMinute(defaultHourOption));
-        return calendar.getTime();
+    private static LocalDateTime addHourOption(LocalDateTime date, int defaultHourOption) {
+        date.withHour(getDefaultHourOfDay(defaultHourOption));
+        date.withMinute(getDefaultMinute(defaultHourOption));
+        return date;
     }
 
     /*
      * convert string to date
      */
-    public static Date parseDate(String time) {
+    public static LocalDateTime parseDate(String time) {
         return parseDate(time, MIDDLE_OF_DAY);
     }
 
     /*
      * convert string to date
      */
-    public static Date parseDate(String time, int defaultHourOption) {
+    public static LocalDateTime parseDate(String time, int defaultHourOption) {
         // check if time is relative time
-        Date date = parseRelativeTime(time);
+        LocalDateTime date = parseRelativeTime(time);
         if (date != null) { // date == null means it is not relative time
             date = addHourOption(date, defaultHourOption);
             return date;
