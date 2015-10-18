@@ -13,11 +13,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import katnote.parser.CommandDetail;
-import katnote.parser.CommandProperties;
-import katnote.parser.CommandType;
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
+import katnote.command.CommandType;
 import katnote.parser.EditTaskOption;
 import katnote.parser.Parser;
+import katnote.task.Task;
 
 public class Logic {
 
@@ -48,7 +49,9 @@ public class Logic {
 	    else {
 	       sourcePathStr = line;
 	    }
-	    br.close();   
+	    br.close(); 
+	    
+	    assert(sourcePathStr != null);
 		model = new Model(sourcePathStr);
 		listOfTaskIDLastDisplayed = new ArrayList<Integer>();
 	}
@@ -119,7 +122,7 @@ public class Logic {
 				break;
 			
 			case SET_LOCATION:
-			    String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.SAVE_LOCATION);
+			    String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
 			    setSourcePath(newSaveLocation);
 			    response.setResponse(model.setLocation(commandDetail));
 			    
@@ -155,10 +158,12 @@ public class Logic {
 	 */
 	
     private ArrayList<Task> find(CommandDetail commandDetail) {     
-        ArrayList<Task> data = model.getData(); // Retrieves ArrayList of tasks currently in memory from model
-               
+        Search srch = new Search(model.getData()); // Retrieves ArrayList of tasks currently in memory from model
+        
+        // if search all tasks by keyword
         String keyword = commandDetail.getString(CommandProperties.FIND_KEYWORDS);
-        return findByKeyword(data, keyword);    
+        srch.setKeyword(keyword);
+        return srch.findByKeyword();    
     }
     
     
@@ -169,11 +174,16 @@ public class Logic {
      * @return ArrayList of tasks that satisfy the view criteria
      */
     private ArrayList<Task> viewTask(CommandDetail commandDetail) {
-        ArrayList<Task> data = model.getData(); // Retrieves ArrayList of tasks currently in memory from model
+        Search srch = new Search(model.getData()); // Retrieves ArrayList of tasks currently in memory from model
         
-        return findAllTasks(data);
-        //return findAllIncompleteTasks(data);     
-        //return findIncompleteTaskDueOn(data, (Date) commandDetail.getDate(CommandProperties.TIME_BY));
+        return srch.findAllTasks();
+        
+        //srch.setIsCompleted(false);
+        //return srch.findAllIncompleteTasks();  
+        
+        //Date end = (Date) commandDetail.getDate(CommandProperties.TIME_BY);
+        //srch.setEnd(end);
+        //return findIncompleteTaskDueOn();
         
     }
       
@@ -201,22 +211,32 @@ public class Logic {
         pw.close();
     }
     
-    private ArrayList<Task> findAllIncompleteTasks(ArrayList<Task> data) {
-        ArrayList<Task> tasksFound = new ArrayList<Task>();
+    
+    
+}
 
-        for (int i = 0; i < data.size(); i++) {
-            Task task = data.get(i);
-            if (!task.isCompleted()) {
-                tasksFound.add(task);
-            }
-        }
-        return tasksFound;      
+class Search {
+    
+    private ArrayList<Task> data_;
+    private String keyword_;
+    private boolean isCompleted_;
+    
+    private Date start_;
+    private Date end_;
+    
+    public Search(ArrayList<Task> data) { // initialise a Search object with the list of Tasks to be search
+        data_ = data;
     }
-
-    private ArrayList<Task> findAllTasks(ArrayList<Task> data) {
-        return data;
+    
+    public void setKeyword(String keyword) { keyword_ = keyword; }
+    public void setIsCompleted(boolean isCompleted) { isCompleted_ = isCompleted; }
+    public void setStart(Date start) { start_ = start; }
+    public void setEnd(Date end) { end_ = end; }
+    
+    public ArrayList<Task> searchData() {
+        return null;
     }
-
+    
     /**
      * Finds all the tasks that contains the keyword (either in the task's name or description) NOTE: This is case insensitive
      * 
@@ -224,20 +244,67 @@ public class Logic {
      * @param keyword String that tasks found should contain in their Name or Description fields
      * @return List of tasks that contains the input keyword
      */
-    private ArrayList<Task> findByKeyword(ArrayList<Task> data, String keyword) {
+    ArrayList<Task> findByKeyword() {
         ArrayList<Task> tasksFound = new ArrayList<Task>();
-        
-        for (int i = 0; i < data.size(); i++) {
-            Task task = data.get(i);
+
+        for (int i = 0; i < data_.size(); i++) {
+            Task task = data_.get(i);
             String taskTitle = task.getTitle();
             String taskDescription = task.getDescription();
-            
-            if (isContain(taskTitle, keyword) || isContain(taskDescription, keyword)) {
+
+            if (isContain(taskTitle, keyword_) || isContain(taskDescription, keyword_)) {
                 tasksFound.add(task);
             }
         }
         return tasksFound;      
     } 
+
+    ArrayList<Task> findAllIncompleteTasks() {
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < data_.size(); i++) {
+            Task task = data_.get(i);
+            if (!task.isCompleted()) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;      
+    }
+
+    ArrayList<Task> findAllTasks() {
+        return data_;
+    }
+
+    /**
+     * Finds all the uncompleted tasks that are due either BEFORE or BY the input date
+     * 
+     * @param data ArrayList of all tasks that are added before in the memory
+     * @param input The date that tasks found should be due by
+     * @return List of incomplete tasks with due dates before or equals to the input date (regardless of time)
+     */
+    ArrayList<Task> findIncompleteTaskDueOn() {
+        LocalDate duedate = dateToLocalDate(end_);
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < data_.size(); i++) {
+            Task task = data_.get(i);
+            if (!task.isCompleted()) {
+                LocalDate taskDue = dateToLocalDate(task.getEndDate());
+                if (!taskDue.isAfter(duedate)) {
+                    tasksFound.add(task);
+                }
+            }
+        }
+        return tasksFound;      
+    }
+
+     
+    
+    // Creates a LocalDate object from a Date object
+    public static LocalDate dateToLocalDate(Date input) {
+        LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return date;
+    }
     
     // returns true if line contains exactly the input word, case insensitive
     private static boolean isContain(String line, String word) {
@@ -249,35 +316,13 @@ public class Logic {
         Matcher m = p.matcher(lowerCaseLine);
         return m.find();
     }
-     
-    /**
-     * Finds all the uncompleted tasks that are due either BEFORE or BY the input date
-     * 
-     * @param data ArrayList of all tasks that are added before in the memory
-     * @param input The date that tasks found should be due by
-     * @return List of incomplete tasks with due dates before or equals to the input date (regardless of time)
-     */
-    private ArrayList<Task> findIncompleteTaskDueOn(ArrayList<Task> data, Date input) {
-        LocalDate duedate = dateToLocalDate(input);
-        ArrayList<Task> tasksFound = new ArrayList<Task>();
-        
-        for (int i = 0; i < data.size(); i++) {
-            Task task = data.get(i);
-            if (!task.isCompleted()) {
-                LocalDate taskDue = dateToLocalDate(task.getEndDate());
-                if (!taskDue.isAfter(duedate)) {
-                    tasksFound.add(task);
-                }
-            }
-        }
-        return tasksFound;      
-    }
     
-    // Creates a LocalDate object from a Date object
-    private LocalDate dateToLocalDate(Date input) {
-        LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        return date;
-    }
+    
+    
+    
+    
+    
+    
+    
+       
 }
-
-

@@ -1,4 +1,4 @@
-package katnote;
+package katnote.task;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,8 +7,8 @@ import java.util.Date;
 
 import org.json.simple.JSONArray;
 
-import katnote.parser.CommandDetail;
-import katnote.parser.CommandProperties;
+import katnote.command.CommandDetail;
+import katnote.command.CommandProperties;
 
 /**
  * This will be the association class used across KatNote. It will be the standardized task object that will be passed between components.
@@ -20,7 +20,7 @@ public class Task {
     // Private Variables
     private Integer _id;
     private String _title;
-    private Type _taskType;
+    private TaskType _taskType;
     private Date _startDate;
     private Date _endDate;
     private String _repeatOption;
@@ -53,9 +53,6 @@ public class Task {
     // Format
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-    public enum Type {
-        EVENT, NORMAL, FLOATING
-    }
     
     // Constructor using JSONArray
     public Task(JSONArray array) throws Exception {
@@ -76,14 +73,14 @@ public class Task {
             if(args[INDEX_TASK_TYPE] != null){
                 switch(args[INDEX_TASK_TYPE]){
                     case "EVENT" :
-                        setTaskType(Type.EVENT);
+                        setTaskType(TaskType.EVENT);
                         break;
                     case "FLOATING" :
-                        setTaskType(Type.FLOATING);
+                        setTaskType(TaskType.FLOATING);
                         break;
                     case "NORMAL" :
                     default :
-                        setTaskType(Type.NORMAL);                  
+                        setTaskType(TaskType.NORMAL);                  
                 }                
             }
             setStartDate(stringToDate(args[INDEX_START_DATE]));
@@ -123,7 +120,7 @@ public class Task {
         }
     }
     
-    public Task(String taskTitle, Task.Type type){
+    public Task(String taskTitle, TaskType type){
         setTitle(taskTitle);
         setTaskType(type);
     }
@@ -165,11 +162,11 @@ public class Task {
         this._title = _title;
     }
 
-    public Task.Type getTaskType() {
+    public TaskType getTaskType() {
         return _taskType;
     }
 
-    public void setTaskType(Task.Type taskType) {
+    public void setTaskType(TaskType taskType) {
         _taskType = taskType;
     }
 

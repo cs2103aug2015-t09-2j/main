@@ -1,11 +1,8 @@
-package katnote.parser;
+package katnote.command;
 
 public enum CommandType {
 	// ADD
 	ADD_NORMAL,
-	ADD_FLOATING,
-	ADD_EVENT,
-	ADD_RECURRING,
 
 	// READ
 	VIEW_TASK,
@@ -22,8 +19,12 @@ public enum CommandType {
 	// Others
 	UNDO,
 	REDO,
+	IMPORT,
+	EXPORT,
+	HELP,
 	SET_LOCATION,
+	EXIT,
 	
 	// Unknown or invalid command
-	UNKNOWN, 
+	UNKNOWN,
 }

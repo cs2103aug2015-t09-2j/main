@@ -9,8 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import katnote.Task;
-import katnote.Task.Type;
+import katnote.task.Task;
 
 public class TaskViewer extends AnchorPane{
 
@@ -46,7 +45,7 @@ public class TaskViewer extends AnchorPane{
             TaskViewGroup viewGroup = new TaskViewGroup(groupHeadings[i]);
             Task[] tasksInGroup = arrayOfTaskGroups[i];
             for(Task t : tasksInGroup){
-                viewGroup.addTaskRow(counter + ". " + t.getTitle(), t.isCompleted());
+                viewGroup.addTaskRow(counter + ". " + t.getTitle());
                 counter++;
             }
             addNewTaskViewGroup(viewGroup);
@@ -58,18 +57,12 @@ public class TaskViewer extends AnchorPane{
         for(Task t : tasks){
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-            //to-remove: null reference
-            if(t.getTaskType() == Task.Type.NORMAL || t.getTaskType() == null){
-                Date taskDate = t.getEndDate();
-                String dateString = dateFormat.format(taskDate);
-                String timeString = timeFormat.format(taskDate);
-                String dateTime = "Due: " + dateString + " " + timeString;            
-                TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime, t.isCompleted());
-                taskViewGroupList.getChildren().add(row);                
-            } else if(t.getTaskType() == Task.Type.FLOATING){
-                TaskRow row = new TaskRow(counter + ". " + t.getTitle(), t.isCompleted());
-                taskViewGroupList.getChildren().add(row); 
-            }
+            Date taskDate = t.getEndDate();
+            String dateString = dateFormat.format(taskDate);
+            String timeString = timeFormat.format(taskDate);
+            String dateTime = "Due: " + dateString + " " + timeString;            
+            TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime);
+            taskViewGroupList.getChildren().add(row);
             counter++;
         }
     }
