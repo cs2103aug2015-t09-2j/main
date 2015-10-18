@@ -4,7 +4,7 @@
 .TaskRowText {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
-    -fx-font-size: 18pt;	
+    -fx-font-size: 16pt;	
 }
 .check {
 	-fx-background-image: url('./checkmark.png');
@@ -17,10 +17,13 @@
 .TaskGroupHeaderText {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
-    -fx-font-size: 20pt;	
+    -fx-font-size: 18pt;	
 }
 .title {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 24pt;
+}
+.scroll-pane {
+    -fx-background-color:transparent;
 }
