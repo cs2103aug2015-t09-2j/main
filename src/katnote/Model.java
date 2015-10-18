@@ -19,6 +19,7 @@ import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.parser.EditTaskOption;
 import katnote.task.Task;
+import katnote.task.TaskType;
 
 /**
  * The main class in the Storage component.
@@ -33,8 +34,13 @@ public class Model {
 	private StorageDecoder _decoder;
 	private StorageEncoder _encoder;
 	private StorageData _data;
-	private ArrayList<String> _actionLog;
+	
 	private ArrayList<Task> _dataLog;
+	private ArrayList<Task> _dataNormalTasks;
+	private ArrayList<Task> _dataFloatingTasks;
+	private ArrayList<Task> _dataEventTasks;
+	
+	private ArrayList<String> _actionLog;
 	private ArrayList<String> _editOldTaskState;
 	private String _response;
 		
@@ -81,6 +87,10 @@ public class Model {
 	private static final String KEY_CATEGORY = "category";
 	private static final String KEY_COMPLETED = "completed";
 	
+	private static final String TYPE_NORMAL = "NORMAL";
+	private static final String TYPE_FLOATING = "FLOATING";
+	private static final String TYPE_EVENT = "EVENT";
+	
 	// Format
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
@@ -92,6 +102,9 @@ public class Model {
 		_encoder = new StorageEncoder();
 		_actionLog = new ArrayList<String>();
 		_editOldTaskState = new ArrayList<String>();
+		_dataNormalTasks = new ArrayList<Task>();
+		_dataFloatingTasks = new ArrayList<Task>();
+		_dataEventTasks = new ArrayList<Task>();
 		_dataLog = _decoder.decode();
 	}
 	
@@ -234,6 +247,21 @@ public class Model {
 	// Get all tasks.
 	public ArrayList<Task> getData() {
 	    return _dataLog;
+	}
+	
+	public ArrayList<Task> getNormalTasks() {
+	    // TODO:
+	    return null;
+	}
+	
+	public ArrayList<Task> getFloatingTasks() {
+	    // TODO:
+	    return null;
+	}
+	
+	public ArrayList<Task> getEventTasks() {
+	    // TODO: 
+	    return null;
 	}
 
 	// Helper Methods
@@ -392,7 +420,7 @@ public class Model {
 		    Map taskMap = new LinkedHashMap();
             taskMap.put(KEY_ID, _id.toString());
             taskMap.put(KEY_TITLE, t.getTitle());
-            taskMap.put(KEY_TASK_TYPE, t.getTaskType());
+            taskMap.put(KEY_TASK_TYPE, typeToString(t.getTaskType()));
             taskMap.put(KEY_START_DATE, dateToString(t.getStartDate()));
             taskMap.put(KEY_END_DATE, dateToString(t.getEndDate()));
             taskMap.put(KEY_REPEAT_OPTION, t.getRepeatOption());
@@ -405,6 +433,30 @@ public class Model {
 		}
 		
 		// Helper Methods
+		private String typeToString(TaskType taskType) {
+		    
+		    String type;
+		    
+		    if (taskType == null) {
+		        return null;
+		    }
+		    switch (taskType) {
+		        case NORMAL :
+		            type = TYPE_NORMAL;
+		            break;
+		        case FLOATING:
+		            type = TYPE_FLOATING;
+		            break;
+		        case EVENT :
+		            type = TYPE_EVENT;
+		            break;
+		        default:
+		            return TYPE_NORMAL;
+		    }
+		    
+		    return type;
+		}
+		
 		private String dateToString(Date date) {
 		    if (date == null) {
 		        return NULL_DATE;

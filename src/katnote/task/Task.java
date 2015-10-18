@@ -35,6 +35,10 @@ public class Task {
     private static final String STR_TRUE = "true";
     private static final String STR_FALSE = "false";
     
+    private static final String TYPE_NORMAL = "NORMAL";
+    private static final String TYPE_FLOATING = "FLOATING";
+    private static final String TYPE_EVENT = "EVENT";
+    
     private static final int INDEX_ID = 0;
     private static final int INDEX_TITLE = 1;
     private static final int INDEX_TASK_TYPE = 2;
@@ -69,16 +73,16 @@ public class Task {
         try {
             setID(Integer.parseInt(args[INDEX_ID]));
             setTitle(args[INDEX_TITLE]);
-            //impomptu code to allow the code to still work
+            // impromptu code to allow the code to still work
             if(args[INDEX_TASK_TYPE] != null){
                 switch(args[INDEX_TASK_TYPE]){
-                    case "EVENT" :
+                    case TYPE_EVENT :
                         setTaskType(TaskType.EVENT);
                         break;
-                    case "FLOATING" :
+                    case TYPE_FLOATING :
                         setTaskType(TaskType.FLOATING);
                         break;
-                    case "NORMAL" :
+                    case TYPE_NORMAL :
                     default :
                         setTaskType(TaskType.NORMAL);                  
                 }                
