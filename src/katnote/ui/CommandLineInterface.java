@@ -1,8 +1,13 @@
 package katnote.ui;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import katnote.Logic;
+import katnote.task.Task;
+import katnote.task.TaskType;
 import katnote.UIFeedback;
 
 public class CommandLineInterface {
@@ -17,14 +22,39 @@ public class CommandLineInterface {
 
     private void runCoreProcess() {
         while(!toExit){
+            printMessageLine("===============================");
             printMessage("Enter your input: ");
             String input = readInput();
+            printMessageLine("===============================");
             UIFeedback feedback;
             try {
                 feedback = logic.execute(input);
-                printMessageLine(feedback.getMessage());
+                if(feedback.getMessage() != null){
+                    printMessageLine(feedback.getMessage());
+                }
+                if(!feedback.getTaskList().isEmpty()){
+                    renderTasks(feedback.getTaskList());
+                }
             } catch (Exception e) {
                 printMessageLine(e.getMessage());
+            }
+        }
+        scanner.close();
+    }
+    private void renderTasks(ArrayList<Task> tasks){
+        printMessageLine("Tasks");
+        printMessageLine("-----------------------------------");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        for(int i = 0; i < tasks.size(); i++){
+            Task t = tasks.get(i);
+            printMessageLine((i+1) + ". " + t.getTitle());
+            if(t.getTaskType() == TaskType.NORMAL || t.getTaskType() == null){
+                Date taskDate = t.getEndDate();
+                String dateString = dateFormat.format(taskDate);
+                String timeString = timeFormat.format(taskDate);
+                String dateTime = "Due: " + dateString + " " + timeString; 
+                printMessageLine("                         " + dateTime);
             }
         }
     }
