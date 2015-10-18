@@ -45,7 +45,7 @@ public class TaskViewer extends AnchorPane{
             TaskViewGroup viewGroup = new TaskViewGroup(groupHeadings[i]);
             Task[] tasksInGroup = arrayOfTaskGroups[i];
             for(Task t : tasksInGroup){
-                viewGroup.addTaskRow(counter + ". " + t.getTitle());
+                viewGroup.addTaskRow(counter + ". " + t.getTitle(), t.isCompleted());
                 counter++;
             }
             addNewTaskViewGroup(viewGroup);
@@ -61,7 +61,7 @@ public class TaskViewer extends AnchorPane{
             String dateString = dateFormat.format(taskDate);
             String timeString = timeFormat.format(taskDate);
             String dateTime = "Due: " + dateString + " " + timeString;            
-            TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime);
+            TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime, t.isCompleted());
             taskViewGroupList.getChildren().add(row);
             counter++;
         }

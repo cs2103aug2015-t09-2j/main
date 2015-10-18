@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.Scanner;
 
 import katnote.Logic;
-import katnote.Task;
+import katnote.task.Task;
+import katnote.task.TaskType;
 import katnote.UIFeedback;
 
 public class CommandLineInterface {
@@ -48,7 +49,7 @@ public class CommandLineInterface {
         for(int i = 0; i < tasks.size(); i++){
             Task t = tasks.get(i);
             printMessageLine((i+1) + ". " + t.getTitle());
-            if(t.getTaskType() == Task.Type.NORMAL || t.getTaskType() == null){
+            if(t.getTaskType() == TaskType.NORMAL || t.getTaskType() == null){
                 Date taskDate = t.getEndDate();
                 String dateString = dateFormat.format(taskDate);
                 String timeString = timeFormat.format(taskDate);
