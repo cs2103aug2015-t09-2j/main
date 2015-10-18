@@ -15,14 +15,14 @@ public class TaskViewGroup extends AnchorPane {
 
     @FXML
     private VBox taskViewList;
-    
+
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskViewGroup.fxml";
-    
-    public TaskViewGroup(String header){
+
+    public TaskViewGroup(String header) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(LAYOUT_FXML));
         loader.setController(this);
         loader.setRoot(this);
-        
+
         try {
             loader.load();
         } catch (IOException e) {
@@ -31,13 +31,14 @@ public class TaskViewGroup extends AnchorPane {
         taskViewList.setFillWidth(true);
         groupHeader.setText(header);
     }
-    
-    public void addTaskRows(String[] taskDescriptions){
-        for(String d : taskDescriptions){
+
+    public void addTaskRows(String[] taskDescriptions) {
+        for (String d : taskDescriptions) {
             taskViewList.getChildren().add(new TaskRow(d));
         }
-    } 
-    public void addTaskRow(String taskDescription){
+    }
+
+    public void addTaskRow(String taskDescription) {
         taskViewList.getChildren().add(new TaskRow(taskDescription));
     }
 

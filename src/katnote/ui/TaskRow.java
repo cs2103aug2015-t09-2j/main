@@ -11,26 +11,26 @@ public class TaskRow extends AnchorPane {
 
     @FXML
     private Label taskDescriptionLabel;
-    
+
     @FXML
     private Label timeLabel;
-    
+
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskRow.fxml";
-    
-    public TaskRow(String taskDescription){
+
+    public TaskRow(String taskDescription) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(LAYOUT_FXML));
         loader.setController(this);
         loader.setRoot(this);
-        
+
         try {
             loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setTaskDescription(taskDescription);        
+        setTaskDescription(taskDescription);
     }
-    
-    public void setTaskDescription(String text){
+
+    public void setTaskDescription(String text) {
         taskDescriptionLabel.setText(text);
     }
 
