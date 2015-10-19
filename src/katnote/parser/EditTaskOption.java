@@ -7,30 +7,30 @@ import katnote.utils.StringUtils;
 public class EditTaskOption {
     private String taskOptionName;
     private String taskOptionValue;
-    
-    public EditTaskOption(String taskOptionName, String taskOptionValue){
+
+    public EditTaskOption(String taskOptionName, String taskOptionValue) {
         this.taskOptionName = taskOptionName;
         this.taskOptionValue = taskOptionValue;
     }
-    
-    public EditTaskOption(String editTaskOption){
+
+    public EditTaskOption(String editTaskOption) {
         taskOptionName = StringUtils.getFirstWord(editTaskOption);
         taskOptionValue = StringUtils.removeFirstWord(editTaskOption);
     }
-    
-    public String getOptionName(){
+
+    public String getOptionName() {
         return taskOptionName;
     }
-    
-    public String getOptionValue(){
+
+    public String getOptionValue() {
         return taskOptionValue;
     }
-    
-    public Object getOptionValueObject(){
+
+    public Object getOptionValueObject() {
         return PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
-    
-    public Date getOptionValueDate(){
+
+    public Date getOptionValueDate() {
         return (Date) PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
 }

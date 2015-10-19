@@ -17,64 +17,73 @@ public class TestParser {
         assertEquals("add", keyword);
         assertEquals("hello by tuesday", truncatedCommand.toString());
     }
-    
+
     @Test
-    public void testAddCommand(){        
+    public void testAddCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("add hello by tuesday");
-        assertEquals(CommandType.ADD_NORMAL, commandDetail.getCommandType());
+        assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getDueDate());
     }
     
     @Test
-    public void testEditCommand1(){
+    public void testAddCommand2() {
+        CommandDetail commandDetail = Parser.parseCommand("hello by today");
+        assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
+        assertEquals("hello", commandDetail.getTitle());
+        assertNotNull(commandDetail.getDueDate());
+        //System.out.println("Due Date = " + commandDetail.getDueDate().toString());
+    }
+
+    @Test
+    public void testEditCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("edit task 4 set task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
-        assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());        
+        assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
-    
+
     @Test
-    public void testEditCommand2(){
+    public void testEditCommand2() {
         CommandDetail commandDetail = Parser.parseCommand("edit 4 set task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
-        assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());        
+        assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
-    
+
     @Test
-    public void testDeleteCommand1(){
+    public void testDeleteCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("delete 4");
         assertEquals(CommandType.DELETE_TASK, commandDetail.getCommandType());
-        assertEquals(4, commandDetail.getTaskIndex());        
+        assertEquals(4, commandDetail.getTaskIndex());
     }
-    
+
     @Test
-    public void testDeleteCommand2(){
+    public void testDeleteCommand2() {
         CommandDetail commandDetail = Parser.parseCommand("delete task 4");
         assertEquals(CommandType.DELETE_TASK, commandDetail.getCommandType());
-        assertEquals(4, commandDetail.getTaskIndex());        
+        assertEquals(4, commandDetail.getTaskIndex());
     }
-    
+
     @Test
-    public void testViewCommand1(){ // View multiple task
+    public void testViewCommand1() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view tasks on monday");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertNotNull(commandDetail.getStartDate());
-        assertNotNull(commandDetail.getEndDate());        
+        assertNotNull(commandDetail.getEndDate());
     }
-    
+
     @Test
-    public void testViewCommand2(){ // View single task
+    public void testViewCommand2() { // View single task
         CommandDetail commandDetail = Parser.parseCommand("view task 3");
         assertEquals(CommandType.VIEW_TASK_WITH_ID, commandDetail.getCommandType());
         assertEquals(3, commandDetail.getTaskIndex());
     }
-    
+
     @Test
-    public void testOtherCommand(){
+    public void testOtherCommand() {
         // undo
         CommandDetail undoCommand = Parser.parseCommand("undo");
         assertEquals(CommandType.UNDO, undoCommand.getCommandType());
