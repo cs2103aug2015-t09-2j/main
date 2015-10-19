@@ -1,14 +1,12 @@
 package katnote.task;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.json.simple.JSONArray;
 
 import katnote.command.CommandDetail;
-import katnote.command.CommandProperties;
 
 /**
  * This will be the association class used across KatNote. It will be the
@@ -23,10 +21,10 @@ public class Task {
     private Integer _id;
     private String _title;
     private TaskType _taskType;
-    private Date _startDate;
-    private Date _endDate;
+    private LocalDateTime _startDate;
+    private LocalDateTime _endDate;
     private String _repeatOption;
-    private Date _terminateDate; // only for recurring tasks
+    private LocalDateTime _terminateDate; // only for recurring tasks
     private String _description;
     private String _category;
     private Boolean _completed = false;
@@ -52,7 +50,7 @@ public class Task {
     private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";
 
     // Format
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     // Constructor using JSONArray
     public Task(JSONArray array) throws Exception {
@@ -130,11 +128,11 @@ public class Task {
 
     // Helper Methods
 
-    private Date stringToDate(String dateStr) throws ParseException {
+    private LocalDateTime stringToDate(String dateStr) throws ParseException {
         if (dateStr.equals(NULL_DATE)) {
             return null;
         } else {
-            Date date = DATE_FORMAT.parse(dateStr);
+            LocalDateTime date = LocalDateTime.parse(dateStr, formatter);
             return date;
         }
     }
@@ -173,19 +171,19 @@ public class Task {
         _taskType = taskType;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return _startDate;
     }
 
-    public void setStartDate(Date _startDate) {
+    public void setStartDate(LocalDateTime _startDate) {
         this._startDate = _startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return _endDate;
     }
 
-    public void setEndDate(Date _endDate) {
+    public void setEndDate(LocalDateTime _endDate) {
         this._endDate = _endDate;
     }
 
@@ -197,11 +195,11 @@ public class Task {
         this._repeatOption = _repeatOption;
     }
 
-    public Date getTerminateDate() {
+    public LocalDateTime getTerminateDate() {
         return _terminateDate;
     }
 
-    public void setTerminateDate(Date _terminateDate) {
+    public void setTerminateDate(LocalDateTime _terminateDate) {
         this._terminateDate = _terminateDate;
     }
 
