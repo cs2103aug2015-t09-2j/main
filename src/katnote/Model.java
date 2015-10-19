@@ -2,6 +2,8 @@ package katnote;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -40,8 +42,10 @@ public class Model {
 	private ArrayList<Task> _dataFloatingTasks;
 	private ArrayList<Task> _dataEventTasks;
 	
-	private Stack<String> undoLog;
-	private Stack<String> redoLog;
+	private Stack<String> _undoLog;
+	private Stack<String> _redoLog;
+	private Stack<Task> _undoTaskObjLog;
+	private Stack<Task> _redoTaskObjLog;
 	private String _response;
 		
 	// Constants
@@ -73,6 +77,11 @@ public class Model {
 	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
 	private static final String MSG_ERR_UNDO = "No actions left to undo.";
 	private static final String MSG_ERR_REDO = "No actions left to redo";
+	private static final String MSG_ERR_REVERSE_EXCEPTION = "Unable to perform a reverse for action : ";
+	private static final String MSG_ERR_REVERSE_ADD = "Unable to perform reverse for adding of task : ";
+	private static final String MSG_ERR_REVERSE_MODIFY = "Unable to perform reverse for modifying of task : ";
+	private static final String MSG_ERR_REVERSE_DELETE = "Unable to perform reverse for deleting of task : ";
+	private static final String MSG_ERR_REVERSE_COMPLETE = "Unable to perform reverse for completion of task : ";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -92,8 +101,16 @@ public class Model {
 	private static final String TYPE_FLOATING = "FLOATING";
 	private static final String TYPE_EVENT = "EVENT";
 	
+	// Undo and Redo
+	private static final Exception REVERSE_EXCEPTION = new Exception("Reverse Exception");
+	
+	private static final String ADD_TASK = "add_task";
+	private static final String EDIT_MODIFY = "edit_modify";
+	private static final String EDIT_DELETE = "edit_delete";
+	private static final String EDIT_COMPLETE = "edit_complete";
+	
 	// Format
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -101,8 +118,10 @@ public class Model {
 		_data = new StorageData(path);
 		_decoder = new StorageDecoder();
 		_encoder = new StorageEncoder();
-		undoLog = new Stack<String>();
-		redoLog = new Stack<String>();
+		_undoLog = new Stack<String>();
+		_undoTaskObjLog = new Stack<Task>();
+		_redoLog = new Stack<String>();
+		_redoTaskObjLog = new Stack<Task>();
 		_dataNormalTasks = new ArrayList<Task>();
 		_dataFloatingTasks = new ArrayList<Task>();
 		_dataEventTasks = new ArrayList<Task>();
@@ -119,15 +138,16 @@ public class Model {
 	 */
 	public String addTask(Task task) throws Exception {
 		
-	    // Save task in Array
-	    task.setID(getNextID());
-	    _dataLog.add(task);
-	    
-	    // Split the task
+    	task.setID(getNextID());
+    	_dataLog.add(task);
+
 	    splitTaskType(task);
 	    
-	    // Save task in Memory
 		_encoder.encode();
+		
+		// Update UndoLog
+		_undoLog.push(ADD_TASK);
+		_undoTaskObjLog.push(task);
 		
 		_response = String.format(MSG_TASK_ADDED, task.getTitle());
 		return _response;
@@ -146,6 +166,10 @@ public class Model {
 	    
 	    _encoder.encode();
 	    
+	    // Update UndoLog
+        _undoLog.push(EDIT_COMPLETE);
+        _undoTaskObjLog.push(editedTask);
+	    
 		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getID(), editedTask.getTitle());
 		return _response;
 	}
@@ -161,6 +185,7 @@ public class Model {
 	public String editModify(int taskID, EditTaskOption editOption) throws Exception {
 	    
 	    Task editedTask = _dataLog.get(taskID);
+	    Task oldTask = _dataLog.get(taskID);
 	    String optionName = editOption.getOptionName();
 	    switch (optionName) {
 	        // I don't think we should allow modification of task id*
@@ -196,6 +221,10 @@ public class Model {
 	    
 	    _encoder.encode();
 	    
+	    // Update UndoLog
+        _undoLog.push(EDIT_MODIFY);
+        _undoTaskObjLog.push(oldTask);
+	    
 	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
 	    return _response;
 	}
@@ -208,28 +237,56 @@ public class Model {
 	 */
 	public String editDelete(int taskID) throws Exception {
 		
-		String title = _dataLog.get(taskID).getTitle();
+		Task oldTask = _dataLog.get(taskID);
+	    String title = _dataLog.get(taskID).getTitle();
 		int displayedID = taskID + INDEX_TRANSLATION;
 	    _dataLog.remove(taskID);
 		
 		_encoder.encode();
+		
+		// Update UndoLog
+        _undoLog.push(EDIT_DELETE);
+        _undoTaskObjLog.push(oldTask);
 		
 		_response = String.format(MSG_EDIT_TASK_DELETED, displayedID, title);
 		return _response;
 	}
 	
 	/**
-	 * Reverses the last action under the _actionLog.
+	 * Reverses the last action under the _undoLog.
+	 * Undo-able actions : addTask, editModify, editDelete, editComplete
+	 * @return the response message of a the success of undoing.
+	 * @throws Exception 
 	 */
-	public String undoLast() {
-		// TODO Auto-generated method stub
-		_response = String.format(MSG_UNDO_CONFIRM, "undo type");
+	public String undoLast() throws Exception {
+		
+	    if (_undoLog.isEmpty()) {
+	        _response = handleError(MSG_ERR_UNDO);
+	        return _response;
+	    }
+	    String undoAction = _undoLog.pop();
+	    Task taskObj = _undoTaskObjLog.pop();
+	    reverseUndo(undoAction, taskObj);
+		_response = String.format(MSG_UNDO_CONFIRM, taskObj.getTitle());
 		return _response;
 	}
 	
-	public String redo() {
-		// TODO Auto-generated method stub
-		_response = String.format(MSG_REDO_CONFIRM, "redo type");
+	/**
+	 * Reverses the last action under the _redoLog.
+	 * Redo-able actions : addTask, editModify, editDelete, editComplete
+	 * @return the response message of a the success of redoing.
+	 * @throws Exception 
+	 */
+	public String redo() throws Exception {
+		
+	    if (_undoLog.isEmpty()) {
+            _response = handleError(MSG_ERR_REDO);
+            return _response;
+        }
+	    String redoAction = _redoLog.pop();
+	    Task taskObj = _redoTaskObjLog.pop();
+	    reverseRedo(redoAction, taskObj);
+		_response = String.format(MSG_REDO_CONFIRM, taskObj.getTitle());
 		return _response;
 	}
 	
@@ -262,7 +319,6 @@ public class Model {
 	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
             return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
         }
-	    
 	    String importLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION); // TODO: REMEMBER TO CHANGE ONCE PARSER IS READY.
 	    
 	    _response = _data.importData(importLocation);
@@ -287,6 +343,181 @@ public class Model {
 	}
 
 	// Helper Methods
+	private void reverseUndo(String type, Task taskObj) throws Exception {
+	    
+	    switch (type) {
+	        case ADD_TASK :
+	            undoAdd(taskObj);
+	            break;
+	        case EDIT_MODIFY :
+	            undoModify(taskObj);
+	            break;
+	        case EDIT_DELETE :
+	            undoDelete(taskObj);
+	            break;
+	        case EDIT_COMPLETE :
+	            undoComplete(taskObj);
+	            break;
+	        default :
+	            handleException(REVERSE_EXCEPTION, MSG_ERR_REVERSE_EXCEPTION + type);
+	    }
+	}
+	
+	private void undoAdd(Task taskObj) throws Exception {
+	    // Delete the added task.
+	    try {
+	        Task oldTask = _dataLog.get(taskObj.getID());
+            _dataLog.remove(taskObj.getID());
+            
+            splitTaskType(_dataLog);
+            _encoder.encode();
+
+            _redoLog.push(ADD_TASK);
+            _redoTaskObjLog.push(oldTask);
+            
+        } catch (Exception e) {
+            handleException(e, MSG_ERR_REVERSE_ADD + taskObj.getTitle());
+        }
+	    
+	}
+	
+	private void undoModify(Task taskObj) throws Exception {
+	    // Delete and add back the old task
+	    try {
+	        Task oldTask = _dataLog.get(taskObj.getID());
+            _dataLog.remove(taskObj.getID());
+            _dataLog.add(taskObj.getID(), taskObj);
+            
+            splitTaskType(_dataLog);
+            _encoder.encode();
+            
+            _redoLog.push(EDIT_MODIFY);
+            _redoTaskObjLog.push(oldTask);
+            
+        } catch (Exception e) {
+            handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+        }
+	    
+	}
+	
+	private void undoDelete(Task taskObj) throws Exception {
+	    // Add back the task
+	    try {
+	        _dataLog.add(taskObj.getID(), taskObj);
+	        
+	        splitTaskType(_dataLog);
+	        _encoder.encode();
+	        
+	        _redoLog.push(EDIT_DELETE);
+            _redoTaskObjLog.push(taskObj);
+            
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	    }
+	}
+	
+	private void undoComplete(Task taskObj) throws Exception {
+        // Change task to incomplete.
+        try {
+            taskObj.setCompleted(false);
+            
+            _encoder.encode();
+            
+            _redoLog.push(EDIT_COMPLETE);
+            _redoTaskObjLog.push(taskObj);
+            
+        } catch (Exception e) {
+            handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+        }
+    }
+    
+	private void reverseRedo(String type, Task taskObj) throws Exception {
+
+        switch (type) {
+            case ADD_TASK :
+                redoAdd(taskObj);
+                break;
+            case EDIT_MODIFY :
+                redoModify(taskObj);
+                break;
+            case EDIT_DELETE :
+                redoDelete(taskObj);
+                break;
+            case EDIT_COMPLETE :
+                redoComplete(taskObj);
+                break;
+            default :
+                handleException(REVERSE_EXCEPTION, MSG_ERR_REVERSE_EXCEPTION + type);
+        }
+	}
+	private void redoAdd(Task taskObj) throws Exception {
+	    // Add back the task
+	    try {
+	        _dataLog.add(taskObj.getID(), taskObj);
+
+	        splitTaskType(_dataLog);
+	        _encoder.encode();
+
+	        _undoLog.push(ADD_TASK);
+	        _undoTaskObjLog.push(taskObj);
+
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_ADD + taskObj.getTitle());
+	    }
+
+	}
+
+	private void redoModify(Task taskObj) throws Exception {
+	    // Delete and add back the old task
+	    try {
+	        Task oldTask = _dataLog.get(taskObj.getID());
+	        _dataLog.remove(taskObj.getID());
+	        _dataLog.add(taskObj.getID(), taskObj);
+
+	        splitTaskType(_dataLog);
+	        _encoder.encode();
+
+	        _undoLog.push(EDIT_MODIFY);
+	        _undoTaskObjLog.push(oldTask);
+
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	    }
+
+	}
+
+	private void redoDelete(Task taskObj) throws Exception {
+	    // Delete the new task
+	    try {
+	        Task oldTask = _dataLog.get(taskObj.getID());
+	        _dataLog.remove(taskObj.getID());
+
+	        splitTaskType(_dataLog);
+	        _encoder.encode();
+
+	        _undoLog.push(ADD_TASK);
+	        _undoTaskObjLog.push(oldTask);
+
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	    }
+	}
+
+	private void redoComplete(Task taskObj) throws Exception {
+	    // Change task to incomplete.
+	    try {
+	        taskObj.setCompleted(true);
+
+	        _encoder.encode();
+
+	        _undoLog.push(EDIT_COMPLETE);
+	        _undoTaskObjLog.push(taskObj);
+
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	    }
+	}
+	    
 	private void splitTaskType(Task task) {
 	    TaskType type = task.getTaskType();
         switch (type) {
@@ -306,6 +537,11 @@ public class Model {
 	}
 	
 	private void splitTaskType(ArrayList<Task> taskArray) {
+	    
+	    // Reset
+	    _dataNormalTasks = new ArrayList<Task>();
+	    _dataFloatingTasks = new ArrayList<Task>();
+	    _dataEventTasks = new ArrayList<Task>();
 	    
 	    TaskType type;
 	    for (Task t : taskArray) {
@@ -519,11 +755,11 @@ public class Model {
 		    return type;
 		}
 		
-		private String dateToString(Date date) {
+		private String dateToString(LocalDateTime date) {
 		    if (date == null) {
 		        return NULL_DATE;
 		    } else {
-		        String dateStr = DATE_FORMAT.format(date);
+		        String dateStr = date.format(DATE_FORMATTER);
 		        return dateStr;
 		    }
 		}
