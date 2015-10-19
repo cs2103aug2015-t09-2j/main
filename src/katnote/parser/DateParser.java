@@ -2,6 +2,7 @@ package katnote.parser;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,8 +41,7 @@ public class DateParser {
      * get today Date time
      */
     public static LocalDateTime getToday() {
-        LocalDateTime today = LocalDateTime.now();
-        return today;
+        return LocalDateTime.now();
     }
 
     /*
@@ -49,7 +49,7 @@ public class DateParser {
      */
     public static LocalDateTime getTomorrow() {
         LocalDateTime date = LocalDateTime.now();
-        date.plusDays(1);
+        date = date.plusDays(1);
         return date;
     }
 
@@ -58,7 +58,7 @@ public class DateParser {
      */
     public static LocalDateTime getNextWeek() {
         LocalDateTime date = LocalDateTime.now();
-        date.plusWeeks(1);
+        date = date.plusWeeks(1);
         return date;
     }
 
@@ -71,7 +71,7 @@ public class DateParser {
     public static LocalDateTime getNextWeekDay(DayOfWeek desiredWeekday) {
         LocalDateTime date = LocalDateTime.now();
         while (true) {
-            date.plusDays(1);
+            date = date.plusDays(1);
             if (date.getDayOfWeek() == desiredWeekday) {
                 return date;
             }
@@ -83,7 +83,7 @@ public class DateParser {
      */
     public static LocalDateTime getNextMonth() {
         LocalDateTime date = LocalDateTime.now();
-        date.plusMonths(1);
+        date = date.plusMonths(1);
         return date;
     }
 
@@ -92,7 +92,7 @@ public class DateParser {
      */
     public static LocalDateTime getNextYear() {
         LocalDateTime date = LocalDateTime.now();
-        date.plusYears(1);
+        date = date.plusYears(1);
         return date;
     }
 
@@ -129,10 +129,9 @@ public class DateParser {
     /*
      * convert string (absolute time format) to string
      */
-    private static LocalDateTime parseAbsoluteTime(String time, int defaultHourOption) {
+    private static LocalDateTime parseAbsoluteTime(String time, int defaultTimeOption) {
         // default values
-        int defaultHourOfDay = getDefaultHourOfDay(defaultHourOption);
-        int defaultMinute = getDefaultMinute(defaultHourOption);
+        LocalTime defaultTimeOfDay = getDefaultTimeOfDay(defaultTimeOption);
         int currentYear = LocalDateTime.now().getYear();
         // matcher
         Matcher m = Pattern.compile(ABSOLUTE_TIME_PATTERN).matcher(time);
@@ -143,9 +142,9 @@ public class DateParser {
                     ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_YEAR)) : currentYear;
 
             int hourOfDay = m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR) != null
-                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR)) : defaultHourOfDay;
+                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_HOUR)) : defaultTimeOfDay.getHour();
             int minute = m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE) != null
-                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE)) : defaultMinute;
+                    ? Integer.parseInt(m.group(ABSOLUTE_TIME_PATTERN_POS_MINUTE)) : defaultTimeOfDay.getMinute();
             boolean isPM = DAY_PERIOD_PM.equals(m.group(ABSOLUTE_TIME_PATTERN_POS_DAY_PM));
 
             if (isPM) {
@@ -163,31 +162,23 @@ public class DateParser {
         return null;
     }
 
-    private static int getDefaultMinute(int defaultHourOption) {
-        if (defaultHourOption == END_OF_DAY) {
-            return 59;
-        }
-        return 0;
-    }
-
-    private static int getDefaultHourOfDay(int defaultHourOption) {
-        switch (defaultHourOption) {
+    private static LocalTime getDefaultTimeOfDay(int defaultTimeOption) {
+        switch (defaultTimeOption) {
             case BEGIN_OF_DAY :
-                return 0;
+                return LocalTime.MIN;
             case MIDDLE_OF_DAY :
-                return 12;
+                return LocalTime.NOON;
             case END_OF_DAY :
-                return 23;
+                return LocalTime.MAX;
         }
-        return 0;
+        return LocalTime.now();
     }
 
     /*
      * change the hour of date based on hour option
      */
-    private static LocalDateTime addHourOption(LocalDateTime date, int defaultHourOption) {
-        date.withHour(getDefaultHourOfDay(defaultHourOption));
-        date.withMinute(getDefaultMinute(defaultHourOption));
+    private static LocalDateTime adjustByDefaultTime(LocalDateTime date, int defaultTimeOption) {
+        date = LocalDateTime.of(date.toLocalDate(), getDefaultTimeOfDay(defaultTimeOption));
         return date;
     }
 
@@ -201,23 +192,17 @@ public class DateParser {
     /*
      * convert string to date
      */
-    public static LocalDateTime parseDate(String time, int defaultHourOption) {
+    public static LocalDateTime parseDate(String time, int defaultTimeOption) {
         // check if time is relative time
         LocalDateTime date = parseRelativeTime(time);
         if (date != null) { // date == null means it is not relative time
-            date = addHourOption(date, defaultHourOption);
+            date = adjustByDefaultTime(date, defaultTimeOption);
             return date;
         }
         // check some absolute time format
-        date = parseAbsoluteTime(time, defaultHourOption);
+        date = parseAbsoluteTime(time, defaultTimeOption);
         return date;
 
     }
-
-    /*
-     * // use for testing, will be removed soon public static void main(String
-     * args[]){ System.out.println("hehe"); String s = "monday"; Date d =
-     * parseDate(s); System.out.println(d); } //
-     */
 
 }
