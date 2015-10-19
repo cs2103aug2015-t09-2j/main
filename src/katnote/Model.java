@@ -258,7 +258,7 @@ public class Model {
 	 * @return the response message of a the success of undoing.
 	 * @throws Exception 
 	 */
-	public String undoLast() throws Exception {
+	public String undo() throws Exception {
 		
 	    if (_undoLog.isEmpty()) {
 	        _response = handleError(MSG_ERR_UNDO);
@@ -412,7 +412,7 @@ public class Model {
             _redoTaskObjLog.push(taskObj);
             
 	    } catch (Exception e) {
-	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	        handleException(e, MSG_ERR_REVERSE_DELETE + taskObj.getTitle());
 	    }
 	}
 	
@@ -427,7 +427,7 @@ public class Model {
             _redoTaskObjLog.push(taskObj);
             
         } catch (Exception e) {
-            handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+            handleException(e, MSG_ERR_REVERSE_COMPLETE + taskObj.getTitle());
         }
     }
     
@@ -499,7 +499,7 @@ public class Model {
 	        _undoTaskObjLog.push(oldTask);
 
 	    } catch (Exception e) {
-	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	        handleException(e, MSG_ERR_REVERSE_DELETE + taskObj.getTitle());
 	    }
 	}
 
@@ -514,7 +514,7 @@ public class Model {
 	        _undoTaskObjLog.push(taskObj);
 
 	    } catch (Exception e) {
-	        handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
+	        handleException(e, MSG_ERR_REVERSE_COMPLETE + taskObj.getTitle());
 	    }
 	}
 	    
