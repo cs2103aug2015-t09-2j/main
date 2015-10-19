@@ -3,9 +3,8 @@ package katnote.ui;
 import katnote.KatNoteLogger;
 import katnote.Logic;
 import katnote.UIFeedback;
-import katnote.task.Task;
+import katnote.ViewState;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,8 +48,7 @@ public class GraphicalUserInterface extends Application {
     private void loadResources() {
         log.log(Level.INFO, "loading resources");
         Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
-        Font f = Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(),
-                10);
+        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
     }
 
     public void initRootLayout() {
@@ -76,11 +74,11 @@ public class GraphicalUserInterface extends Application {
     public void setUpTaskViewer() {
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
-
+        updateTaskViewer(logic.getInitialViewState());
     }
 
-    public void updateTaskViewer(ArrayList<Task> tasks) {
-        TaskViewFormatter listFormat = new TaskViewFormatter(tasks, IS_GUI_FORMAT);
+    public void updateTaskViewer(ViewState viewState) {
+        TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
         taskViewer.loadTaskFormat(listFormat);
     }
 
@@ -90,9 +88,9 @@ public class GraphicalUserInterface extends Application {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError());
             if (!feedback.isAnError()) {
-                ArrayList<Task> taskList = feedback.getTaskList();
-                if (taskList.size() != 0) {
-                    updateTaskViewer(taskList);
+                ViewState viewState = feedback.getViewState();
+                if (viewState != null) {
+                    updateTaskViewer(viewState);
                 }
             }
         } catch (Exception e) {
