@@ -1,16 +1,12 @@
 package katnote.ui;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import katnote.task.Task;
 
 public class TaskViewer extends AnchorPane {
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskViewer.fxml";

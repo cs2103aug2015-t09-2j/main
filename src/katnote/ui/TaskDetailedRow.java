@@ -2,7 +2,6 @@ package katnote.ui;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import javafx.fxml.FXML;
@@ -45,7 +44,7 @@ public class TaskDetailedRow extends AnchorPane {
     }
     private void setDateTimeProperty() {
         if(task.getTaskType() == TaskType.NORMAL){
-            LocalDateTime date = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime date = task.getEndDate();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
             DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_PATTERN);
             String dateString = date.format(dateFormat);

@@ -1,13 +1,12 @@
 package katnote.ui;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import katnote.ViewState;
 import katnote.task.Task;
-import katnote.task.TaskType;
 
 public class TaskViewFormatter {
 
@@ -19,25 +18,12 @@ public class TaskViewFormatter {
     private ArrayList<TaskViewGroup> _viewList = new ArrayList<TaskViewGroup>();
     private boolean _isGUIFormat;
     private int index = 1;
-
-    public TaskViewFormatter(ArrayList<Task> list, boolean isGUIFormat) {
+    
+    public TaskViewFormatter(ViewState viewState, boolean isGUIFormat) {
         _isGUIFormat = isGUIFormat;
-        ArrayList<Task> listCopy = new ArrayList<Task>(list);
-        ArrayList<Task> floatingTasks = extractFloatingTask(listCopy);
+        ArrayList<Task> floatingTasks = viewState.getFloatingTasks();
         processFloatingTask(floatingTasks);
-        processNormalTasks(listCopy);
-    }
-
-    private ArrayList<Task> extractFloatingTask(ArrayList<Task> list) {
-        ArrayList<Task> newList = new ArrayList<Task>();
-        for (int i = 0; i < list.size(); i++) {
-            Task t = list.get(i);
-            if (t.getTaskType() == TaskType.FLOATING) {
-                newList.add(list.remove(i));
-                i--;
-            }
-        }
-        return newList;
+        processNormalTasks(viewState.getNormalTasks());
     }
 
     /**
@@ -82,7 +68,7 @@ public class TaskViewFormatter {
         LocalDate dateToday = LocalDate.now();
 
         while (task != null) {
-            date = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            date = task.getEndDate().toLocalDate();
             if (date.isEqual(dateToday)) {
                 todayList.add(taskQueue.remove());
             } else {
@@ -104,7 +90,7 @@ public class TaskViewFormatter {
         LocalDate dateTomorrow = LocalDate.now().plusDays(1);
 
         while (task != null) {
-            date = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            date = task.getEndDate().toLocalDate();
             if (date.isEqual(dateTomorrow)) {
                 tomorrowList.add(taskQueue.remove());
             } else {

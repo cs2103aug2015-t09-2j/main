@@ -1,8 +1,8 @@
 package katnote.ui;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
 import katnote.Logic;
@@ -11,6 +11,10 @@ import katnote.task.TaskType;
 import katnote.UIFeedback;
 
 public class CommandLineInterface {
+    private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s ";
+    private static final String TIME_PATTERN = "hh:mm a";
+    private static final String DATE_PATTERN = "dd MMM yy";
+    
     private Logic logic;
     private boolean toExit;
     private Scanner scanner;
@@ -32,8 +36,8 @@ public class CommandLineInterface {
                 if(feedback.getMessage() != null){
                     printMessageLine(feedback.getMessage());
                 }
-                if(!feedback.getTaskList().isEmpty()){
-                    renderTasks(feedback.getTaskList());
+                if(feedback.getViewState() != null){
+                    renderTasks(feedback.getViewState().getNormalTasks());
                 }
             } catch (Exception e) {
                 printMessageLine(e.getMessage());
@@ -44,16 +48,16 @@ public class CommandLineInterface {
     private void renderTasks(ArrayList<Task> tasks){
         printMessageLine("Tasks");
         printMessageLine("-----------------------------------");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_PATTERN);
         for(int i = 0; i < tasks.size(); i++){
             Task t = tasks.get(i);
             printMessageLine((i+1) + ". " + t.getTitle());
             if(t.getTaskType() == TaskType.NORMAL || t.getTaskType() == null){
-                Date taskDate = t.getEndDate();
-                String dateString = dateFormat.format(taskDate);
-                String timeString = timeFormat.format(taskDate);
-                String dateTime = "Due: " + dateString + " " + timeString; 
+                LocalDateTime date = t.getEndDate();
+                String dateString = date.format(dateFormat);
+                String timeString = date.format(timeFormat);
+                String dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);  
                 printMessageLine("                         " + dateTime);
             }
         }
@@ -69,33 +73,39 @@ public class CommandLineInterface {
         toExit = false;
         scanner = new Scanner(System.in);
     }
-    private String readInput(){
+
+    private String readInput() {
         return scanner.nextLine();
     }
-    
+
     /**
      * Prints message onto command interface without a new line
+     * 
      * @param message
      */
-    private static void printMessage(String message){
+    private static void printMessage(String message) {
         printMessage(message, false);
     }
 
     /**
      * Prints message onto command interface with a new line
+     * 
      * @param message
      */
-    private static void printMessageLine(String message){
+    private static void printMessageLine(String message) {
         printMessage(message, true);
     }
+
     /**
      * Prints message onto command interface
-     * @param message - String to be printed
-     * @param hasNewLine - boolean to determine if the message ends
-     *                      with a new line
+     * 
+     * @param message
+     *            - String to be printed
+     * @param hasNewLine
+     *            - boolean to determine if the message ends with a new line
      */
-    private static void printMessage(String message, boolean hasNewLine){
-        if(hasNewLine){
+    private static void printMessage(String message, boolean hasNewLine) {
+        if (hasNewLine) {
             System.out.println(message);
         } else {
             System.out.print(message);

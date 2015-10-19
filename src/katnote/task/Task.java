@@ -1,17 +1,17 @@
 package katnote.task;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.json.simple.JSONArray;
 
 import katnote.command.CommandDetail;
-import katnote.command.CommandProperties;
 
 /**
- * This will be the association class used across KatNote. It will be the standardized task object that will be passed between components.
+ * This will be the association class used across KatNote. It will be the
+ * standardized task object that will be passed between components.
+ * 
  * @author sk
  *
  */
@@ -21,24 +21,20 @@ public class Task {
     private Integer _id;
     private String _title;
     private TaskType _taskType;
-    private Date _startDate;
-    private Date _endDate;
+    private LocalDateTime _startDate;
+    private LocalDateTime _endDate;
     private String _repeatOption;
-    private Date _terminateDate; //only for recurring tasks
+    private LocalDateTime _terminateDate; // only for recurring tasks
     private String _description;
     private String _category;
     private Boolean _completed = false;
-    
+
     // Constants
     private static final int MAX_ARG_SIZE = 10;
     private static final String NULL_DATE = "null";
     private static final String STR_TRUE = "true";
     private static final String STR_FALSE = "false";
-    
-    private static final String TYPE_NORMAL = "NORMAL";
-    private static final String TYPE_FLOATING = "FLOATING";
-    private static final String TYPE_EVENT = "EVENT";
-    
+
     private static final int INDEX_ID = 0;
     private static final int INDEX_TITLE = 1;
     private static final int INDEX_TASK_TYPE = 2;
@@ -49,43 +45,42 @@ public class Task {
     private static final int INDEX_DESCRIPTION = 7;
     private static final int INDEX_CATEGORY = 8;
     private static final int INDEX_COMPLETED = 9;
-    
+
     // Messages
     private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";
-    
-    
-    // Format
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-    
+    // Format
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
     // Constructor using JSONArray
     public Task(JSONArray array) throws Exception {
-        
-        assert(array.size() == MAX_ARG_SIZE);
-        
-        //ideally this segment should be moved to the loading part and not within
+
+        assert (array.size() == MAX_ARG_SIZE);
+
+        // ideally this segment should be moved to the loading part and not
+        // within
         // the tasks
         String[] args = new String[MAX_ARG_SIZE];
-        for (int i=0; i<MAX_ARG_SIZE; i++) {
+        for (int i = 0; i < MAX_ARG_SIZE; i++) {
             args[i] = (String) array.get(i);
         }
         // Currently choosing DATE_FORMAT_LONG for all dates.
         try {
             setID(Integer.parseInt(args[INDEX_ID]));
             setTitle(args[INDEX_TITLE]);
-            // impromptu code to allow the code to still work
-            if(args[INDEX_TASK_TYPE] != null){
-                switch(args[INDEX_TASK_TYPE]){
-                    case TYPE_EVENT :
+            // impomptu code to allow the code to still work
+            if (args[INDEX_TASK_TYPE] != null) {
+                switch (args[INDEX_TASK_TYPE]) {
+                    case "EVENT" :
                         setTaskType(TaskType.EVENT);
                         break;
-                    case TYPE_FLOATING :
+                    case "FLOATING" :
                         setTaskType(TaskType.FLOATING);
                         break;
-                    case TYPE_NORMAL :
+                    case "NORMAL" :
                     default :
-                        setTaskType(TaskType.NORMAL);                  
-                }                
+                        setTaskType(TaskType.NORMAL);
+                }
             }
             setStartDate(stringToDate(args[INDEX_START_DATE]));
             setEndDate(stringToDate(args[INDEX_END_DATE]));
@@ -98,48 +93,50 @@ public class Task {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
     }
-    
+
     /*
      * Constructor using CommandDetail
      */
-    public Task(CommandDetail commandDetail) throws Exception {                
+    public Task(CommandDetail commandDetail) throws Exception {
         // Currently choosing DATE_FORMAT_LONG for all dates.
         try {
-            //TODO: setID(some_number);
-            setTitle(commandDetail.getString(CommandProperties.TASK_TITLE));
-            //TODO: setTaskType(commandDetail.getString(CommandProperties.TASK_TYPE));
-            setStartDate(commandDetail.getDate(CommandProperties.TIME_FROM));
-            //TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
-            if(commandDetail.getDate(CommandProperties.TIME_TO) != null){
-                setEndDate(commandDetail.getDate(CommandProperties.TIME_TO));                
+            // TODO: setID(some_number);
+            setTitle(commandDetail.getTitle());
+            setTaskType(commandDetail.getTaskType());
+            // TODO: Fix errors when change from Date -> LocalDateTime
+            setStartDate(commandDetail.getStartDate());
+            // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
+            if (commandDetail.getEndDate() != null) {
+                setEndDate(commandDetail.getEndDate());
             }
-            if(commandDetail.getDate(CommandProperties.TIME_BY) != null){
-                setEndDate(commandDetail.getDate(CommandProperties.TIME_BY));
+            if (commandDetail.getDueDate() != null) {
+                setEndDate(commandDetail.getDueDate());
             }
-            //TODO: setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
-            //TODO: setCategory(args[INDEX_CATEGORY]);
-            //TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
+            // TODO:
+            // setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
+            // TODO: setCategory(args[INDEX_CATEGORY]);
+            // TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
     }
-    
-    public Task(String taskTitle, TaskType type){
+
+    public Task(String taskTitle, TaskType type) {
         setTitle(taskTitle);
         setTaskType(type);
     }
-    
+
     // Helper Methods
-    
-    private Date stringToDate(String dateStr) throws ParseException {
+
+    private LocalDateTime stringToDate(String dateStr) throws ParseException {
         if (dateStr.equals(NULL_DATE)) {
             return null;
         } else {
-            Date date = DATE_FORMAT.parse(dateStr);
+            LocalDateTime date = LocalDateTime.parse(dateStr, formatter);
             return date;
         }
     }
-    
+
     private Boolean stringToBool(String bool) {
         if (bool.equals(STR_TRUE)) {
             return true;
@@ -149,7 +146,7 @@ public class Task {
     }
 
     // Getter and Setter
-    
+
     public Integer getID() {
         return _id;
     }
@@ -174,19 +171,19 @@ public class Task {
         _taskType = taskType;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return _startDate;
     }
 
-    public void setStartDate(Date _startDate) {
+    public void setStartDate(LocalDateTime _startDate) {
         this._startDate = _startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return _endDate;
     }
 
-    public void setEndDate(Date _endDate) {
+    public void setEndDate(LocalDateTime _endDate) {
         this._endDate = _endDate;
     }
 
@@ -198,11 +195,11 @@ public class Task {
         this._repeatOption = _repeatOption;
     }
 
-    public Date getTerminateDate() {
+    public LocalDateTime getTerminateDate() {
         return _terminateDate;
     }
 
-    public void setTerminateDate(Date _terminateDate) {
+    public void setTerminateDate(LocalDateTime _terminateDate) {
         this._terminateDate = _terminateDate;
     }
 
@@ -225,10 +222,9 @@ public class Task {
     public boolean isCompleted() {
         return _completed;
     }
-    
-    
+
     public void setCompleted(Boolean _completed) {
         this._completed = _completed;
     }
-    
+
 }
