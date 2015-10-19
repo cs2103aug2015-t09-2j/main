@@ -19,11 +19,20 @@ public class TestParser {
     }
 
     @Test
-    public void testAddCommand() {
+    public void testAddCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("add hello by tuesday");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getDueDate());
+    }
+    
+    @Test
+    public void testAddCommand2() {
+        CommandDetail commandDetail = Parser.parseCommand("hello by today");
+        assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
+        assertEquals("hello", commandDetail.getTitle());
+        assertNotNull(commandDetail.getDueDate());
+        //System.out.println("Due Date = " + commandDetail.getDueDate().toString());
     }
 
     @Test

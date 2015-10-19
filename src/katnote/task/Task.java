@@ -105,6 +105,7 @@ public class Task {
             // TODO: setID(some_number);
             setTitle(commandDetail.getTitle());
             setTaskType(commandDetail.getTaskType());
+            // TODO: Fix errors when change from Date -> LocalDateTime
             setStartDate(commandDetail.getStartDate());
             // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
             if (commandDetail.getEndDate() != null) {
