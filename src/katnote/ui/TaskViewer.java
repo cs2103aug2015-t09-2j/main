@@ -9,20 +9,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import katnote.Task;
+import katnote.task.Task;
 
-public class TaskViewer extends AnchorPane{
+public class TaskViewer extends AnchorPane {
 
     @FXML
     private VBox taskViewGroupList;
 
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskViewer.fxml";
 
-    public TaskViewer(){
+    public TaskViewer() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(LAYOUT_FXML));
         loader.setController(this);
         loader.setRoot(this);
-        
+
         try {
             loader.load();
         } catch (IOException e) {
@@ -30,37 +30,39 @@ public class TaskViewer extends AnchorPane{
         }
         taskViewGroupList.setFillWidth(true);
     }
-    public void clearViewer(){
+
+    public void clearViewer() {
         taskViewGroupList.getChildren().clear();
     }
-    
-    public void addNewTaskViewGroup(TaskViewGroup taskViewGroup){
+
+    public void addNewTaskViewGroup(TaskViewGroup taskViewGroup) {
         taskViewGroupList.getChildren().add(taskViewGroup);
     }
-    //To-do: modify TaskRow to allow for more details such as time
-    public void loadListOfGroupedTasks(Task[][] arrayOfTaskGroups, String[] groupHeadings){
-        assert(arrayOfTaskGroups.length == groupHeadings.length);
+
+    // To-do: modify TaskRow to allow for more details such as time
+    public void loadListOfGroupedTasks(Task[][] arrayOfTaskGroups, String[] groupHeadings) {
+        assert (arrayOfTaskGroups.length == groupHeadings.length);
         int counter = 1;
-        for(int i = 0; i < arrayOfTaskGroups.length; i++){
+        for (int i = 0; i < arrayOfTaskGroups.length; i++) {
             TaskViewGroup viewGroup = new TaskViewGroup(groupHeadings[i]);
             Task[] tasksInGroup = arrayOfTaskGroups[i];
-            for(Task t : tasksInGroup){
+            for (Task t : tasksInGroup) {
                 viewGroup.addTaskRow(counter + ". " + t.getTitle());
                 counter++;
             }
             addNewTaskViewGroup(viewGroup);
         }
     }
-    
-    public void loadDetailedListOfTask(Task[] tasks){
+
+    public void loadDetailedListOfTask(Task[] tasks) {
         int counter = 1;
-        for(Task t : tasks){
+        for (Task t : tasks) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
             Date taskDate = t.getEndDate();
             String dateString = dateFormat.format(taskDate);
             String timeString = timeFormat.format(taskDate);
-            String dateTime = "Due: " + dateString + " " + timeString;            
+            String dateTime = "Due: " + dateString + " " + timeString;
             TaskDetailedRow row = new TaskDetailedRow(counter + ". " + t.getTitle(), dateTime);
             taskViewGroupList.getChildren().add(row);
             counter++;

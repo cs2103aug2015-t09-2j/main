@@ -14,31 +14,33 @@ public class KatNoteLogger {
     private static final LogManager logManager = LogManager.getLogManager();
     public static KatNoteLogger instance = null;
     private static FileHandler fh = null;
-    private static final Logger log = Logger.getLogger( "katnote" );
-    
-    private KatNoteLogger(){
+    private static final Logger log = Logger.getLogger("katnote");
+
+    private KatNoteLogger() {
         try {
             logManager.readConfiguration(new FileInputStream(LOGGING_PROPERTIES_FILENAME));
             fh = new FileHandler(KATNOTE_LOG_FILENAME, false);
         } catch (SecurityException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            
+
         }
-        log.addHandler(fh);     
-        log.setLevel(Level.ALL);   
+        log.addHandler(fh);
+        log.setLevel(Level.ALL);
     }
-    
-    public static KatNoteLogger getInstance(){
-        if(instance == null){
+
+    public static KatNoteLogger getInstance() {
+        if (instance == null) {
             instance = new KatNoteLogger();
         }
         return instance;
     }
-    public void setLevel(Level level){
+
+    public void setLevel(Level level) {
         log.setLevel(level);
     }
-    public static Logger getLogger(String className){
+
+    public static Logger getLogger(String className) {
         getInstance();
         Logger log = Logger.getLogger(className);
         return log;
