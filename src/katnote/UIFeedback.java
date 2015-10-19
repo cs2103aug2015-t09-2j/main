@@ -6,32 +6,16 @@ import java.util.ArrayList;
 
 public class UIFeedback {
     private boolean isError_; // true if UIFeedback contains an error reponseMessage
-    private ArrayList<Task> taskList_;
+    private ViewState viewState_;
     private String responseMessage_;
     
     /*-- Constructors --*/
     
-    public UIFeedback() {
-        isError_ = false;
-        taskList_ = new ArrayList<Task>();
-    }
+    public UIFeedback() { }
     
-    public UIFeedback(boolean isError, ArrayList<Task> taskList, String responseMessage) {
+    public UIFeedback(boolean isError, ViewState vs, String responseMessage) {
         isError_ = isError;
-        taskList_ = new ArrayList<Task>(taskList);
-        responseMessage_ = responseMessage;
-    }
-    
-    // Constructor for view/search command response
-    public UIFeedback(ArrayList<Task> taskList, String responseMessage) {
-        isError_ = false;
-        taskList_ = new ArrayList<Task>(taskList);
-        responseMessage_ = responseMessage;
-    }
-    
-    // Constructor for the response of commands that are not view/search
-    public UIFeedback(String responseMessage) {
-        isError_ = false;
+        viewState_ = vs;
         responseMessage_ = responseMessage;
     }
     
@@ -39,6 +23,7 @@ public class UIFeedback {
     public UIFeedback(boolean isError, String responseMessage) {
         isError_ = isError;
         responseMessage_ = responseMessage;
+        //viewState_ = vs; // this will be the previous viewState
     }
    
     /*-- Public Methods --*/
@@ -47,8 +32,8 @@ public class UIFeedback {
         isError_ = isError;
     }
     
-    public void setTaskList(ArrayList<Task> taskList) {
-        taskList_ = new ArrayList<Task>(taskList);
+    public void setViewState(ViewState vs) {
+        viewState_ = vs;
     }
     
     public void setResponse(String responseMessage) {
@@ -60,11 +45,11 @@ public class UIFeedback {
     }
     
     /**
-     * Returns the list of tasks
-     * @return Returns the ArrayList of Tasks of UIFeedback object.
+     * 
+     * @return Returns the ViewState attribute of UIFeedback object
      */
-    public ArrayList<Task> getTaskList() {
-        return taskList_;
+    public ViewState getViewState() {
+        return viewState_;
     }
     
     /**
