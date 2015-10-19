@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import katnote.parser.EditTaskOption;
+import katnote.parser.ViewTaskOption;
 import katnote.task.TaskType;
 
 public class CommandDetail {
@@ -152,6 +153,10 @@ public class CommandDetail {
 
     public String getFilePath() {
         return getString(CommandProperties.FILE_PATH);
+    }
+    
+    public ViewTaskOption getViewTaskOption() {
+        return (ViewTaskOption) commandData.get(CommandProperties.TASKS_VIEW_OPTION);
     }
 
 }

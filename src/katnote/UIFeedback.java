@@ -18,14 +18,7 @@ public class UIFeedback {
         viewState_ = vs;
         responseMessage_ = responseMessage;
     }
-    
-    // Constructor for a response with an error message
-    public UIFeedback(boolean isError, String responseMessage) {
-        isError_ = isError;
-        responseMessage_ = responseMessage;
-        //viewState_ = vs; // this will be the previous viewState
-    }
-   
+     
     /*-- Public Methods --*/
     
     public void setError(boolean isError) {
