@@ -1,7 +1,6 @@
 package katnote;
 
 import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
@@ -40,16 +40,13 @@ public class Model {
 	private ArrayList<Task> _dataFloatingTasks;
 	private ArrayList<Task> _dataEventTasks;
 	
-	private ArrayList<String> _actionLog;
-	private ArrayList<String> _editOldTaskState;
+	private Stack<String> undoLog;
+	private Stack<String> redoLog;
 	private String _response;
 		
 	// Constants
 	private static final String DATA_FILENAME = "data.txt";
 	private static final int MAX_BUFFER_SIZE = 1024;
-	private static final int MAX_ARG_SIZE = 10;
-	private static final int INDEX_ID = 0;
-	private static final int INDEX_TITLE = 1;
 	private static final int INDEX_TRANSLATION = 1; // For translating internal indexing to displayed indexing.
 	
 	private static final String NULL_DATE = "null";
@@ -65,6 +62,7 @@ public class Model {
 	private static final String MSG_EDIT_TASK_DELETED = "Task %d: %s is successfully deleted.";
 	private static final String MSG_UNDO_CONFIRM = "%s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s redone.";
+	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
 	
 	private static final String MSG_ERR_IO = "I/O Exception.";
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
@@ -72,6 +70,9 @@ public class Model {
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
+	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
+	private static final String MSG_ERR_UNDO = "No actions left to undo.";
+	private static final String MSG_ERR_REDO = "No actions left to redo";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -100,12 +101,13 @@ public class Model {
 		_data = new StorageData(path);
 		_decoder = new StorageDecoder();
 		_encoder = new StorageEncoder();
-		_actionLog = new ArrayList<String>();
-		_editOldTaskState = new ArrayList<String>();
+		undoLog = new Stack<String>();
+		redoLog = new Stack<String>();
 		_dataNormalTasks = new ArrayList<Task>();
 		_dataFloatingTasks = new ArrayList<Task>();
 		_dataEventTasks = new ArrayList<Task>();
 		_dataLog = _decoder.decode();
+		splitTaskType(_dataLog);
 	}
 	
 
@@ -117,9 +119,14 @@ public class Model {
 	 */
 	public String addTask(Task task) throws Exception {
 		
+	    // Save task in Array
 	    task.setID(getNextID());
 	    _dataLog.add(task);
 	    
+	    // Split the task
+	    splitTaskType(task);
+	    
+	    // Save task in Memory
 		_encoder.encode();
 		
 		_response = String.format(MSG_TASK_ADDED, task.getTitle());
@@ -145,17 +152,8 @@ public class Model {
 	
 	/**
 	 * Modify the fields of a task.
-	 * null = no change.
-	 * args[0]: task_id <= This will NOT change. Taken as reference number.
-	 * args[1]: title
-	 * args[2]: task type
-	 * args[3]: start date
-	 * args[4]: end date
-	 * args[5]: repeat option
-	 * args[6]: terminate date
-	 * args[7]: description
-	 * args[8]: category
-	 * args[9]: completed
+	 * ! SUGGESTION: Add a task type check for the modification of times. 
+	 * Eg: Floating Tasks should not allow modification of any sort of time.
 	 * @param task with the data described above.
 	 * @return the response message of a successful modification to the specified task.
 	 * @throws Exception 
@@ -165,6 +163,7 @@ public class Model {
 	    Task editedTask = _dataLog.get(taskID);
 	    String optionName = editOption.getOptionName();
 	    switch (optionName) {
+	        // I don't think we should allow modification of task id*
 	        case CommandProperties.TASK_ID :
 	            editedTask.setID(Integer.parseInt(editOption.getOptionValue()));
 	            break;
@@ -183,6 +182,13 @@ public class Model {
 	        case CommandProperties.TIME_UNTIL :
 	            editedTask.setTerminateDate(editOption.getOptionValueDate());
 	            break;
+	            // TODO: 
+//	        case CommandProperties.TASK_DESCRIPTION :
+//	            editedTask.setDescription(editOption.getOptionValue());
+//	            break;
+//	        case CommandProperties.TASK_CATEGORY :
+//	            editedTask.setCategory(editOption.getOptionValue());
+//	            break;
 	        default:
 	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
 	            return _response;
@@ -208,7 +214,7 @@ public class Model {
 		
 		_encoder.encode();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, taskID + 1, title);
+		_response = String.format(MSG_EDIT_TASK_DELETED, displayedID, title);
 		return _response;
 	}
 	
@@ -234,37 +240,93 @@ public class Model {
 	 * @throws Exception 
 	 */
 	public String setLocation(CommandDetail commandDetail) throws Exception {
+	    
+	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
+	        return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
+	    }
 		
 		String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
-		
-		if (newSaveLocation == null) {
-			return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
-		}
+
 		_response = _data.setPath(newSaveLocation);
 		return _response;
 	}
 	
-	// Get all tasks.
+	/**
+	 * Imports the data.txt file from the specified location and saves it to the local version.
+	 * @param commandDetail with the IMPORT_LOCATION property.
+	 * @return the response message of a successful import of data.
+	 * @throws Exception 
+	 */
+	public String importData(CommandDetail commandDetail) throws Exception {
+	    
+	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
+            return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
+        }
+	    
+	    String importLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION); // TODO: REMEMBER TO CHANGE ONCE PARSER IS READY.
+	    
+	    _response = _data.importData(importLocation);
+	    return _response;
+	}
+	
+	// Get tasks data.
 	public ArrayList<Task> getData() {
 	    return _dataLog;
 	}
 	
 	public ArrayList<Task> getNormalTasks() {
-	    // TODO:
-	    return null;
+	    return _dataNormalTasks;
 	}
 	
 	public ArrayList<Task> getFloatingTasks() {
-	    // TODO:
-	    return null;
+	    return _dataFloatingTasks;
 	}
 	
 	public ArrayList<Task> getEventTasks() {
-	    // TODO: 
-	    return null;
+	    return _dataEventTasks;
 	}
 
 	// Helper Methods
+	private void splitTaskType(Task task) {
+	    TaskType type = task.getTaskType();
+        switch (type) {
+            case NORMAL :
+                _dataNormalTasks.add(task);
+                break;
+            case FLOATING :
+                _dataFloatingTasks.add(task);
+                break;
+            case EVENT :
+                _dataEventTasks.add(task);
+                break;
+            default :
+                _dataNormalTasks.add(task);
+                break;
+        }
+	}
+	
+	private void splitTaskType(ArrayList<Task> taskArray) {
+	    
+	    TaskType type;
+	    for (Task t : taskArray) {
+	        type = t.getTaskType();
+	        switch(type) {
+	            case NORMAL :
+	                _dataNormalTasks.add(t);
+	                break;
+	            case FLOATING :
+	                _dataFloatingTasks.add(t);
+	                break;
+	            case EVENT :
+	                _dataEventTasks.add(t);
+	                break;
+	            default :
+	                _dataNormalTasks.add(t);
+	                break;
+	        }
+	    }
+	}
+	
 	private int getNextID() {
 	    return _dataLog.size();
 	}
@@ -516,6 +578,28 @@ public class Model {
 			return _response;
 		}
 		
+		// Import
+		public String importData(String importLocation) throws Exception {
+		    
+		    // Look for data.txt in importLocation
+		    String importFilePath = importLocation + DATA_FILENAME;
+		    File importFile = new File(importFilePath);
+		    if (!importFile.exists()) {
+		        _response = MSG_ERR_IMPORT_LOCATION_MISSING;
+		        return _response;
+		    }
+		    
+		    // Import data over. (Overwrite onto existing)
+		    File dataFile = new File(_dataFilePath);
+		    if (dataFile.exists()) {
+		        dataFile.delete();
+		    }
+		    copyData(importFilePath, _dataFilePath);
+		    
+		    _response = String.format(MSG_IMPORT_CONFIRM, importFilePath, _dataFilePath);
+		    return _response;
+		}
+		
 		// Helper Methods
 		private String createFiles() throws Exception {
 			
@@ -565,6 +649,31 @@ public class Model {
 			} catch (IOException e) {
 				return handleException(e, MSG_ERR_IO);
 			}
+		}
+		
+		private void copyData(String src, String dest) throws Exception {
+		    
+		    try {
+		        File srcFile = new File(src);
+		        File destFile = new File(dest);
+		        
+		        destFile.createNewFile();
+		        FileInputStream inStream = new FileInputStream(srcFile);
+		        FileOutputStream outStream = new FileOutputStream(destFile);
+		        
+		        byte[] buffer = new byte[MAX_BUFFER_SIZE];
+		        
+		        int length;
+		        while((length = inStream.read(buffer)) > 0) {
+		            outStream.write(buffer, 0, length);
+		        }
+		        
+		        inStream.close();
+		        outStream.close();
+		        
+		   } catch (IOException e) {
+		        handleException(e, MSG_ERR_IO);
+		   }
 		}
 	}
 }

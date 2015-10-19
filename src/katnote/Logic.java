@@ -80,6 +80,7 @@ public class Logic {
         switch (type) {
 			case ADD_NORMAL:
 			    task = new Task(commandDetail);
+			    task.setTaskType(commandDetail.getTaskType());
 				response.setResponse(model.addTask(task));
 				break;
 				
