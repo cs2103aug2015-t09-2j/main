@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<fx:root prefHeight="30.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="30.0" stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane prefHeight="20.0" prefWidth="20.0" styleClass="TaskRowIcon" stylesheets="@application.css" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-      <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0">
+      <Pane prefHeight="20.0" prefWidth="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+      <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0">
          <children>
-            <Label fx:id="taskDescriptionLabel" prefHeight="30.0" text="Label" AnchorPane.leftAnchor="0.0" />
-            <Label fx:id="timeLabel" maxWidth="90.0" prefHeight="30.0" prefWidth="90.0" text="Label" AnchorPane.rightAnchor="0.0" />
+            <Label fx:id="taskDescriptionLabel" prefHeight="30.0" styleClass="TaskRowText" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="40.0" />
+            <Pane fx:id="checkmarkPane" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
    </children>

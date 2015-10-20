@@ -3,9 +3,8 @@ package katnote.ui;
 import katnote.KatNoteLogger;
 import katnote.Logic;
 import katnote.UIFeedback;
-import katnote.task.Task;
+import katnote.ViewState;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,9 +16,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
+    private static final boolean IS_GUI_FORMAT = true;
     private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
-
     private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
+
     private BorderPane rootLayout;
     private Stage primaryStage;
     private Logic logic;
@@ -48,8 +48,7 @@ public class GraphicalUserInterface extends Application {
     private void loadResources() {
         log.log(Level.INFO, "loading resources");
         Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
-        Font f = Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(),
-                10);
+        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
     }
 
     public void initRootLayout() {
@@ -75,11 +74,12 @@ public class GraphicalUserInterface extends Application {
     public void setUpTaskViewer() {
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
+        updateTaskViewer(logic.getInitialViewState());
     }
 
-    public void updateTaskViewer(Task[] tasks) {
-        taskViewer.clearViewer();
-        taskViewer.loadDetailedListOfTask(tasks);
+    public void updateTaskViewer(ViewState viewState) {
+        TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
+        taskViewer.loadTaskFormat(listFormat);
     }
 
     public void handleCommandInput(CommandBarController commandBarController, String inputText) {
@@ -88,15 +88,13 @@ public class GraphicalUserInterface extends Application {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError());
             if (!feedback.isAnError()) {
-                ArrayList<Task> taskList = feedback.getTaskList();
-                if (taskList.size() != 0) {
-                    Task[] tasks = taskList.toArray(new Task[taskList.size()]);
-                    updateTaskViewer(tasks);
+                ViewState viewState = feedback.getViewState();
+                if (viewState != null) {
+                    updateTaskViewer(viewState);
                 }
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            commandBarController.setResponseText(e.getMessage(), true);
+            commandBarController.setErrorText(e.getMessage());
             e.printStackTrace();
         }
 

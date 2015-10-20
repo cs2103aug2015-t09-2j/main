@@ -7,6 +7,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class CommandBarController {
+    private static final String NORMAL_STYLE = "-fx-text-fill: black;";
+    private static final String ERROR_STYLE = "-fx-text-fill: red;";
+    private static final boolean IS_ERROR = true;
+    private static final boolean IS_NOT_ERROR = false;
+
     private GraphicalUserInterface mainUI;
 
     @FXML
@@ -27,16 +32,24 @@ public class CommandBarController {
     }
 
     public void setResponseText(String response) {
-        setResponseText(response, false);
+        setResponseText(response, IS_NOT_ERROR);
+    }
+    
+    public void setErrorText(String response) {
+        setResponseText(response, IS_ERROR);
     }
 
     public void setResponseText(String response, boolean isError) {
-        if (isError) {
-            responseLabel.setStyle("-fx-text-fill: red;");
-        } else {
-            responseLabel.setStyle("-fx-text-fill: black;");
-        }
+        setResponseErrorState(isError);
         responseLabel.setText(response);
+    }
+
+    private void setResponseErrorState(boolean isError) {
+        if (isError) {
+            responseLabel.setStyle(ERROR_STYLE);
+        } else {
+            responseLabel.setStyle(NORMAL_STYLE);
+        }
     }
 
 }
