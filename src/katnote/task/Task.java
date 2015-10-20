@@ -49,9 +49,6 @@ public class Task {
     // Messages
     private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";
 
-    // Format
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
     // Constructor using JSONArray
     public Task(JSONArray array) throws Exception {
 
@@ -132,7 +129,7 @@ public class Task {
         if (dateStr.equals(NULL_DATE)) {
             return null;
         } else {
-            LocalDateTime date = LocalDateTime.parse(dateStr, formatter);
+            LocalDateTime date = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
             return date;
         }
     }
