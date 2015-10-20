@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import katnote.parser.EditTaskOption;
 import katnote.parser.Parser;
 import katnote.parser.ViewTaskOption;
 import katnote.task.Task;
+import katnote.task.TaskDueDateComparator;
 
 public class Logic {
 
@@ -169,8 +171,9 @@ public class Logic {
                 String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
                 setSourcePath(newSaveLocation);
                 feedback.setResponse(model_.setLocation(commandDetail));
-
-                updateViewState(vs);
+                
+            case EXIT :
+                feedback.setExit(true);
                 break;
 
             default :
@@ -201,10 +204,7 @@ public class Logic {
         search.setIsCompleted(false);
      
         // search and return
-        //TODO: Refactor this into a method
-        vs = new ViewState(search.searchData(model_.getNormalTasks()),
-                           search.searchData(model_.getFloatingTasks()),
-                           search.searchData(model_.getEventTasks()));   
+        vs = searchAndUpdate(vs, search);   
         return vs;
 
     }
@@ -246,10 +246,7 @@ public class Logic {
         }  
               
         // search and return
-        //TODO: Refactor this into a method
-        vs = new ViewState(search.searchData(model_.getNormalTasks()),
-                           search.searchData(model_.getFloatingTasks()),
-                           search.searchData(model_.getEventTasks()));    
+        vs = searchAndUpdate(vs, search);   
         return vs;
     }
             
@@ -265,15 +262,80 @@ public class Logic {
     }
     
     /**
-     * Updates input ViewState with latest data from Model
+     * Searches through the Model data based on the input Search object and updates 
+     * the input ViewState with the newly searched state.
+     * @param vs
+     *          ViewState to be updated
+     * @param search
+     *          Search object containing the information for sorting
+     * @return ViewState object containing lists of tasks that are searched according to the
+     * input Search object and sorted in order of their due dates whenever possible.
+     */
+    private ViewState searchAndUpdate(ViewState vs, Search search) {
+        //search
+        ArrayList<Task> normal = search.searchData(model_.getNormalTasks());
+        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks());
+        ArrayList<Task> event = search.searchData(model_.getEventTasks());
+        
+        //update
+        vs.setNormalTasks(sortByDueDate(normal));
+        vs.setFloatingTasks(floating);
+        vs.setEventTasks(event); //TODO: sorting not included yet
+        
+        return vs;
+    }
+    
+    /**
+     * Updates input ViewState with the processed data from Model - sorted 
+     * according to due dates and filtered out completed tasks.
      * @param vs
      *          ViewState to be updated
      */
-    //TODO: update this method accordingly to include sorting/remove completed tasks
     private void updateViewState(ViewState vs) { 
-        vs.setNormalTasks(model_.getNormalTasks());
-        vs.setFloatingTasks(model_.getFloatingTasks());
-        vs.setEventTasks(model_.getEventTasks());
+        vs.setNormalTasks(processTaskList(model_.getNormalTasks()));
+        vs.setFloatingTasks(getIncomplete(model_.getFloatingTasks()));
+        vs.setEventTasks(model_.getEventTasks()); // TODO: Processing not included for now
+    }
+    
+    /**
+     * Processes the input task list by filtering out the completed tasks and sorting them in accordance
+     * to their due dates (earlier tasks come first).
+     * @param taskList
+     *              The ArrayList of Task to be filtered and processed. Task type != FLOATING
+     * @return Returns a filtered list of incomplete tasks that are sorted in accordance of their due dates
+     */
+    private ArrayList<Task> processTaskList(ArrayList<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<Task>(taskList);
+        newList = getIncomplete(newList);
+        newList = sortByDueDate(newList);
+        return newList;
+    }
+    
+    /**
+     * Sorts the input task list according to their due dates (earliest will come first)
+     * @param taskList List of tasks to be sorted. Task types should be != FLOATING
+     */
+    private ArrayList<Task> sortByDueDate(ArrayList<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<Task>(taskList);
+        Collections.sort(newList, new TaskDueDateComparator());
+        return newList;
+    }
+    
+    /**
+     * Removes all completed tasks from input list
+     * @param list ArrayList of Task that is to be filtered
+     * @return the ArrayList of uncompleted Task
+     */
+    private ArrayList<Task> getIncomplete(ArrayList<Task> list) {
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < list.size(); i++) {
+            Task task = list.get(i);
+            if (!task.isCompleted()) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;
     }
 
 }
@@ -323,39 +385,12 @@ class Tracker {
 
 class Search {
     
-    /*
-    private ArrayList<Task> normalData_;
-    private ArrayList<Task> floatingData_;
-    private ArrayList<Task> eventData_;
-    */
-    
     private String keyword_;
     private Boolean isCompleted_; // will be set to null if searching for both
 
     private LocalDateTime start_; // for events only
     private LocalDateTime end_; // for events only
     private LocalDateTime due_; 
-    
-    /*
-    // initialise a Search object with the list of Tasks to be searched
-    public Search(ArrayList<Task> normal, ArrayList<Task> floating, ArrayList<Task> event ) { 
-        normalData_ = new ArrayList<Task>(normal);
-        floatingData_ = new ArrayList<Task>(floating);
-        eventData_ = new ArrayList<Task>(event);      
-    }
-    
-    public void setNormalData(ArrayList<Task> normal) {
-        normalData_ = new ArrayList<Task>(normal);
-    }
-    
-    public void setFloatingData(ArrayList<Task> floating) {
-        normalData_ = new ArrayList<Task>(floating);
-    }
-    
-    public void setEventData(ArrayList<Task> event) {
-        normalData_ = new ArrayList<Task>(event);
-    }
-    */
     
     public Search() { }
     
