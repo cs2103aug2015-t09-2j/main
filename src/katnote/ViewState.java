@@ -13,7 +13,9 @@ public class ViewState {
     private ArrayList<Task> allTasks_; // not needed for now
     
     //Constructor
-    public ViewState() { }
+    public ViewState() {
+       
+    }
     
     public ViewState(ArrayList<Task> normalTasks,
                      ArrayList<Task> floatingTasks,
@@ -47,13 +49,15 @@ public class ViewState {
     
     // Setters
     public void setNormalTasks(ArrayList<Task> list) {
-        list = getIncomplete(list);
-        sortByDueDate(list);
+        //TODO: Shift sorting elsewhere, not inside ViewState
+        list = getIncomplete(list);        
+        sortByDueDate(list); 
         normalTasks_ = new ArrayList<Task>(list);
         
     }
 
-    public void setFloatingTasks(ArrayList<Task> list) {
+    public void setFloatingTasks(ArrayList<Task> list) {       
+        //TODO: Shift sorting elsewhere, not inside ViewState
         list = getIncomplete(list);
         floatingTasks_ = new ArrayList<Task>(list);
     }
