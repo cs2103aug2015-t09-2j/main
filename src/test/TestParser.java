@@ -13,14 +13,14 @@ public class TestParser {
     @Test
     public void testDetermineStartKeyword() {
         StringBuilder truncatedCommand = new StringBuilder();
-        String keyword = Parser.determineStartKeyword("add hello by tuesday", truncatedCommand);
+        String keyword = Parser.determineStartKeyword("Add hello by tuesday", truncatedCommand);
         assertEquals("add", keyword);
         assertEquals("hello by tuesday", truncatedCommand.toString());
     }
 
     @Test
     public void testAddCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("add hello by tuesday");
+        CommandDetail commandDetail = Parser.parseCommand("ADD hello by tuesday");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getDueDate());
@@ -37,7 +37,7 @@ public class TestParser {
 
     @Test
     public void testEditCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("edit task 4 set task_title hello");
+        CommandDetail commandDetail = Parser.parseCommand("EDit task 4 set task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());

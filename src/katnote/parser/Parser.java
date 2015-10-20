@@ -92,12 +92,13 @@ public class Parser {
      */
     public static String determineStartKeyword(String commandStr, StringBuilder truncatedCommand) {
         // Trim command before processing
-        commandStr = commandStr.trim();
+        commandStr = commandStr.trim();        
         truncatedCommand.setLength(0);
         // check different starts of command
+        String lowerCaseCommandStr = commandStr.trim().toLowerCase();
         for (String startKeyword : CommandKeywords.START_KEYWORDS_LIST) {
-            if (commandStr.startsWith(startKeyword)) {
-                truncatedCommand.append(commandStr.replaceFirst(startKeyword, "").trim());
+            if (lowerCaseCommandStr.startsWith(startKeyword)) {
+                truncatedCommand.append(commandStr.replaceFirst("(?i)" + startKeyword, "").trim());
                 return startKeyword;
             }
         }
