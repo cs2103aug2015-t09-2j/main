@@ -45,14 +45,14 @@ public class DateParser {
     public static final int END_OF_DAY = 2;
 
     /*
-     * get today Date time
+     * Gets today Date time
      */
     public static LocalDate getToday() {
         return LocalDate.now();
     }
 
     /*
-     * get tomorrow Date time
+     * Gets tomorrow Date time
      */
     public static LocalDate getTomorrow() {
         LocalDate date = LocalDate.now();
@@ -61,7 +61,7 @@ public class DateParser {
     }
 
     /*
-     * get next week Date time
+     * Gets next week Date time
      */
     public static LocalDate getNextWeek() {
         LocalDate date = LocalDate.now();
@@ -70,7 +70,7 @@ public class DateParser {
     }
 
     /*
-     * Find the next desired weekday
+     * Finds the next desired weekday
      * 
      * @param desiredWeekday the next desired weekday
      * 
@@ -86,7 +86,7 @@ public class DateParser {
     }
 
     /*
-     * get next month Date time
+     * Gets next month Date time
      */
     public static LocalDate getNextMonth() {
         LocalDate date = LocalDate.now();
@@ -95,7 +95,7 @@ public class DateParser {
     }
 
     /*
-     * get next year Date time
+     * Gets next year Date time
      */
     public static LocalDate getNextYear() {
         LocalDate date = LocalDate.now();
@@ -135,7 +135,7 @@ public class DateParser {
     }
 
     /*
-     * convert string (absolute time format) to LocalDate
+     * Converts string (absolute time format) to LocalDate
      */
     private static LocalDate parseAbsoluteDate(String time, int defaultTimeOption) {
         int currentYear = LocalDate.now().getYear();
@@ -187,21 +187,21 @@ public class DateParser {
     }
     
     /*
-     * trim time of day from the string
+     * Trims time of day from the string
      */
     private static String trimTimeOfDay(String time){
         return time.replaceFirst(ABSOLUTE_DATE_TIME_PATTERN, "").trim();
     }
 
     /*
-     * converts string to LocalDateTime object
+     * Converts string to LocalDateTime object
      */
     public static LocalDateTime parseDateTime(String time) {
         return parseDateTime(time, MIDDLE_OF_DAY);
     }
 
     /*
-     * converts string to LocalDateTime object
+     * Converts string to LocalDateTime object
      */
     public static LocalDateTime parseDateTime(String time, int defaultTimeOption) {
         // get time of day and trim

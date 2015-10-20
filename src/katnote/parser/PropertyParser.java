@@ -8,7 +8,7 @@ import katnote.command.CommandProperties;
 public class PropertyParser {
 
     /*
-     * Convert the property string value into appropriate Object based on
+     * Converts the property string value into appropriate Object based on
      * propertyName. For example, parseProperty(“from”, “24/10/2015”) will
      * return a Date object representing 24/10/2015.
      * 
@@ -37,10 +37,6 @@ public class PropertyParser {
                 command.setProperty(CommandProperties.TIME_TO,
                         parseOptionValue(CommandProperties.TIME_TO, propertyValue));
                 break;
-            case CommandKeywords.KW_UNTIL :
-                command.setProperty(CommandProperties.TIME_UNTIL,
-                        parseOptionValue(CommandProperties.TIME_UNTIL, propertyValue));
-                break;
             case CommandKeywords.KW_ON :
                 // take the begin of day to TIME_FROM and end of day to TIME_TO
                 command.setProperty(CommandProperties.TIME_FROM,
@@ -61,7 +57,7 @@ public class PropertyParser {
     }
 
     /*
-     * Convert the option string value into appropriate Object based on
+     * Converts the option string value into appropriate Object based on
      * optionName.
      * 
      */
