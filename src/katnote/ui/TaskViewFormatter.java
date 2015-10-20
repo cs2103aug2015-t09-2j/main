@@ -99,7 +99,7 @@ public class TaskViewFormatter {
     }
 
     private TaskViewGroup createTaskTodayGroup(ArrayList<Task> todayList) {        
-        TaskViewGroup todayGroup = createTaskGroupDetailed(GROUP_TITLE_TODAY, todayList);
+        TaskViewGroup todayGroup = createTaskGroupDetailed(GROUP_TITLE_TODAY, todayList, true);
         return todayGroup;
     }
 
@@ -122,7 +122,7 @@ public class TaskViewFormatter {
     }
 
     private TaskViewGroup createTaskTomorrowGroup(ArrayList<Task> tomorrowList) {
-        TaskViewGroup tomorrowGroup = createTaskGroupDetailed(GROUP_TITLE_TOMORROW, tomorrowList);
+        TaskViewGroup tomorrowGroup = createTaskGroupDetailed(GROUP_TITLE_TOMORROW, tomorrowList, true);
         return tomorrowGroup;
     }
 
@@ -146,7 +146,7 @@ public class TaskViewFormatter {
     }
 
     private TaskViewGroup createTaskRemainingGroup(ArrayList<Task> list) {
-        TaskViewGroup remainingGroup = createTaskGroupDetailed(GROUP_TITLE_THE_REST, list);
+        TaskViewGroup remainingGroup = createTaskGroupDetailed(GROUP_TITLE_THE_REST, list, false);
         return remainingGroup;
     }
 
@@ -169,12 +169,12 @@ public class TaskViewFormatter {
         return floatingGroup;
     }
 
-    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list) {
+    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list, boolean isDateHidden) {
         TaskViewGroup viewGroup = new TaskViewGroup(groupTitle);
 
         for (int i = 0; i < list.size(); i++) {
             Task t = list.get(i);
-            TaskDetailedRow row = new TaskDetailedRow(t, index);
+            TaskDetailedRow row = new TaskDetailedRow(t, index, isDateHidden);
             viewGroup.addDetialedTaskRow(row);
             _viewOrderedTaskList.add(t);
             index++;

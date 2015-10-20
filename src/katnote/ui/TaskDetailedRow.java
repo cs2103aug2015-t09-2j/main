@@ -16,6 +16,7 @@ public class TaskDetailedRow extends AnchorPane {
 
     private static final String CHECKMARK_CLASS_NAME = "check";
     private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s ";
+    private static final String NORMAL_TASK_TIME_FORMAT = "Due: %1s";
     private static final String TIME_PATTERN = "hh:mm a";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskDetailedRow.fxml";
@@ -28,12 +29,17 @@ public class TaskDetailedRow extends AnchorPane {
     private Pane checkmarkPane;
     private Task task;
     private int index;
+    private boolean isDateHidden;
 
+    public TaskDetailedRow(Task task, int index){
+        this(task, index, false);
+    }
     
-    public TaskDetailedRow(Task task, int index) {
+    public TaskDetailedRow(Task task, int index, boolean isDateHidden) {
         loadFXML();
         this.task = task;
         this.index = index;
+        this.isDateHidden = isDateHidden;
         
         setDescriptionProperty();
         setDateTimeProperty();
@@ -46,10 +52,16 @@ public class TaskDetailedRow extends AnchorPane {
         if(task.getTaskType() == TaskType.NORMAL){
             LocalDateTime date = task.getEndDate();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
+            String dateString = date.format(dateFormat);            
             DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_PATTERN);
-            String dateString = date.format(dateFormat);
             String timeString = date.format(timeFormat);
-            String dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);  
+            String dateTime;
+            if(isDateHidden){
+                dateTime = String.format(NORMAL_TASK_TIME_FORMAT, timeString);                
+            } else {
+                dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);                  
+            }
+            
             dateTimeLabel.setText(dateTime);
         }
     }
