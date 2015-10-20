@@ -108,7 +108,7 @@ public class Model {
 	private static final String EDIT_COMPLETE = "edit_complete";
 	
 	// Format
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -219,6 +219,8 @@ public class Model {
 	            return _response;
 	    }
 	    
+	    splitTaskType(_dataLog);
+	    
 	    _encoder.encode();
 	    
 	    // Update UndoLog
@@ -242,6 +244,8 @@ public class Model {
 	    String title = _dataLog.get(taskID).getTitle();
 		int displayedID = taskID + INDEX_TRANSLATION;
 	    _dataLog.remove(taskID);
+	    
+	    splitTaskType(_dataLog);
 		
 		_encoder.encode();
 		
@@ -318,13 +322,17 @@ public class Model {
 	 */
 	public String importData(CommandDetail commandDetail) throws Exception {
 	    
-	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
+	    if (commandDetail.getProperty(CommandProperties.FILE_PATH) == null) {
             return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
         }
 	    String importLocation = (String) commandDetail.getProperty(CommandProperties.FILE_PATH);
 	    
 	    _response = _data.importData(importLocation);
 	    return _response;
+	}
+	
+	public String getDataFilePath() {
+	    return _data.getDataFilePath();
 	}
 	
 	// Get tasks data.
