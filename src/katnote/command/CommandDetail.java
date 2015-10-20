@@ -12,7 +12,7 @@ public class CommandDetail {
     protected HashMap<String, Object> commandData;
 
     /*
-     * Create new CommandDetail object of corresponding command type
+     * Creates new CommandDetail object of corresponding command type
      */
     public CommandDetail(CommandType commandType) {
         this.commandType = commandType;
@@ -20,7 +20,7 @@ public class CommandDetail {
     }
 
     /*
-     * Create new CommandDetail object with unknown command type
+     * Creates new CommandDetail object with unknown command type
      */
     public CommandDetail() {
         this.commandType = CommandType.UNKNOWN;
@@ -28,14 +28,14 @@ public class CommandDetail {
     }
 
     /*
-     * Set the type of command
+     * Sets the type of command
      */
     public void setCommandType(CommandType commandType) {
         this.commandType = commandType;
     }
 
     /*
-     * Return type of command
+     * Returns type of command
      */
     public CommandType getCommandType() {
         return commandType;
@@ -65,7 +65,7 @@ public class CommandDetail {
     }
 
     /*
-     * Return value of property with given key
+     * Returns value of property with given key
      * 
      * @param key
      */
@@ -74,7 +74,7 @@ public class CommandDetail {
     }
 
     /*
-     * Return value of string property with given key
+     * Returns value of string property with given key
      * 
      * @param key
      */
@@ -83,7 +83,7 @@ public class CommandDetail {
     }
 
     /*
-     * Return value of LocalDateTime property with given key
+     * Returns value of LocalDateTime property with given key
      * 
      * @param key
      */
@@ -103,49 +103,49 @@ public class CommandDetail {
     }
 
     /*
-     * Return type of task
+     * Returns type of task
      */
     public TaskType getTaskType() {
         return (TaskType) commandData.get(CommandProperties.TASK_TYPE);
     }
 
     /*
-     * Return title of task
+     * Returns title of task
      */
     public String getTitle() {
         return getString(CommandProperties.TASK_TITLE);
     }
 
     /*
-     * Return start date
+     * Returns start date
      */
     public LocalDateTime getStartDate() {
         return getDate(CommandProperties.TIME_FROM);
     }
 
     /*
-     * Return end date
+     * Returns end date
      */
     public LocalDateTime getEndDate() {
         return getDate(CommandProperties.TIME_TO);
     }
 
     /*
-     * Return due date
+     * Returns due date
      */
     public LocalDateTime getDueDate() {
         return getDate(CommandProperties.TIME_BY);
     }
 
     /*
-     * Return keywords for command type FIND
+     * Returns keywords for command type FIND
      */
     public String getFindKeywords() {
         return getString(CommandProperties.FIND_KEYWORDS);
     }
 
     /*
-     * Return main content of command for command type FIND, HELP
+     * Returns main content of command for command type FIND, HELP
      */
     public String getMainContent() {
         return getString(CommandProperties.MAIN_CONTENT);
