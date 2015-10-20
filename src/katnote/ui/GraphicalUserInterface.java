@@ -91,7 +91,9 @@ public class GraphicalUserInterface extends Application {
         try {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError());
-            if (!feedback.isAnError()) {
+            if(feedback.isAnExit()){
+                primaryStage.close();
+            } else if (!feedback.isAnError()) {
                 ViewState viewState = feedback.getViewState();
                 if (viewState != null) {
                     ArrayList<Task> listOfTaskMapping = updateTaskViewer(viewState);
