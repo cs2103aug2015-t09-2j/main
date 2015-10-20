@@ -59,9 +59,9 @@ public class Model {
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
 	private static final String MSG_DATA_FILE_READY = "data.txt is ready for use in %s";
 	private static final String MSG_TASK_ADDED = "Task: %s added.";
-	private static final String MSG_EDIT_TASK_COMPLETED = "Task %d: %s is marked completed.";
-	private static final String MSG_EDIT_TASK_MODIFIED = "Task %d: %s is successfully modified.";
-	private static final String MSG_EDIT_TASK_DELETED = "Task %d: %s is successfully deleted.";
+	private static final String MSG_EDIT_TASK_COMPLETED = "Task: %s is marked completed.";
+	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
+	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
 	private static final String MSG_UNDO_CONFIRM = "%s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s redone.";
 	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
@@ -170,7 +170,7 @@ public class Model {
         _undoTaskObjLog.push(editedTask);
         resetRedoLog();
 	    
-		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getID(), editedTask.getTitle());
+		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getTitle());
 		return _response;
 	}
 	
@@ -215,8 +215,7 @@ public class Model {
 //	            editedTask.setCategory(editOption.getOptionValue());
 //	            break;
 	        default:
-	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
-	            return _response;
+	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
 	    }
 	    
 	    splitTaskType(_dataLog);
@@ -228,7 +227,7 @@ public class Model {
         _undoTaskObjLog.push(oldTask);
         resetRedoLog();
 	    
-	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
 	    return _response;
 	}
 	
@@ -242,8 +241,8 @@ public class Model {
 		
 		Task oldTask = _dataLog.get(taskID);
 	    String title = _dataLog.get(taskID).getTitle();
-		int displayedID = taskID + INDEX_TRANSLATION;
 	    _dataLog.remove(taskID);
+	    updateID(_dataLog);
 	    
 	    splitTaskType(_dataLog);
 		
@@ -254,7 +253,7 @@ public class Model {
         _undoTaskObjLog.push(oldTask);
         resetRedoLog();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, displayedID, title);
+		_response = String.format(MSG_EDIT_TASK_DELETED, title);
 		return _response;
 	}
 	
@@ -384,6 +383,7 @@ public class Model {
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
             _dataLog.remove(taskObj.getID());
+            updateID(_dataLog);
             
             splitTaskType(_dataLog);
             _encoder.encode();
@@ -403,6 +403,7 @@ public class Model {
 	        Task oldTask = _dataLog.get(taskObj.getID());
             _dataLog.remove(taskObj.getID());
             _dataLog.add(taskObj.getID(), taskObj);
+            updateID(_dataLog);
             
             splitTaskType(_dataLog);
             _encoder.encode();
@@ -489,6 +490,7 @@ public class Model {
 	        Task oldTask = _dataLog.get(taskObj.getID());
 	        _dataLog.remove(taskObj.getID());
 	        _dataLog.add(taskObj.getID(), taskObj);
+	        updateID(_dataLog);
 
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
@@ -507,6 +509,7 @@ public class Model {
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
 	        _dataLog.remove(taskObj.getID());
+	        updateID(_dataLog);
 
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
@@ -581,6 +584,14 @@ public class Model {
 	
 	private int getNextID() {
 	    return _dataLog.size();
+	}
+	
+	private void updateID(ArrayList<Task> taskArray) {
+	    // Update the id-field for the tasks on each shift.
+	    for (int i=0; i<taskArray.size(); i++) {
+	        Task updateTask = taskArray.get(i);
+	        updateTask.setID(i);
+	    }
 	}
 	
 	private String handleException(Exception e, String msg) throws Exception {
@@ -807,7 +818,7 @@ public class Model {
 			_sourcePath = path;
             _dataFilePath = path + DATA_FILENAME;
 			_response = createFiles();
-			System.out.println(_response);
+			// System.out.println(_response);
 		}
 		
 		// Get
