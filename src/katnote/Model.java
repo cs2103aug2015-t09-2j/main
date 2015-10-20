@@ -59,9 +59,9 @@ public class Model {
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
 	private static final String MSG_DATA_FILE_READY = "data.txt is ready for use in %s";
 	private static final String MSG_TASK_ADDED = "Task: %s added.";
-	private static final String MSG_EDIT_TASK_COMPLETED = "Task %d: %s is marked completed.";
-	private static final String MSG_EDIT_TASK_MODIFIED = "Task %d: %s is successfully modified.";
-	private static final String MSG_EDIT_TASK_DELETED = "Task %d: %s is successfully deleted.";
+	private static final String MSG_EDIT_TASK_COMPLETED = "Task: %s is marked completed.";
+	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
+	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
 	private static final String MSG_UNDO_CONFIRM = "%s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s redone.";
 	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
@@ -170,7 +170,7 @@ public class Model {
         _undoTaskObjLog.push(editedTask);
         resetRedoLog();
 	    
-		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getID(), editedTask.getTitle());
+		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getTitle());
 		return _response;
 	}
 	
@@ -227,7 +227,7 @@ public class Model {
         _undoTaskObjLog.push(oldTask);
         resetRedoLog();
 	    
-	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
 	    return _response;
 	}
 	
@@ -241,7 +241,6 @@ public class Model {
 		
 		Task oldTask = _dataLog.get(taskID);
 	    String title = _dataLog.get(taskID).getTitle();
-		int displayedID = taskID + INDEX_TRANSLATION;
 	    _dataLog.remove(taskID);
 	    updateID(_dataLog);
 	    
@@ -254,7 +253,7 @@ public class Model {
         _undoTaskObjLog.push(oldTask);
         resetRedoLog();
 		
-		_response = String.format(MSG_EDIT_TASK_DELETED, displayedID, title);
+		_response = String.format(MSG_EDIT_TASK_DELETED, title);
 		return _response;
 	}
 	
