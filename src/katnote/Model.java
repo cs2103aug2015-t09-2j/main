@@ -215,8 +215,7 @@ public class Model {
 //	            editedTask.setCategory(editOption.getOptionValue());
 //	            break;
 	        default:
-	            _response = String.format(MSG_ERR_TASK_NOT_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
-	            return _response;
+	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
 	    }
 	    
 	    splitTaskType(_dataLog);
@@ -244,6 +243,7 @@ public class Model {
 	    String title = _dataLog.get(taskID).getTitle();
 		int displayedID = taskID + INDEX_TRANSLATION;
 	    _dataLog.remove(taskID);
+	    updateID(_dataLog);
 	    
 	    splitTaskType(_dataLog);
 		
@@ -384,6 +384,7 @@ public class Model {
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
             _dataLog.remove(taskObj.getID());
+            updateID(_dataLog);
             
             splitTaskType(_dataLog);
             _encoder.encode();
@@ -403,6 +404,7 @@ public class Model {
 	        Task oldTask = _dataLog.get(taskObj.getID());
             _dataLog.remove(taskObj.getID());
             _dataLog.add(taskObj.getID(), taskObj);
+            updateID(_dataLog);
             
             splitTaskType(_dataLog);
             _encoder.encode();
@@ -489,6 +491,7 @@ public class Model {
 	        Task oldTask = _dataLog.get(taskObj.getID());
 	        _dataLog.remove(taskObj.getID());
 	        _dataLog.add(taskObj.getID(), taskObj);
+	        updateID(_dataLog);
 
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
@@ -507,6 +510,7 @@ public class Model {
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
 	        _dataLog.remove(taskObj.getID());
+	        updateID(_dataLog);
 
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
@@ -581,6 +585,14 @@ public class Model {
 	
 	private int getNextID() {
 	    return _dataLog.size();
+	}
+	
+	private void updateID(ArrayList<Task> taskArray) {
+	    // Update the id-field for the tasks on each shift.
+	    for (int i=0; i<taskArray.size(); i++) {
+	        Task updateTask = taskArray.get(i);
+	        updateTask.setID(i);
+	    }
 	}
 	
 	private String handleException(Exception e, String msg) throws Exception {
@@ -807,7 +819,7 @@ public class Model {
 			_sourcePath = path;
             _dataFilePath = path + DATA_FILENAME;
 			_response = createFiles();
-			System.out.println(_response);
+			// System.out.println(_response);
 		}
 		
 		// Get
