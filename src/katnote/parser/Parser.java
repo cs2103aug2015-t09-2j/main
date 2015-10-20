@@ -11,10 +11,17 @@ import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.command.CommandType;
 import katnote.task.TaskType;
+import katnote.utils.StringUtils;
 
-public class Parser {
-    private static final String COMMAND_SPLIT_PATTERN = "([^\"]\\S*|\".+?\")\\s*";
+public class Parser {       
+    private static final String COMMAND_SPLIT_PATTERN = "(?:([^\"]\\S*)|\"(.+?)\")\\s*";
+    private static final int COMMAND_SPLIT_PATTERN_NORMAL_POS = 1;
+    private static final int COMMAND_SPLIT_PATTERN_QUOTED_POS = 2;
+    
     private static final String DEFAULT_SPLIT_PATTERN = "\\s+";
+    private static final String IGNORE_CASES_PATTERN = "(?i)";
+    private static final String STR_EMPTY = "";
+    private static final String STR_SPACE = " ";
 
     private static final int TOKENS_PROPERTIES_START_POS = 1;
     private static final int TOKENS_TASK_NAME_POS = 0;
@@ -22,9 +29,10 @@ public class Parser {
 
     private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
     private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
+        
 
     // Class logger
-    private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());
+    private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());    
 
     /*
      * Converts the input command string into CommandDetail format containing
@@ -98,7 +106,7 @@ public class Parser {
         String lowerCaseCommandStr = commandStr.trim().toLowerCase();
         for (String startKeyword : CommandKeywords.START_KEYWORDS_LIST) {
             if (lowerCaseCommandStr.startsWith(startKeyword)) {
-                truncatedCommand.append(commandStr.replaceFirst("(?i)" + startKeyword, "").trim());
+                truncatedCommand.append(commandStr.replaceFirst(IGNORE_CASES_PATTERN + startKeyword, STR_EMPTY).trim());
                 return startKeyword;
             }
         }
@@ -121,7 +129,8 @@ public class Parser {
         StringBuilder currentToken = null;
         boolean isLastTokenKeyword = false;
         while (m.find()) {
-            String token = m.group(1).replace("\"", "");
+            String token = StringUtils.concat(m.group(COMMAND_SPLIT_PATTERN_NORMAL_POS),
+                    m.group(COMMAND_SPLIT_PATTERN_QUOTED_POS));
             boolean isKeyword = CommandKeywords.isMainKeyword(token);
 
             if (currentToken == null || isKeyword != isLastTokenKeyword) {
@@ -130,7 +139,7 @@ public class Parser {
                 }
                 currentToken = new StringBuilder(token);
             } else {
-                currentToken.append(" " + token);
+                currentToken.append(STR_SPACE + token);
             }
 
             isLastTokenKeyword = isKeyword;
