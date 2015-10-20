@@ -9,7 +9,7 @@
    <children>
       <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="taskDescriptionLabel" styleClass="TaskRowText" text="Task" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0" />
+            <Label fx:id="taskDescriptionLabel" styleClass="TaskRowText" text="Task" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0" />
             <Label fx:id="dateTimeLabel" styleClass="TaskRowDateText" text="Date: " AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="30.0" />
             <Pane fx:id="checkmarkPane" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
          </children>

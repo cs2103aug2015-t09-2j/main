@@ -4,7 +4,9 @@ import katnote.KatNoteLogger;
 import katnote.Logic;
 import katnote.UIFeedback;
 import katnote.ViewState;
+import katnote.task.Task;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,12 +76,14 @@ public class GraphicalUserInterface extends Application {
     public void setUpTaskViewer() {
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
-        updateTaskViewer(logic.getInitialViewState());
+        ArrayList<Task> listOfTaskMapping = updateTaskViewer(logic.getInitialViewState());
+        logic.setViewMapping(listOfTaskMapping);
     }
 
-    public void updateTaskViewer(ViewState viewState) {
+    public ArrayList<Task> updateTaskViewer(ViewState viewState) {
         TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
         taskViewer.loadTaskFormat(listFormat);
+        return listFormat.getOrderedTaskList();
     }
 
     public void handleCommandInput(CommandBarController commandBarController, String inputText) {
@@ -90,7 +94,8 @@ public class GraphicalUserInterface extends Application {
             if (!feedback.isAnError()) {
                 ViewState viewState = feedback.getViewState();
                 if (viewState != null) {
-                    updateTaskViewer(viewState);
+                    ArrayList<Task> listOfTaskMapping = updateTaskViewer(viewState);
+                    logic.setViewMapping(listOfTaskMapping);
                 }
             }
         } catch (Exception e) {

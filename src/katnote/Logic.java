@@ -4,13 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +23,6 @@ public class Logic {
 
     private Model model_;
     private Tracker tracker_;
-    private ArrayList<Integer> listOfTaskIDLastDisplayed;
     private String sourcePathStr;
 
     // Error Messages
@@ -89,6 +85,14 @@ public class Logic {
         ViewState vs = new ViewState();
         updateViewState(vs);
         return vs;
+    }
+    
+    /**
+     * Updates tracker's ID list with the latest information based on the input ArrayList of Tasks
+     * @param taskList The list of tasks whose ID is to be updated to the tracker
+     */
+    public void setViewMapping(ArrayList<Task> taskList) {
+        tracker_.setViewMapping(taskList);
     }
     
     
@@ -197,6 +201,7 @@ public class Logic {
         search.setIsCompleted(false);
      
         // search and return
+        //TODO: Refactor this into a method
         vs = new ViewState(search.searchData(model_.getNormalTasks()),
                            search.searchData(model_.getFloatingTasks()),
                            search.searchData(model_.getEventTasks()));   
@@ -241,6 +246,7 @@ public class Logic {
         }  
               
         // search and return
+        //TODO: Refactor this into a method
         vs = new ViewState(search.searchData(model_.getNormalTasks()),
                            search.searchData(model_.getFloatingTasks()),
                            search.searchData(model_.getEventTasks()));    
@@ -263,7 +269,8 @@ public class Logic {
      * @param vs
      *          ViewState to be updated
      */
-    private void updateViewState(ViewState vs) {
+    //TODO: update this method accordingly to include sorting/remove completed tasks
+    private void updateViewState(ViewState vs) { 
         vs.setNormalTasks(model_.getNormalTasks());
         vs.setFloatingTasks(model_.getFloatingTasks());
         vs.setEventTasks(model_.getEventTasks());

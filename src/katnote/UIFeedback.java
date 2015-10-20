@@ -11,7 +11,9 @@ public class UIFeedback {
     
     /*-- Constructors --*/
     
-    public UIFeedback() { }
+    public UIFeedback() { 
+        viewState_ = new ViewState();
+    }
     
     public UIFeedback(boolean isError, ViewState vs, String responseMessage) {
         isError_ = isError;

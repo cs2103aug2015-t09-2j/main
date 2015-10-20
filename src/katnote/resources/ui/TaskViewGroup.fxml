@@ -12,7 +12,4 @@
       <VBox fx:id="taskViewList" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
       <Pane prefHeight="20.0" prefWidth="20.0" styleClass="TaskRowIcon" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
    </children>
-   <padding>
-      <Insets bottom="5.0" />
-   </padding>
 </fx:root>
