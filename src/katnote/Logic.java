@@ -144,7 +144,7 @@ public class Logic {
                 break;
 
             case UNDO :
-                feedback.setResponse(model_.undoLast());
+                feedback.setResponse(model_.undo());
 
                 updateViewState(vs);  
                 break;

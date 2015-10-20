@@ -1,11 +1,9 @@
 package katnote;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -148,6 +146,7 @@ public class Model {
 		// Update UndoLog
 		_undoLog.push(ADD_TASK);
 		_undoTaskObjLog.push(task);
+		resetRedoLog();
 		
 		_response = String.format(MSG_TASK_ADDED, task.getTitle());
 		return _response;
@@ -169,6 +168,7 @@ public class Model {
 	    // Update UndoLog
         _undoLog.push(EDIT_COMPLETE);
         _undoTaskObjLog.push(editedTask);
+        resetRedoLog();
 	    
 		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getID(), editedTask.getTitle());
 		return _response;
@@ -224,6 +224,7 @@ public class Model {
 	    // Update UndoLog
         _undoLog.push(EDIT_MODIFY);
         _undoTaskObjLog.push(oldTask);
+        resetRedoLog();
 	    
 	    _response = String.format(MSG_EDIT_TASK_MODIFIED, taskID + INDEX_TRANSLATION, editedTask.getTitle());
 	    return _response;
@@ -247,6 +248,7 @@ public class Model {
 		// Update UndoLog
         _undoLog.push(EDIT_DELETE);
         _undoTaskObjLog.push(oldTask);
+        resetRedoLog();
 		
 		_response = String.format(MSG_EDIT_TASK_DELETED, displayedID, title);
 		return _response;
@@ -319,7 +321,7 @@ public class Model {
 	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
             return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
         }
-	    String importLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION); // TODO: REMEMBER TO CHANGE ONCE PARSER IS READY.
+	    String importLocation = (String) commandDetail.getProperty(CommandProperties.FILE_PATH);
 	    
 	    _response = _data.importData(importLocation);
 	    return _response;
@@ -343,6 +345,12 @@ public class Model {
 	}
 
 	// Helper Methods
+	private void resetRedoLog() {
+	
+	    _redoLog.clear();
+	    _redoTaskObjLog.clear();
+	}
+	
 	private void reverseUndo(String type, Task taskObj) throws Exception {
 	    
 	    switch (type) {
