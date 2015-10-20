@@ -70,13 +70,13 @@ public class PropertyParser {
         switch (optionName) {
             case CommandProperties.TIME_FROM :
                 // Date time value
-                date = DateParser.parseDate(optionValue, DateParser.BEGIN_OF_DAY);
+                date = DateParser.parseDateTime(optionValue, DateParser.BEGIN_OF_DAY);
                 return date;
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
             case CommandProperties.TIME_UNTIL :
                 // Date time value
-                date = DateParser.parseDate(optionValue, DateParser.END_OF_DAY);
+                date = DateParser.parseDateTime(optionValue, DateParser.END_OF_DAY);
                 return date;
             default :
                 // String value
