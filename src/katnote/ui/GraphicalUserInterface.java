@@ -76,7 +76,8 @@ public class GraphicalUserInterface extends Application {
     public void setUpTaskViewer() {
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
-        updateTaskViewer(logic.getInitialViewState());
+        ArrayList<Task> listOfTaskMapping = updateTaskViewer(logic.getInitialViewState());
+        logic.setViewMapping(listOfTaskMapping);
     }
 
     public ArrayList<Task> updateTaskViewer(ViewState viewState) {
@@ -94,6 +95,7 @@ public class GraphicalUserInterface extends Application {
                 ViewState viewState = feedback.getViewState();
                 if (viewState != null) {
                     ArrayList<Task> listOfTaskMapping = updateTaskViewer(viewState);
+                    logic.setViewMapping(listOfTaskMapping);
                 }
             }
         } catch (Exception e) {
