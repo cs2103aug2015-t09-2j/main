@@ -35,7 +35,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         assertEquals(testRow.getDescription(), "1. do homework");
         
         click("#commandInputBox").type("add do homework1 by today").press(KeyCode.ENTER).release(KeyCode.ENTER);
-        click("#commandInputBox").type("add do homework2 by tomrrow 5pm").press(KeyCode.ENTER).release(KeyCode.ENTER);
+        click("#commandInputBox").type("add do homework2 by tomorrow 5pm").press(KeyCode.ENTER).release(KeyCode.ENTER);
         click("#commandInputBox").type("add do homework3 by 25/10/2015 10am").press(KeyCode.ENTER).release(KeyCode.ENTER);
         click("#commandInputBox").type("add do homework4 by 27/11/2015 12pm").press(KeyCode.ENTER).release(KeyCode.ENTER);
     }
