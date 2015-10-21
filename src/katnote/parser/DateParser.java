@@ -43,6 +43,8 @@ public class DateParser {
     public static final int MIDDLE_OF_DAY = 0;
     public static final int BEGIN_OF_DAY = 1;
     public static final int END_OF_DAY = 2;
+    
+    private static final LocalTime END_OF_DAY_TIME = LocalTime.of(23, 59);
 
     /*
      * Gets today Date time
@@ -180,7 +182,7 @@ public class DateParser {
                 case MIDDLE_OF_DAY :
                     return LocalTime.NOON;
                 case END_OF_DAY :
-                    return LocalTime.MAX;
+                    return END_OF_DAY_TIME;
             }
             return LocalTime.now();
         }
