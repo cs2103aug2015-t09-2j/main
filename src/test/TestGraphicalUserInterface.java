@@ -11,7 +11,6 @@ import org.loadui.testfx.GuiTest;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import katnote.ui.GraphicalUserInterface;
@@ -21,7 +20,7 @@ import katnote.ui.TaskViewGroup;
 public class TestGraphicalUserInterface extends GuiTest {
     
     @Test
-    public void TestTaskFormatStructureAndDate(){
+    public void TestAddingTasks(){
         //let the application load
         sleep(1, TimeUnit.SECONDS);
             
@@ -35,9 +34,31 @@ public class TestGraphicalUserInterface extends GuiTest {
         assertEquals(testRow.getDescription(), "1. do homework");
         
         click("#commandInputBox").type("add do homework1 by today").press(KeyCode.ENTER).release(KeyCode.ENTER);
+        
+        taskGroupList = (VBox)find("#TaskList");
+        nodes = taskGroupList.getChildren();
+        TaskViewGroup todayGroup = (TaskViewGroup)nodes.get(0);
+        assertEquals(todayGroup.getGroupHeaderText(), "Today");
+        testRow = (TaskDetailedRow)todayGroup.getListChildren().getChildren().get(0);
+        assertEquals(testRow.getDescription(), "1. do homework1");
+        
         click("#commandInputBox").type("add do homework2 by tomorrow 5pm").press(KeyCode.ENTER).release(KeyCode.ENTER);
+        
+        taskGroupList = (VBox)find("#TaskList");
+        nodes = taskGroupList.getChildren();
+        TaskViewGroup tmrGroup = (TaskViewGroup)nodes.get(1);
+        assertEquals(tmrGroup.getGroupHeaderText(), "Tomorrow");
+        testRow = (TaskDetailedRow)tmrGroup.getListChildren().getChildren().get(0);
+        assertEquals(testRow.getDescription(), "2. do homework2");
+        
         click("#commandInputBox").type("add do homework3 by 25/10/2015 10am").press(KeyCode.ENTER).release(KeyCode.ENTER);
-        click("#commandInputBox").type("add do homework4 by 27/11/2015 12pm").press(KeyCode.ENTER).release(KeyCode.ENTER);
+        
+        taskGroupList = (VBox)find("#TaskList");
+        nodes = taskGroupList.getChildren();
+        restGroup = (TaskViewGroup)nodes.get(2);
+        assertEquals(restGroup.getGroupHeaderText(), "The Rest");
+        testRow = (TaskDetailedRow)restGroup.getListChildren().getChildren().get(0);
+        assertEquals(testRow.getDescription(), "3. do homework3");
     }
     
     @Override
