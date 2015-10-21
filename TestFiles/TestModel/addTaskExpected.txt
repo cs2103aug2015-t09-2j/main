@@ -1,2 +1,2 @@
 <start>
-{"id":"0","title":"feed cat","task_type":"NORMAL","start_date":"null","end_date":"2015-10-23 23:59:59","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"0","title":"feed cat","task_type":"NORMAL","start_date":"null","end_date":"2015-10-23T23:59:59.999999999","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}

@@ -62,8 +62,8 @@ public class Model {
 	private static final String MSG_EDIT_TASK_COMPLETED = "Task: %s is marked completed.";
 	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
 	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
-	private static final String MSG_UNDO_CONFIRM = "%s undone.";
-	private static final String MSG_REDO_CONFIRM = "%s redone.";
+	private static final String MSG_UNDO_CONFIRM = "%s %s undone.";
+	private static final String MSG_REDO_CONFIRM = "%s %s redone.";
 	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
 	
 	private static final String MSG_ERR_IO = "I/O Exception.";
@@ -102,10 +102,10 @@ public class Model {
 	// Undo and Redo
 	private static final Exception REVERSE_EXCEPTION = new Exception("Reverse Exception");
 	
-	private static final String ADD_TASK = "add_task";
-	private static final String EDIT_MODIFY = "edit_modify";
-	private static final String EDIT_DELETE = "edit_delete";
-	private static final String EDIT_COMPLETE = "edit_complete";
+	private static final String ADD_TASK = "Add Task:";
+	private static final String EDIT_MODIFY = "Modify Task:";
+	private static final String EDIT_DELETE = "Delete Task:";
+	private static final String EDIT_COMPLETE = "Mark Task:";
 	
 	// Format
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
@@ -185,7 +185,7 @@ public class Model {
 	public String editModify(int taskID, EditTaskOption editOption) throws Exception {
 	    
 	    Task editedTask = _dataLog.get(taskID);
-	    Task oldTask = _dataLog.get(taskID);
+	    Task oldTask = new Task(editedTask);
 	    String optionName = editOption.getOptionName();
 	    switch (optionName) {
 	        // I don't think we should allow modification of task id*
@@ -272,7 +272,7 @@ public class Model {
 	    String undoAction = _undoLog.pop();
 	    Task taskObj = _undoTaskObjLog.pop();
 	    reverseUndo(undoAction, taskObj);
-		_response = String.format(MSG_UNDO_CONFIRM, taskObj.getTitle());
+		_response = String.format(MSG_UNDO_CONFIRM, undoAction, taskObj.getTitle());
 		return _response;
 	}
 	
@@ -284,14 +284,14 @@ public class Model {
 	 */
 	public String redo() throws Exception {
 		
-	    if (_undoLog.isEmpty()) {
+	    if (_redoLog.isEmpty()) {
             _response = handleError(MSG_ERR_REDO);
             return _response;
         }
 	    String redoAction = _redoLog.pop();
 	    Task taskObj = _redoTaskObjLog.pop();
 	    reverseRedo(redoAction, taskObj);
-		_response = String.format(MSG_REDO_CONFIRM, taskObj.getTitle());
+		_response = String.format(MSG_REDO_CONFIRM, redoAction, taskObj.getTitle());
 		return _response;
 	}
 	
@@ -351,7 +351,7 @@ public class Model {
 	    return _dataEventTasks;
 	}
 
-	// Helper Methods
+	// Helper Methods	
 	private void resetRedoLog() {
 	
 	    _redoLog.clear();
@@ -382,7 +382,8 @@ public class Model {
 	    // Delete the added task.
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
-            _dataLog.remove(taskObj.getID());
+	        int removeID = taskObj.getID();
+            _dataLog.remove(removeID);
             updateID(_dataLog);
             
             splitTaskType(_dataLog);
@@ -401,7 +402,8 @@ public class Model {
 	    // Delete and add back the old task
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
-            _dataLog.remove(taskObj.getID());
+	        int removeID = taskObj.getID();
+            _dataLog.remove(removeID);
             _dataLog.add(taskObj.getID(), taskObj);
             updateID(_dataLog);
             
@@ -488,7 +490,8 @@ public class Model {
 	    // Delete and add back the old task
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
-	        _dataLog.remove(taskObj.getID());
+	        int removeID = taskObj.getID();
+	        _dataLog.remove(removeID);
 	        _dataLog.add(taskObj.getID(), taskObj);
 	        updateID(_dataLog);
 
@@ -508,7 +511,8 @@ public class Model {
 	    // Delete the new task
 	    try {
 	        Task oldTask = _dataLog.get(taskObj.getID());
-	        _dataLog.remove(taskObj.getID());
+	        int removeID = taskObj.getID();
+	        _dataLog.remove(removeID);
 	        updateID(_dataLog);
 
 	        splitTaskType(_dataLog);
@@ -848,8 +852,9 @@ public class Model {
 		    String importFilePath = importLocation + DATA_FILENAME;
 		    File importFile = new File(importFilePath);
 		    if (!importFile.exists()) {
-		        _response = MSG_ERR_IMPORT_LOCATION_MISSING;
-		        return _response;
+		        return handleError(MSG_ERR_IMPORT_LOCATION_MISSING);
+//		        _response = MSG_ERR_IMPORT_LOCATION_MISSING;
+//		        return _response;
 		    }
 		    
 		    // Import data over. (Overwrite onto existing)
