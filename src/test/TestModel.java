@@ -189,7 +189,7 @@ public class TestModel {
             Model testModel = new Model(TEST_PATH);
             CommandDetail addTaskCmd;
             
-            LocalDateTime date1 = LocalDateTime.of(2015, 10, 23, 23, 59, 59);
+            LocalDateTime date1 = LocalDateTime.of(2015, 10, 23, 23, 59);
             //System.out.println("Date Field: " + date1.format(DATE_FORMATTER));
             
             addTaskCmd = createTask("feed cat", TaskType.NORMAL, null, null, date1);
