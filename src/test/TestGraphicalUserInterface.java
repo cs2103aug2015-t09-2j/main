@@ -92,9 +92,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         VBox taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);        
 
-        click("#commandInputBox").type("add do homework1 by today").push(KeyCode.ENTER);
-        
-
+        click("#commandInputBox").type("add do homework1 by today").push(KeyCode.ENTER);    
         
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
@@ -102,8 +100,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         
         TaskGroupPackage testDataPackage2 = new TaskGroupPackage("The Rest", 
                 new String[]{"2. do homework"}, 
-                new String[]{"Due: 30 Oct 15 03:00 PM"});
-        
+                new String[]{"Due: 30 Oct 15 03:00 PM"});        
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2 };
 
         taskGroupList = (VBox) find("#TaskList");
@@ -122,9 +119,10 @@ public class TestGraphicalUserInterface extends GuiTest {
         TaskGroupPackage testDataPackage3 = new TaskGroupPackage("The Rest", 
                 new String[]{"3. do homework"}, 
                 new String[]{"Due: 30 Oct 15 03:00 PM"});
+        testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
 
         taskGroupList = (VBox) find("#TaskList");
-        testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
+        verifyTaskGroupList(taskGroupList, testDataPackageArray);    
 
         click("#commandInputBox").type("add do homework3 by 25/10/2015 10am").push(KeyCode.ENTER);
 
@@ -139,9 +137,10 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage3 = new TaskGroupPackage("The Rest", 
                 new String[]{"3. do homework3", "4. do homework"}, 
                 new String[]{"Due: 25 Oct 15 10:00 AM", "Due: 30 Oct 15 03:00 PM"});
+        testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
 
         taskGroupList = (VBox) find("#TaskList");
-        testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
+        verifyTaskGroupList(taskGroupList, testDataPackageArray);    
     }
 
     @Override
