@@ -11,12 +11,12 @@
    <bottom>
       <AnchorPane prefHeight="94.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="commandBar" layoutX="14.0" layoutY="35.0" onKeyPressed="#onKeyPress" prefHeight="45.0" prefWidth="461.0">
+            <TextField id="commandInputBox" fx:id="commandBar" layoutX="14.0" layoutY="35.0" onKeyPressed="#onKeyPress" prefHeight="45.0" prefWidth="461.0">
                <font>
                   <Font size="24.0" />
                </font>
             </TextField>
-            <Label fx:id="responseLabel" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Welcome!" />
+            <Label id="responseLabel" fx:id="responseLabel" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Welcome!" />
          </children>
       </AnchorPane>
    </bottom>

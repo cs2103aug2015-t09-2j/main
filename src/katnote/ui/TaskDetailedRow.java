@@ -48,6 +48,11 @@ public class TaskDetailedRow extends AnchorPane {
     private void setDescriptionProperty() {
         taskDescriptionLabel.setText(index + ". " + task.getTitle());
     }
+    
+    public String getDescription() {
+       return taskDescriptionLabel.getText();
+    }
+    
     private void setDateTimeProperty() {
         if(task.getTaskType() == TaskType.NORMAL){
             LocalDateTime date = task.getEndDate();

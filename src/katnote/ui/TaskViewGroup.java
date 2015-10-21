@@ -41,5 +41,13 @@ public class TaskViewGroup extends AnchorPane {
     public void addDetialedTaskRow(TaskDetailedRow row) {
         taskViewList.getChildren().add(row);
     }
+    
+    public VBox getListChildren(){
+        return taskViewList;
+    }
+    
+    public String getGroupHeaderText(){
+        return groupHeader.getText();
+    }
 
 }

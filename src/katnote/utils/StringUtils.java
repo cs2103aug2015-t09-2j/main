@@ -63,4 +63,17 @@ public class StringUtils {
         }
         return builder.toString();
     }
+    
+    /*
+     * Concatenates string list
+     */
+    public static String concat(String ...strings){
+        StringBuilder result = new StringBuilder();
+        for (String str : strings){
+            if (str != null){
+                result.append(str);
+            }
+        }
+        return result.toString();
+    }
 }
