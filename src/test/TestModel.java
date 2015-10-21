@@ -290,6 +290,8 @@ public class TestModel {
             boolean result3 = false;
             
             response1 = testModel.editDelete(1);
+            result1 = response1.equals("Task: feed fish is successfully deleted.") && (testModel.getData().size() == 2);
+            
             response2 = testModel.editDelete(1);
             try {
                 response3 = testModel.editDelete(1);
@@ -297,8 +299,8 @@ public class TestModel {
                 response3 = e.toString();
                 result3 = true;
             }
-            result1 = response1.equals("Task: feed fish is successfully deleted.");
-            result2 = response2.equals("Task: feed dog is successfully deleted.");
+            
+            result2 = response2.equals("Task: feed dog is successfully deleted.") && (testModel.getData().size() == 1);
 
             System.out.println("Result 1 - Task deleted correctly: " + result1 + " Expected: true");
             System.out.println("Result 2 - Task updates after delete and delete works correctly: " + result2 + " Expected: true");
@@ -310,6 +312,167 @@ public class TestModel {
             assertTrue(result1);
             assertTrue(result2);
             assertTrue(result3);
+            
+        } catch (Exception e) {
+            System.out.println(e);           
+            fail("Exception!");
+        }
+
+    }
+    
+    @Test
+    public void testEncodeDecode() {
+        try {
+            clearExistingData(TEST_PATH);
+            
+            System.out.println("=== Encoding and Decoding ===");
+            Model testModel = new Model(TEST_PATH);
+            LocalDateTime date1 = LocalDateTime.of(2015, 11, 26, 23, 59, 59);
+            LocalDateTime date2 = LocalDateTime.of(2015, 12, 23, 23, 59, 59);
+            CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
+            CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
+            CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
+            Task task1 = new Task(addTaskCmd1);
+            Task task2 = new Task(addTaskCmd2);
+            Task task3 = new Task(addTaskCmd3);
+            
+            testModel.addTask(task1);
+            testModel.addTask(task2);
+            testModel.addTask(task3);
+            
+            boolean result1 = false;
+            
+            try {
+                ArrayList<Task> decodedData = testModel.testDecode();
+                result1 = true;
+                System.out.println("Actual Data Size: " + decodedData.size() + " Expected Data Size: " + testModel.getData().size());
+                if (decodedData.size() != testModel.getData().size()) {
+                    result1 = false;
+                }
+                for (int i=0; i<decodedData.size(); i++) {
+                    System.out.println("Actual Item " + i + " : " + decodedData.get(i).getTitle() + " Expected Item " + i + " : " + testModel.getData().get(i).getTitle()); 
+                    if (!decodedData.get(i).getTitle().equals(testModel.getData().get(i).getTitle())) {
+                        result1 = false;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Unable to decode: " + e);
+            }
+
+            System.out.println("Result 1 - KatNote encodes and decodes successfully: " + result1 + " Expected: true");
+            System.out.println("=== End Test ===\n");
+            
+            clearExistingData(TEST_PATH);
+            
+            assertTrue(result1);
+            
+        } catch (Exception e) {
+            System.out.println(e);           
+            fail("Exception!");
+        }
+
+    }
+    
+    @Test
+    public void testUndoRedo() {
+        try {
+            clearExistingData(TEST_PATH);
+            
+            System.out.println("=== Undo and Redo ===");
+            Model testModel = new Model(TEST_PATH);
+            LocalDateTime date1 = LocalDateTime.of(2015, 11, 26, 23, 59, 59);
+            LocalDateTime date2 = LocalDateTime.of(2015, 12, 23, 23, 59, 59);
+            CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
+            CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
+            CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
+            Task task1 = new Task(addTaskCmd1);
+            Task task2 = new Task(addTaskCmd2);
+            Task task3 = new Task(addTaskCmd3);
+            
+            testModel.addTask(task1);
+            testModel.addTask(task2);
+            testModel.addTask(task3);
+            
+            boolean result1 = true;
+            boolean result2 = true;
+            boolean result3 = true;
+            boolean result4 = true;
+            boolean result5 = true;
+            
+            // Procedure
+            testModel.undo();
+            testModel.undo();
+            if (testModel.getData().size() != 1) {
+                System.out.println("Undo procedure is incorrect. Incorrect task undone.");
+                result1 = false;
+            } else if (!testModel.getData().get(0).getTitle().equals(task1.getTitle())) {
+                System.out.println("Undo procedure is incorrect. Incorrect task undone.");
+                result1 = false;
+            }
+            
+            testModel.undo();
+            String response1 = testModel.undo();
+            if (!response1.equals("Encountered Error: No actions left to undo.")) {
+                System.out.println("Undo not logged correctly. Out of bounds not detected.");
+                result2 = false;
+            }
+            
+            testModel.redo();
+            if (testModel.getData().size() != 1) {
+                System.out.println("Redo procedure is incorrect. Incorrect task redone.");
+                result3 = false;
+            } else if (!testModel.getData().get(0).getTitle().equals(task1.getTitle())) {
+                System.out.println("Redo procedure is incorrect. Incorrect task redone.");
+                result3 = false;
+            }
+            
+            testModel.redo();
+            testModel.redo();
+            String response2 = testModel.redo();
+            if (!response2.equals("Encountered Error: No actions left to redo.")) {
+                System.out.println("Redo not logged correctly. Out of bounds not detected.");
+                result4 = false;
+            }
+            testModel.undo();
+            testModel.addTask(task3);
+            String response3 = testModel.redo();
+            if (!response3.equals("Encountered Error: No actions left to redo.")) {
+                System.out.println("Redo not cleared upon new user command.");
+                result4 = false;
+            }
+            
+            testModel.editDelete(1);
+            testModel.editDelete(1);
+            testModel.addTask(task2);
+            testModel.addTask(task3);
+            testModel.undo();
+            testModel.undo();
+            testModel.redo();
+            testModel.undo();
+            testModel.redo();
+            testModel.redo();
+            if (testModel.getData().size() != 3) {
+                System.out.println("Redo + Undo procedure is incorrect. Actual Tasks left: " + testModel.getData().size() + " Expected Tasks Left: " + 3);
+                result5 = false;
+            } else if (!testModel.getData().get(2).getTitle().equals(task3.getTitle())) {
+                System.out.println("Redo + Undo procedure is incorrect. Actual task(2): " + testModel.getData().get(2).getTitle() + " Expected task(2): " + task3.getTitle());
+                result5 = false;
+            }
+
+            System.out.println("Result 1 - Undo Test 1: " + result1 + " Expected: true");
+            System.out.println("Result 2 - Undo Test 2: " + result2 + " Expected: true");
+            System.out.println("Result 3 - Redo Test 1: " + result3 + " Expected: true");
+            System.out.println("Result 4 - Redo Test 2: " + result4 + " Expected: true");
+            System.out.println("Result 5 - Undo + Redo Test 1: " + result5 + " Expected: true");
+            System.out.println("=== End Test ===\n");
+            
+            clearExistingData(TEST_PATH);
+            
+            assertTrue(result1);
+            assertTrue(result2);
+            assertTrue(result3);
+            assertTrue(result4);
+            assertTrue(result5);
             
         } catch (Exception e) {
             System.out.println(e);           
