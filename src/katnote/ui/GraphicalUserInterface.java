@@ -26,6 +26,11 @@ public class GraphicalUserInterface extends Application {
     private Stage primaryStage;
     private Logic logic;
     private TaskViewer taskViewer;
+    private ArrayList<Task> displayedTaskList;    
+    
+    public ArrayList<Task> getDisplayedTaskList(){
+        return displayedTaskList;
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -76,15 +81,15 @@ public class GraphicalUserInterface extends Application {
     public void setUpTaskViewer() {
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
-        ArrayList<Task> listOfTaskMapping = updateTaskViewer(logic.getInitialViewState());
-        logic.setViewMapping(listOfTaskMapping);
+        displayedTaskList = updateTaskViewer(logic.getInitialViewState());
+        logic.setViewMapping(displayedTaskList);
     }
 
     public ArrayList<Task> updateTaskViewer(ViewState viewState) {
         TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
         taskViewer.loadTaskFormat(listFormat);
         return listFormat.getOrderedTaskList();
-    }
+    }    
 
     public void handleCommandInput(CommandBarController commandBarController, String inputText) {
         UIFeedback feedback;
@@ -96,8 +101,8 @@ public class GraphicalUserInterface extends Application {
             } else if (!feedback.isAnError()) {
                 ViewState viewState = feedback.getViewState();
                 if (viewState != null) {
-                    ArrayList<Task> listOfTaskMapping = updateTaskViewer(viewState);
-                    logic.setViewMapping(listOfTaskMapping);
+                    displayedTaskList = updateTaskViewer(viewState);
+                    logic.setViewMapping(displayedTaskList);
                 }
             }
         } catch (Exception e) {
