@@ -11,6 +11,7 @@ import org.loadui.testfx.GuiTest;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import katnote.ui.GraphicalUserInterface;
@@ -43,6 +44,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         }
         
     }
+    
     public void verifyTaskGroup(TaskViewGroup taskGroup, TaskGroupPackage expectedDataSet){
         String groupHeader = taskGroup.getGroupHeaderText();
         assertEquals(groupHeader, expectedDataSet.getGroupHeader());
@@ -81,10 +83,13 @@ public class TestGraphicalUserInterface extends GuiTest {
     public void TestAddingTasks() {
         // let the application load
         sleep(1, TimeUnit.SECONDS);        
+        TaskGroupPackage testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4;
+        click("#commandInputBox");
+        TextField commandInput = (TextField)find("#commandInputBox");
         
         //absolute
-        click("#commandInputBox").type("add do homework by 30/10/2015").push(KeyCode.ENTER);
-        TaskGroupPackage testDataPackage1 = new TaskGroupPackage("The Rest", 
+        type("add do homework by 30/10/2015").push(KeyCode.ENTER);
+        testDataPackage1 = new TaskGroupPackage("The Rest", 
                 new String[]{"1. do homework"}, 
                 new String[]{"Due: 30 Oct 15 11:59 PM"});
         TaskGroupPackage[] testDataPackageArray = { testDataPackage1 };
@@ -92,11 +97,12 @@ public class TestGraphicalUserInterface extends GuiTest {
         verifyTaskGroupList(taskGroupList, testDataPackageArray);   
 
         //relative: today
-        click("#commandInputBox").type("add do homework1 by today").push(KeyCode.ENTER);   
+        commandInput.setText("add do homework1 by today");
+        push(KeyCode.ENTER);
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
                 new String[]{"Due: 11:59 PM"});        
-        TaskGroupPackage testDataPackage2 = new TaskGroupPackage("The Rest", 
+        testDataPackage2 = new TaskGroupPackage("The Rest", 
                 new String[]{"2. do homework"}, 
                 new String[]{"Due: 30 Oct 15 11:59 PM"});        
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2 };
@@ -104,14 +110,15 @@ public class TestGraphicalUserInterface extends GuiTest {
         verifyTaskGroupList(taskGroupList, testDataPackageArray); 
 
         //relative: tomorrow with time
-        click("#commandInputBox").type("add do homework2 by tomorrow 5pm").push(KeyCode.ENTER);   
+        commandInput.setText("add do homework2 by tomorrow 5pm");
+        push(KeyCode.ENTER);   
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
                 new String[]{"Due: 11:59 PM"});        
         testDataPackage2 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"2. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});        
-        TaskGroupPackage testDataPackage3 = new TaskGroupPackage("The Rest", 
+        testDataPackage3 = new TaskGroupPackage("The Rest", 
                 new String[]{"3. do homework"}, 
                 new String[]{"Due: 30 Oct 15 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
@@ -119,7 +126,8 @@ public class TestGraphicalUserInterface extends GuiTest {
         verifyTaskGroupList(taskGroupList, testDataPackageArray);   
         
         //absolute with time
-        click("#commandInputBox").type("add do homework3 by 25/10/2015 10am").push(KeyCode.ENTER);
+        commandInput.setText("add do homework3 by 25/10/2015 10am");
+        push(KeyCode.ENTER);
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
                 new String[]{"Due: 11:59 PM"});        
@@ -134,7 +142,8 @@ public class TestGraphicalUserInterface extends GuiTest {
         verifyTaskGroupList(taskGroupList, testDataPackageArray);    
         
         //floating
-        click("#commandInputBox").type("add do homework4").push(KeyCode.ENTER);
+        commandInput.setText("add do homework4");
+        push(KeyCode.ENTER);
         testDataPackage1 = new TaskGroupPackage("Task to do", 
                 new String[]{"1. do homework4"}, 
                 new String[]{});        
@@ -144,12 +153,14 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage3 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"3. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});      
-        TaskGroupPackage testDataPackage4 = new TaskGroupPackage("The Rest", 
+        testDataPackage4 = new TaskGroupPackage("The Rest", 
                 new String[]{"4. do homework3", "5. do homework"}, 
                 new String[]{"Due: 25 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4 }; 
         taskGroupList = (VBox) find("#TaskList");
-        verifyTaskGroupList(taskGroupList, testDataPackageArray);    
+        verifyTaskGroupList(taskGroupList, testDataPackageArray); 
+        
+        sleep(1, TimeUnit.SECONDS);    
     }
 
     @Override
