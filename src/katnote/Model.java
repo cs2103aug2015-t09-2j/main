@@ -518,7 +518,7 @@ public class Model {
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
 
-	        _undoLog.push(ADD_TASK);
+	        _undoLog.push(EDIT_DELETE);
 	        _undoTaskObjLog.push(oldTask);
 
 	    } catch (Exception e) {
