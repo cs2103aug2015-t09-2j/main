@@ -2,10 +2,9 @@
 
 package katnote;
 
-import java.util.ArrayList;
-
 public class UIFeedback {
     private boolean isError_; // true if UIFeedback contains an error reponseMessage
+    private boolean isExit_;
     private ViewState viewState_;
     private String responseMessage_;
     
@@ -13,18 +12,25 @@ public class UIFeedback {
     
     public UIFeedback() { 
         viewState_ = new ViewState();
+        isExit_ = false;
+        isError_ = false;
     }
     
     public UIFeedback(boolean isError, ViewState vs, String responseMessage) {
         isError_ = isError;
         viewState_ = vs;
         responseMessage_ = responseMessage;
+        isExit_ = false;
     }
      
     /*-- Public Methods --*/
     
     public void setError(boolean isError) {
         isError_ = isError;
+    }
+    
+    public void setExit(boolean isExit) {
+        isExit_ = isExit;
     }
     
     public void setViewState(ViewState vs) {
@@ -37,6 +43,10 @@ public class UIFeedback {
      
     public boolean isAnError() {
         return isError_;
+    }
+    
+    public boolean isAnExit() {
+        return isExit_;
     }
     
     /**

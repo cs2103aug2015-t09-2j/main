@@ -27,7 +27,7 @@ public class Parser {
     private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());
 
     /*
-     * Convert the input command string into CommandDetail format containing
+     * Converts the input command string into CommandDetail format containing
      * command type as well as all data field related to that type of command.
      * 
      * @param commandStr the command you want to parse
@@ -82,7 +82,7 @@ public class Parser {
     }
 
     /*
-     * Determine the start keyword of the command
+     * Determines the start keyword of the command
      * 
      * @param truncatedCommand This StringBuilder object used to store the
      * command after truncated its start keyword
@@ -92,12 +92,13 @@ public class Parser {
      */
     public static String determineStartKeyword(String commandStr, StringBuilder truncatedCommand) {
         // Trim command before processing
-        commandStr = commandStr.trim();
+        commandStr = commandStr.trim();        
         truncatedCommand.setLength(0);
         // check different starts of command
+        String lowerCaseCommandStr = commandStr.trim().toLowerCase();
         for (String startKeyword : CommandKeywords.START_KEYWORDS_LIST) {
-            if (commandStr.startsWith(startKeyword)) {
-                truncatedCommand.append(commandStr.replaceFirst(startKeyword, "").trim());
+            if (lowerCaseCommandStr.startsWith(startKeyword)) {
+                truncatedCommand.append(commandStr.replaceFirst("(?i)" + startKeyword, "").trim());
                 return startKeyword;
             }
         }
@@ -107,7 +108,7 @@ public class Parser {
     }
 
     /*
-     * Split the command string based on space but take quoted substrings as one
+     * Splits the command string based on space but take quoted substrings as one
      * word
      * 
      * @param commandStr The command string passed from Logic
@@ -142,8 +143,8 @@ public class Parser {
     }
 
     /*
-     * Parse Add command. Command format: - add TASK_TITLE [by TIME_BY] [from
-     * TIME_FROM to TIME_TO] [repeat REPEAT_INTERVAL [until TIME_UNTIL]]
+     * Parses Add command. Command format:
+     *   - add TASK_TITLE [by TIME_BY] [from TIME_FROM to TIME_TO]
      * 
      * 
      */
@@ -163,8 +164,9 @@ public class Parser {
     }
 
     /*
-     * Parse view command. Command format: - view tasks [completed] [on TIME_ON]
-     * [from TIME_FROM to TIME_TO] - view task TASK_ID
+     * Parses view command. Command format:
+     *   - view tasks [completed] [on TIME_ON] [from TIME_FROM to TIME_TO]
+     *   - view task TASK_ID
      * 
      */
     private static CommandDetail parseViewCommand(List<String> tokens) throws Exception {
@@ -203,7 +205,8 @@ public class Parser {
     }
 
     /*
-     * Parse find command. Command format: - find KEYWORDS [in CATEGORY]
+     * Parses find command. Command format:
+     *   - find KEYWORDS [in CATEGORY]
      * 
      */
     private static CommandDetail parseFindCommand(List<String> tokens) throws Exception {
@@ -216,8 +219,9 @@ public class Parser {
     }
 
     /*
-     * Parse edit command. Command format: - edit [task] TASK_ID set
-     * TASK_OPTION_NAME TASK_OPTION_VALUE - edit [task] TASK_ID mark completed
+     * Parses edit command. Command format:
+     *   - edit [task] TASK_ID set TASK_OPTION_NAME TASK_OPTION_VALUE
+     *   - edit [task] TASK_ID mark completed
      * 
      */
     private static CommandDetail parseEditCommand(List<String> tokens) throws Exception {
@@ -234,7 +238,8 @@ public class Parser {
     }
 
     /*
-     * Parse delete command. Command format: - delete [task] TASK_ID
+     * Parses delete command. Command format:
+     *   - delete [task] TASK_ID
      * 
      */
     private static CommandDetail parseDeleteCommand(List<String> tokens) throws Exception {
@@ -246,7 +251,8 @@ public class Parser {
     }
 
     /*
-     * Parse import command. Command format: - import FILE_PATH
+     * Parses import command. Command format:
+     *   - import FILE_PATH
      * 
      */
     private static CommandDetail parseImportCommand(List<String> tokens) {
@@ -257,7 +263,8 @@ public class Parser {
     }
 
     /*
-     * Parse export command. Command format: - export FILE_PATH
+     * Parses export command. Command format:
+     *   - export FILE_PATH
      * 
      */
     private static CommandDetail parseExportCommand(List<String> tokens) {
@@ -268,7 +275,9 @@ public class Parser {
     }
 
     /*
-     * Parse help command. Command format: - help - help COMMAND
+     * Parses help command. Command format:
+     *   - help
+     *   - help COMMAND
      * 
      */
     private static CommandDetail parseHelpCommand(List<String> tokens) {
@@ -283,7 +292,7 @@ public class Parser {
     }
 
     /*
-     * add command properties to command detail
+     * Adds command properties to command detail
      */
     private static CommandDetail addCommandProperties(List<String> tokens, int pos, CommandDetail command) {
         while (pos < tokens.size()) {

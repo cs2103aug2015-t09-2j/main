@@ -4,6 +4,8 @@ public class CommandProperties {
     public static final String TASK_TITLE = "task_title";
     public static final String TASK_ID = "task_id";
     public static final String TASK_TYPE = "task_type";
+    public static final String TASK_DESCRIPTION  = "task_description";
+    public static final String TASK_CATEGORY  = "task_category";
     public static final String FIND_KEYWORDS = "find_keywords";
     public static final String TASKS_VIEW_OPTION = "view_tasks_option";
 
