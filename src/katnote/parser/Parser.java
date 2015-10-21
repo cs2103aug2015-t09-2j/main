@@ -189,7 +189,7 @@ public class Parser {
                 command.setProperty(CommandProperties.TASK_ID, taskId);
                 break;
             case CommandKeywords.KW_TASKS :
-                ViewTaskOption viewOption = ViewTaskOption.COMPLETED;
+                ViewTaskOption viewOption = ViewTaskOption.INCOMPLETED;
                 if (TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length) {
                     switch (viewOptions[TASK_OPTION_VIEW_DETAIL_POS]) {
                         case CommandKeywords.KW_COMPLETED :
