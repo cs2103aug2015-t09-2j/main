@@ -74,7 +74,7 @@ public class Model {
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
 	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
 	private static final String MSG_ERR_UNDO = "No actions left to undo.";
-	private static final String MSG_ERR_REDO = "No actions left to redo";
+	private static final String MSG_ERR_REDO = "No actions left to redo.";
 	private static final String MSG_ERR_REVERSE_EXCEPTION = "Unable to perform a reverse for action : ";
 	private static final String MSG_ERR_REVERSE_ADD = "Unable to perform reverse for adding of task : ";
 	private static final String MSG_ERR_REVERSE_MODIFY = "Unable to perform reverse for modifying of task : ";
@@ -596,6 +596,15 @@ public class Model {
 	        Task updateTask = taskArray.get(i);
 	        updateTask.setID(i);
 	    }
+	}
+	
+	@SuppressWarnings("unused")
+	/**
+	 * Reserved for Unit Testing only. Runs the decoder.
+	 * @throws Exception
+	 */ 
+    public ArrayList<Task> testDecode() throws Exception {
+	    return _decoder.decode();
 	}
 	
 	private String handleException(Exception e, String msg) throws Exception {
