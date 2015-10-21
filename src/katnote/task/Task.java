@@ -100,7 +100,6 @@ public class Task {
             // TODO: setID(some_number);
             setTitle(commandDetail.getTitle());
             setTaskType(commandDetail.getTaskType());
-            // TODO: Fix errors when change from Date -> LocalDateTime
             setStartDate(commandDetail.getStartDate());
             // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
             if (commandDetail.getEndDate() != null) {
@@ -118,9 +117,24 @@ public class Task {
         }
     }
 
+    
     public Task(String taskTitle, TaskType type) {
         setTitle(taskTitle);
         setTaskType(type);
+    }
+    
+    // Constructor for duplicating task object without reference.
+    public Task(Task task) {
+        setID(task.getID());
+        setTitle(task.getTitle());
+        setTaskType(task.getTaskType());
+        setStartDate(task.getStartDate());
+        setEndDate(task.getEndDate());
+        setRepeatOption(task.getRepeatOption());
+        setTerminateDate(task.getTerminateDate());
+        setDescription(task.getDescription());
+        setCategory(task.getCategory());
+        setCompleted(task.isCompleted());
     }
 
     // Helper Methods
