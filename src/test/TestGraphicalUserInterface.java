@@ -82,7 +82,7 @@ public class TestGraphicalUserInterface extends GuiTest {
     @Test
     public void TestAddingTasks() {
         // let the application load
-        sleep(1, TimeUnit.SECONDS);        
+        sleep(2, TimeUnit.SECONDS);        
         TaskGroupPackage testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4;
         click("#commandInputBox");
         TextField commandInput = (TextField)find("#commandInputBox");
