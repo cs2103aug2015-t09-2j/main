@@ -59,7 +59,13 @@ public class Logic {
         // Create Tracker object
         tracker_ = new Tracker();
     }
-
+    
+    public Logic(String path) throws Exception {
+        model_ = new Model(path);
+        tracker_ = new Tracker();
+    }
+    
+    
     /* Public methods */
 
     /**
@@ -87,6 +93,13 @@ public class Logic {
         ViewState vs = new ViewState();
         updateViewState(vs);
         return vs;
+    }
+    
+    /**
+     * For testing purpose
+     */
+    public ArrayList<Integer> getTrackerIDList() {
+        return tracker_.getIDList();
     }
     
     /**
@@ -221,7 +234,7 @@ public class Logic {
         Search search = new Search();
         ViewState vs = new ViewState();
         ViewTaskOption viewType = commandDetail.getViewTaskOption();
-        
+        //System.out.println(viewType);
         switch (viewType) {
             case COMPLETED :
                 search.setIsCompleted(true);
@@ -419,6 +432,10 @@ class Search {
     public ArrayList<Task> searchData(ArrayList<Task> list) {
         ArrayList<Task> searched = new ArrayList<Task>(list);
         
+        if (list.size() <= 0) {
+            return searched;
+        }
+        
         if (keyword_ != null) {
             searched = new ArrayList<Task>(findByKeyword(searched));
         }
@@ -448,15 +465,15 @@ class Search {
      *            Description fields
      * @return List of tasks that contains the input keyword
      */
-    public ArrayList<Task> findByKeyword(ArrayList<Task> data) {
+    private ArrayList<Task> findByKeyword(ArrayList<Task> data) {
         ArrayList<Task> tasksFound = new ArrayList<Task>();
-
+        
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
             String taskTitle = task.getTitle();
-            String taskDescription = task.getDescription();
+            //String taskDescription = task.getDescription();
 
-            if (isContain(taskTitle, keyword_) || isContain(taskDescription, keyword_)) {
+            if (isContain(taskTitle, keyword_)) { //TODO: Include comparison for taskDescription
                 tasksFound.add(task);
             }
         }
@@ -469,7 +486,7 @@ class Search {
      *          ArrayList of tasks to be searched
      * @return ArrayList of tasks whose isCompleted() == isCompleted_ in Search object
      */
-    public ArrayList<Task> findByIsCompleted(ArrayList<Task> data) {
+    private ArrayList<Task> findByIsCompleted(ArrayList<Task> data) {
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
         for (int i = 0; i < data.size(); i++) {
@@ -493,7 +510,7 @@ class Search {
      * @return List of tasks with due dates before or equals to the
      *         input date (regardless of time)
      */
-    public ArrayList<Task> findDueBy(ArrayList<Task> data) {
+    private ArrayList<Task> findDueBy(ArrayList<Task> data) {
         LocalDate duedate = due_.toLocalDate();
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
@@ -511,13 +528,20 @@ class Search {
 
     // returns true if line contains exactly the input word, case insensitive
     private static boolean isContain(String line, String word) {
+        if (line == null) {
+            return false;
+        }
+        
+        //System.out.printf("Starting isContain(%s, %s)...\n", line, word);
         String lowerCaseWord = word.toLowerCase();
         String lowerCaseLine = line.toLowerCase();
 
         String pattern = "\\b" + lowerCaseWord + "\\b";
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(lowerCaseLine);
-        return m.find();
+        boolean ans = m.find();
+        //System.out.printf("isContain(%s, %s) = %s\n", line, word, ans);
+        return ans;
     }
 
 }

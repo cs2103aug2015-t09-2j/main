@@ -136,7 +136,10 @@ public class Task {
         setCategory(task.getCategory());
         setCompleted(task.isCompleted());
     }
-
+    
+    //Empty  Constructor for testing
+    public Task() { }
+    
     // Helper Methods
 
     private LocalDateTime stringToDate(String dateStr) throws ParseException {
