@@ -15,12 +15,12 @@ import katnote.task.TaskType;
 public class TaskDetailedRow extends AnchorPane {
 
     private static final String CHECKMARK_CLASS_NAME = "check";
-    private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s ";
+    private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s";
     private static final String NORMAL_TASK_TIME_FORMAT = "Due: %1s";
     private static final String TIME_PATTERN = "hh:mm a";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskDetailedRow.fxml";
-    
+
     @FXML
     private Label taskDescriptionLabel;
     @FXML
@@ -31,42 +31,47 @@ public class TaskDetailedRow extends AnchorPane {
     private int index;
     private boolean isDateHidden;
 
-    public TaskDetailedRow(Task task, int index){
+    public TaskDetailedRow(Task task, int index) {
         this(task, index, false);
     }
-    
+
     public TaskDetailedRow(Task task, int index, boolean isDateHidden) {
         loadFXML();
         this.task = task;
         this.index = index;
         this.isDateHidden = isDateHidden;
-        
+
         setDescriptionProperty();
         setDateTimeProperty();
         setCompletedProperty();
     }
+
     private void setDescriptionProperty() {
         taskDescriptionLabel.setText(index + ". " + task.getTitle());
     }
-    
+
     public String getDescription() {
-       return taskDescriptionLabel.getText();
+        return taskDescriptionLabel.getText();
     }
-    
+
+    public String getDateString() {
+        return dateTimeLabel.getText();
+    }
+
     private void setDateTimeProperty() {
-        if(task.getTaskType() == TaskType.NORMAL){
+        if (task.getTaskType() == TaskType.NORMAL) {
             LocalDateTime date = task.getEndDate();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
-            String dateString = date.format(dateFormat);            
+            String dateString = date.format(dateFormat);
             DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_PATTERN);
             String timeString = date.format(timeFormat);
             String dateTime;
-            if(isDateHidden){
-                dateTime = String.format(NORMAL_TASK_TIME_FORMAT, timeString);                
+            if (isDateHidden) {
+                dateTime = String.format(NORMAL_TASK_TIME_FORMAT, timeString);
             } else {
-                dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);                  
+                dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);
             }
-            
+
             dateTimeLabel.setText(dateTime);
         }
     }

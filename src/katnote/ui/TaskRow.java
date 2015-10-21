@@ -28,6 +28,10 @@ public class TaskRow extends AnchorPane {
         setCompletedProperty(isDone);
     }
 
+    public String getDescription() {
+        return taskDescriptionLabel.getText();
+    }
+
     private void setCompletedProperty(boolean isDone) {
         if (isDone) {
             checkmarkPane.getStyleClass().add(CHECKMARK_CLASS_NAME);
