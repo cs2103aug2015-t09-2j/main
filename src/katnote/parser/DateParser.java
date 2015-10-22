@@ -28,7 +28,7 @@ public class DateParser {
     private static final int ABSOLUTE_DATE_PATTERN_POS_MONTH = 2;
     private static final int ABSOLUTE_DATE_PATTERN_POS_YEAR = 3;
     
-    private static final String ABSOLUTE_DATE_TIME_PATTERN = "\\b(\\d{1,2})(?::(\\d+))?(am|pm|)$";
+    private static final String ABSOLUTE_DATE_TIME_PATTERN = "(?:^|\\s+)(\\d{1,2})(?::(\\d+))?(am|pm|)$";
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR = 1;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE = 2;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM = 3;
@@ -171,7 +171,7 @@ public class DateParser {
                     ? Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE)) : 0;
             boolean isPM = DAY_PERIOD_PM.equals(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM));
             if (isPM) {
-                hour += DAY_HALF_NUMBER_OF_HOURS;
+                hour = (hour + DAY_HALF_NUMBER_OF_HOURS) % 24;
             }
             return LocalTime.of(hour, minute);
         }
