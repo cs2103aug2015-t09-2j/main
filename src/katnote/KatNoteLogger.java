@@ -1,5 +1,6 @@
 package katnote;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -7,8 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import com.google.common.io.Files;
+
 public class KatNoteLogger {
 
+    private static final String DEFAULT_LOGGING_PROPERTIES_FILENAME = "/katnote/resources/logging.properties";
     private static final String LOGGING_PROPERTIES_FILENAME = "./logging.properties";
     private static final String KATNOTE_LOG_FILENAME = "katnote.log";
     private static final LogManager logManager = LogManager.getLogManager();
@@ -16,9 +20,15 @@ public class KatNoteLogger {
     private static FileHandler fh = null;
     private static final Logger log = Logger.getLogger("katnote");
 
-    private KatNoteLogger() {
+    private KatNoteLogger() {        
         try {
-            logManager.readConfiguration(new FileInputStream(LOGGING_PROPERTIES_FILENAME));
+            File logFile = new File(LOGGING_PROPERTIES_FILENAME);
+            String url = getClass().getResource(DEFAULT_LOGGING_PROPERTIES_FILENAME).getPath();
+            File defaultLogFile = new File(url);
+            if(!logFile.exists()){
+                Files.copy(defaultLogFile, logFile);
+            }
+            logManager.readConfiguration(new FileInputStream(logFile));
             fh = new FileHandler(KATNOTE_LOG_FILENAME, false);
         } catch (SecurityException | IOException e) {
             // TODO Auto-generated catch block
