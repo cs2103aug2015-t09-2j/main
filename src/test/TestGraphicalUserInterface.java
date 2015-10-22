@@ -126,7 +126,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         verifyTaskGroupList(taskGroupList, testDataPackageArray);   
         
         //absolute with time
-        commandInput.setText("add do homework3 by 25/10/2015 10am");
+        commandInput.setText("add do homework3 by 30/10/2015 10am");
         push(KeyCode.ENTER);
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
@@ -136,7 +136,7 @@ public class TestGraphicalUserInterface extends GuiTest {
                 new String[]{"Due: 05:00 PM"});        
         testDataPackage3 = new TaskGroupPackage("The Rest", 
                 new String[]{"3. do homework3", "4. do homework"}, 
-                new String[]{"Due: 25 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 30 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);    
@@ -155,7 +155,7 @@ public class TestGraphicalUserInterface extends GuiTest {
                 new String[]{"Due: 05:00 PM"});      
         testDataPackage4 = new TaskGroupPackage("The Rest", 
                 new String[]{"4. do homework3", "5. do homework"}, 
-                new String[]{"Due: 25 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 30 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray); 

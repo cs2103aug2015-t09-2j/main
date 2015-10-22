@@ -17,6 +17,8 @@ public class TaskDetailedRow extends AnchorPane {
     private static final String CHECKMARK_CLASS_NAME = "check";
     private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s";
     private static final String NORMAL_TASK_TIME_FORMAT = "Due: %1s";
+    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s End: %2s";
+    private static final String DATE_TIME_PATTERN = "dd MMM yy hh:mm a";
     private static final String TIME_PATTERN = "hh:mm a";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskDetailedRow.fxml";
@@ -71,7 +73,14 @@ public class TaskDetailedRow extends AnchorPane {
             } else {
                 dateTime = String.format(NORMAL_TASK_DATE_FORMAT, dateString, timeString);
             }
-
+            dateTimeLabel.setText(dateTime);
+        } else if (task.getTaskType() == TaskType.EVENT) {
+            LocalDateTime startDate = task.getStartDate();
+            LocalDateTime endDate = task.getEndDate();
+            DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+            String startDateString = startDate.format(dateTimeFormat);
+            String endDateString = endDate.format(dateTimeFormat);
+            String dateTime = String.format(EVENT_DATE_TIME_FORMAT, startDateString, endDateString);
             dateTimeLabel.setText(dateTime);
         }
     }
