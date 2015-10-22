@@ -2,13 +2,13 @@ package katnote;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import com.google.common.io.Files;
 
 public class KatNoteLogger {
 
@@ -26,7 +26,7 @@ public class KatNoteLogger {
             String url = getClass().getResource(DEFAULT_LOGGING_PROPERTIES_FILENAME).getPath();
             File defaultLogFile = new File(url);
             if(!logFile.exists()){
-                Files.copy(defaultLogFile, logFile);
+                Files.copy(defaultLogFile.toPath(), new FileOutputStream(logFile));
             }
             logManager.readConfiguration(new FileInputStream(logFile));
             fh = new FileHandler(KATNOTE_LOG_FILENAME, false);
