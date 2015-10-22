@@ -5,4 +5,5 @@
     <info title="KatNote" vendor="KatNote"/>
   </deploy>
   <signjar/>
+  <manifestEntries name="Main-Class" value="katnote.KatNote"/>
 </anttasks:AntTask>

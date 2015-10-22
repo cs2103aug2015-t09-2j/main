@@ -17,3 +17,8 @@ sourcepath.txt
 data.txt
 katnote.log
 katnote.log.*
+build/build/
+build/project/
+build/dist/
+build/externalLibs/
+logging.properties
