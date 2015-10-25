@@ -7,7 +7,8 @@ Format notes:
 - a/b: use a or b but not both
 
 
-**Adding tasks**
+Adding tasks
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -16,7 +17,8 @@ Format notes:
 | **add** `<task_name>` from `<start_date>` to` <end_date>` | Add new task with start and end date | add "buy birthday cake" from 22/10 to 23/10 |
 
 
-**Editing tasks**
+Editing tasks
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -28,7 +30,8 @@ Format notes:
 | **edit [task]** `<task_id>` set category `<category_name>` | Edit category name of the task | edit task 1 set category shopping |
 
 
-**Marking tasks as completed/incompleted**
+Marking tasks as completed/incompleted
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -36,14 +39,16 @@ Format notes:
 | **mark [task]** `<task_id>` incompleted | Mark task as incompleted | mark 1 incompleted |
 
 
-**Deleting tasks**
+Deleting tasks
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
 | **delete [task]** `<task_id>` | Delete task with specific id | delete task 1 |
 
 
-**Viewing and searching tasks**
+Viewing and searching tasks
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -55,7 +60,8 @@ Format notes:
 | **find** `<keyword>` in `<category>` | Search for task of specific category with keyword | find cat in shopping |
 
 
-**Undoing and Redoing**
+Undoing and Redoing
+------------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -63,7 +69,8 @@ Format notes:
 | **redo** | Redo the last undo | redo |
 
 
-**Configuring save settings**
+Configuring save settings
+-----------------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
@@ -72,11 +79,18 @@ Format notes:
 | **export** `<file_path>` | Export your schedule into a text file | export "D:\Data\KatNote\schedule.txt" |
 
 
-**Getting help**
+Getting help
+---------------------
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
 | **help** | Show help for all commands | help |
 | **redo** `<command>` | Show help for a specific command | help add |
-| **-** | **Exiting the application** | **-** |
+
+
+Exiting the application
+----------------------------
+
+| Syntax | Description | Example |
+|------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
 | **exit** | Exit KatNote | exit |
