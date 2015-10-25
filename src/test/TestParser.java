@@ -52,6 +52,14 @@ public class TestParser {
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
         assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
+    
+    @Test
+    public void testMarkCommand1() {
+        CommandDetail commandDetail = Parser.parseCommand("mark task 4 completed");
+        assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
+        assertEquals(4, commandDetail.getTaskIndex());
+        assertEquals("completed", commandDetail.getMarkOption());
+    }
 
     @Test
     public void testDeleteCommand1() {

@@ -57,25 +57,30 @@ public class Parser {
         // parse command based on start keyword
         try {
             switch (startKeyword) {
-                case CommandKeywords.KW_ADD :
+                case CommandKeywords.KW_ADD:
                     return parseAddCommand(tokens);
-                case CommandKeywords.KW_VIEW :
+                case CommandKeywords.KW_VIEW:
                     return parseViewCommand(tokens);
-                case CommandKeywords.KW_FIND :
+                case CommandKeywords.KW_FIND:
                     return parseFindCommand(tokens);
-                case CommandKeywords.KW_DELETE :
-                case CommandKeywords.KW_DELETE_TASK :
+                case CommandKeywords.KW_DELETE:
+                case CommandKeywords.KW_DELETE_TASK:
                     return parseDeleteCommand(tokens);
-                case CommandKeywords.KW_EDIT :
-                case CommandKeywords.KW_EDIT_TASK :
+                case CommandKeywords.KW_MARK:
+                case CommandKeywords.KW_MARK_TASK:
+                    return parseMarkCommand(tokens);
+                case CommandKeywords.KW_EDIT:
+                case CommandKeywords.KW_EDIT_TASK:
                     return parseEditCommand(tokens);
-                case CommandKeywords.KW_IMPORT :
+                case CommandKeywords.KW_IMPORT:
                     return parseImportCommand(tokens);
-                case CommandKeywords.KW_EXPORT :
+                case CommandKeywords.KW_EXPORT:
                     return parseExportCommand(tokens);
-                case CommandKeywords.KW_HELP :
+                case CommandKeywords.KW_HELP:
                     return parseHelpCommand(tokens);
-                case CommandKeywords.KW_UNDO :
+                case CommandKeywords.KW_SET_LOCATION:
+                    return parseSetLocationCommand(tokens);
+                case CommandKeywords.KW_UNDO:
                     return new CommandDetail(CommandType.UNDO);
                 case CommandKeywords.KW_REDO :
                     return new CommandDetail(CommandType.REDO);
@@ -229,8 +234,7 @@ public class Parser {
 
     /*
      * Parses edit command. Command format:
-     *   - edit [task] TASK_ID set TASK_OPTION_NAME TASK_OPTION_VALUE
-     *   - edit [task] TASK_ID mark completed
+     *   - edit [task] TASK_ID TASK_OPTION_NAME TASK_OPTION_VALUE
      * 
      */
     private static CommandDetail parseEditCommand(List<String> tokens) throws Exception {
@@ -238,11 +242,33 @@ public class Parser {
         // read task id
         Integer taskId = Integer.valueOf(tokens.get(TOKENS_OPTION_POS));
         command.setProperty(CommandProperties.TASK_ID, taskId);
-        // add set or mark option
+        // add set option
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-        if (command.hasProperty(CommandProperties.EDIT_MARK)) {
-            command.setCommandType(CommandType.EDIT_COMPLETE);
+        return command;
+    }
+    
+    /*
+     * Parses mark command. Command format:
+     *   - mark [task] TASK_ID completed/incompleted
+     *   - mark [task] completed/incompleted TASK_ID
+     */
+    private static CommandDetail parseMarkCommand(List<String> tokens) throws Exception {
+        CommandDetail command = new CommandDetail(CommandType.EDIT_COMPLETE);
+        // read command option
+        String commandOptions[] = tokens.get(TOKENS_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
+        Integer taskId;
+        String markOption;        
+        if (StringUtils.isDigits(commandOptions[0])){ // mark TASK_ID completed
+            taskId = Integer.valueOf(commandOptions[0]);
+            markOption = commandOptions[1];
         }
+        else{  // mark completed TASK_ID
+            taskId = Integer.valueOf(commandOptions[1]);
+            markOption = commandOptions[0];
+        }
+        
+        command.setProperty(CommandProperties.TASK_ID, taskId);
+        command.setProperty(CommandProperties.EDIT_MARK, markOption);
         return command;
     }
 
@@ -278,6 +304,18 @@ public class Parser {
      */
     private static CommandDetail parseExportCommand(List<String> tokens) {
         CommandDetail command = new CommandDetail(CommandType.EXPORT);
+        String filePath = tokens.get(TOKENS_OPTION_POS);
+        command.setProperty(CommandProperties.FILE_PATH, filePath);
+        return command;
+    }
+    
+    /*
+     * Parses set save location command. Command format:
+     *   - set location FILE_PATH
+     * 
+     */
+    private static CommandDetail parseSetLocationCommand(List<String> tokens) {
+        CommandDetail command = new CommandDetail(CommandType.SET_LOCATION);
         String filePath = tokens.get(TOKENS_OPTION_POS);
         command.setProperty(CommandProperties.FILE_PATH, filePath);
         return command;
