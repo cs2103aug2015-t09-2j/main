@@ -22,11 +22,11 @@ Editing tasks
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **edit [task]** `<task_id>` set duetime `<due_time_value>` | Edit due time of the task | edit task 1 set due_time 20/11/2015 10:20am |
-| **edit [task]** `<task_id>` set starttime `<start_time_value>` | Edit start time of the task | edit task 1 set starttime 20/11/2015 10:00am |
-| **edit [task]** `<task_id>` set endtime `<end_time_value>` | Edit end time of the task | edit task 1 set endtime 20/11/2015 8:00pm |
-| **edit [task]** `<task_id>` set title `<task_title_value>` | Edit task title | edit task 1 set title "buy milks" |
-| **edit [task]** `<task_id>` set description `<task_description_value>` | Edit task title | edit task 1 set description "zzz" |
+| **edit [task]** `<task_id>` set due_time `<due_time_value>` | Edit due time of the task | edit task 1 set due_time 20/11/2015 10:20am |
+| **edit [task]** `<task_id>` set start_time `<start_time_value>` | Edit start time of the task | edit task 1 set start_time 20/11/2015 10:00am |
+| **edit [task]** `<task_id>` set end_time `<end_time_value>` | Edit end time of the task | edit task 1 set end_time 20/11/2015 8:00pm |
+| **edit [task]** `<task_id>` set task_title `<task_title_value>` | Edit task title | edit task 1 set task_title "buy milks" |
+| **edit [task]** `<task_id>` set task_description `<task_description_value>` | Edit task title | edit task 1 set task_description "zzz" |
 | **edit [task]** `<task_id>` set category `<category_name>` | Edit category name of the task | edit task 1 set category shopping |
 
 
