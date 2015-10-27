@@ -20,6 +20,7 @@ import katnote.parser.Parser;
 import katnote.parser.ViewTaskOption;
 import katnote.task.Task;
 import katnote.task.TaskDueDateComparator;
+import katnote.task.TaskStartDateComparator;
 
 public class Logic {
 
@@ -252,6 +253,10 @@ public class Logic {
             case DUE_BY :
                 search.setDue(commandDetail.getDueDate());
                 break;
+            
+            case START_FROM :
+                search.setStart(commandDetail.getStartDate());
+                break;
             */
                 
             default:
@@ -305,22 +310,38 @@ public class Logic {
      *          ViewState to be updated
      */
     private void updateViewState(ViewState vs) { 
-        vs.setNormalTasks(processTaskList(model_.getNormalTasks()));
+        vs.setNormalTasks(processNormalTaskList(model_.getNormalTasks()));
         vs.setFloatingTasks(getIncomplete(model_.getFloatingTasks()));
-        vs.setEventTasks(model_.getEventTasks()); // TODO: Processing not included for now
+        vs.setEventTasks(processEventTaskList(model_.getEventTasks())); // TODO: Processing not included for now
     }
     
     /**
-     * Processes the input task list by filtering out the completed tasks and sorting them in accordance
+     * Processes the input Normal task list by filtering out the completed tasks and sorting them in accordance
      * to their due dates (earlier tasks come first).
      * @param taskList
-     *              The ArrayList of Task to be filtered and processed. Task type != FLOATING
+     *              The ArrayList of Task to be filtered and processed. Task type == NORMAL
      * @return Returns a filtered list of incomplete tasks that are sorted in accordance of their due dates
      */
-    private ArrayList<Task> processTaskList(ArrayList<Task> taskList) {
+    private ArrayList<Task> processNormalTaskList(ArrayList<Task> taskList) {
         ArrayList<Task> newList = new ArrayList<Task>(taskList);
         newList = getIncomplete(newList);
         newList = sortByDueDate(newList);
+        newList = filterFirstWeekByDueDate(newList);
+        return newList;
+    }
+    
+    /**
+     * Processes the input Event task list by filtering out the completed tasks and sorting them in accordance
+     * to their start dates (earlier tasks come first).
+     * @param taskList
+     *              The ArrayList of Task to be filtered and processed. Task type == EVENT
+     * @return Returns a filtered list of incomplete tasks that are sorted in accordance of their start dates
+     */
+    private ArrayList<Task> processEventTaskList(ArrayList<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<Task>(taskList);
+        newList = getIncomplete(newList);
+        newList = sortByStartDate(newList);
+        newList = filterFirstWeekByStartDate(newList);
         return newList;
     }
     
@@ -335,6 +356,17 @@ public class Logic {
     }
     
     /**
+     * Sorts the input task list according to their start dates. 
+     * Earliest will come first. Time comparison precision is up till Seconds
+     * @param taskList List of tasks to be sorted. Task types should be == EVENT
+     */
+    private ArrayList<Task> sortByStartDate(ArrayList<Task> taskList) {
+        ArrayList<Task> newList = new ArrayList<Task>(taskList);
+        Collections.sort(newList, new TaskStartDateComparator());
+        return newList;
+    }
+    
+    /**
      * Removes all completed tasks from input list
      * @param list ArrayList of Task that is to be filtered
      * @return the ArrayList of uncompleted Task
@@ -345,6 +377,40 @@ public class Logic {
         for (int i = 0; i < list.size(); i++) {
             Task task = list.get(i);
             if (!task.isCompleted()) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;
+    }
+    
+    // Filter out tasks that do not end within the week with
+    // reference to current Date.
+    // TaskType == NORMAL
+    private ArrayList<Task> filterFirstWeekByDueDate(ArrayList<Task> list) {
+        LocalDate duedate = LocalDate.now().plusWeeks(1);
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < list.size(); i++) {
+            Task task = list.get(i);
+            LocalDate taskDue = task.getEndDate().toLocalDate();
+            if (!taskDue.isAfter(duedate)) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;
+    }
+    
+    // Filter out tasks that do not start within the week with
+    // reference to current Date.
+    // TaskType == EVENT
+    private ArrayList<Task> filterFirstWeekByStartDate(ArrayList<Task> list) {
+        LocalDate startDate = LocalDate.now().plusWeeks(1);
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < list.size(); i++) {
+            Task task = list.get(i);
+            LocalDate taskDue = task.getStartDate().toLocalDate();
+            if (!taskDue.isAfter(startDate)) {
                 tasksFound.add(task);
             }
         }
@@ -402,8 +468,8 @@ class Search {
     private Boolean isCompleted_; // will be set to null if searching for both
 
     private LocalDateTime start_; // for events only
-    private LocalDateTime end_; // for events only
-    private LocalDateTime due_; 
+    private LocalDateTime end_; // for events only TODO: MAYBE REMOVING, CAN COMBINE WITH DUE_
+    private LocalDateTime due_; // Includes comparison of time too
     
     public Search() { }
     
@@ -419,7 +485,7 @@ class Search {
         start_ = start;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(LocalDateTime end) { // for events (?) TODO: NOT CONFIRMED IF SHLD BE HERE
         end_ = end;
     }
     
@@ -446,6 +512,10 @@ class Search {
         
         if (isCompleted_ != null) {
             searched = new ArrayList<Task>(findByIsCompleted(searched));
+        }
+        
+        if (start_ != null) {
+            searched = new ArrayList<Task>(findStartFrom(searched));
         }
         
         return searched;
@@ -501,23 +571,50 @@ class Search {
 
     /**
      * Finds tasks that are due either BEFORE or BY the
-     * input date
+     * input date. Comparison inclusive till seconds.
      * 
      * @param data
      *            ArrayList of tasks to be searched
      * @param input
      *            The date that tasks found should be due by
-     * @return List of tasks with due dates before or equals to the
-     *         input date (regardless of time)
+     * @return List of tasks with due dates/time before or equals to the
+     *         input date
      */
     private ArrayList<Task> findDueBy(ArrayList<Task> data) {
-        LocalDate duedate = due_.toLocalDate();
+        //LocalDate duedate = due_.toLocalDate();
+        
+        LocalDateTime duedate = due_;
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
-            LocalDate taskDue = task.getEndDate().toLocalDate();
+            LocalDateTime taskDue = task.getEndDate();
             if (!taskDue.isAfter(duedate)) {
+                tasksFound.add(task);
+            }
+        }
+        return tasksFound;
+    }
+    
+    /**
+     * Finds tasks that starts either AFTER or ON the
+     * input date. Comparison inclusive till seconds.
+     * 
+     * @param data
+     *            ArrayList of tasks to be searched. Note TaskType == EVENT
+     * @param input
+     *            The date that tasks found should start from
+     * @return List of tasks with start date/time after or equals to the
+     *         input date (regardless of time)
+     */
+    private ArrayList<Task> findStartFrom(ArrayList<Task> data) {
+        LocalDateTime start = start_;
+        ArrayList<Task> tasksFound = new ArrayList<Task>();
+
+        for (int i = 0; i < data.size(); i++) {
+            Task task = data.get(i);
+            LocalDateTime taskStart = task.getEndDate();
+            if (!taskStart.isBefore(start)) {
                 tasksFound.add(task);
             }
         }
