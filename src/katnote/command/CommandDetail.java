@@ -159,4 +159,8 @@ public class CommandDetail {
         return (ViewTaskOption) commandData.get(CommandProperties.TASKS_VIEW_OPTION);
     }
 
+    public String getMarkOption() {
+        return (String) commandData.get(CommandProperties.EDIT_MARK);
+    }
+
 }

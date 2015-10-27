@@ -8,6 +8,8 @@ public class CommandKeywords {
     public static final String KW_ADD = "add";
     public static final String KW_EDIT = "edit";
     public static final String KW_EDIT_TASK = "edit task";
+    public static final String KW_MARK = "mark";
+    public static final String KW_MARK_TASK = "mark task";
     public static final String KW_DELETE = "delete";
     public static final String KW_DELETE_TASK = "delete task";
     public static final String KW_VIEW = "view";
@@ -19,6 +21,7 @@ public class CommandKeywords {
     public static final String KW_IMPORT = "import";
     public static final String KW_EXPORT = "export";
     public static final String KW_HELP = "help";
+    public static final String KW_SET_LOCATION = "set location";
     public static final String KW_EXIT = "exit";
 
     // property keywords
@@ -36,18 +39,20 @@ public class CommandKeywords {
 
     // keywords for view, add properties
     public static final String KW_SET = "set";
-    public static final String KW_MARK = "mark";
+    
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
-            KW_ADD, KW_EDIT_TASK, KW_EDIT, KW_DELETE_TASK,
-            KW_DELETE,
+            KW_ADD, KW_EDIT_TASK, KW_EDIT,
+            KW_MARK_TASK, KW_MARK,
+            KW_DELETE_TASK, KW_DELETE,
             // KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK,
-            KW_VIEW, KW_FIND, KW_UNDO, KW_REDO, KW_SET, KW_IMPORT, KW_EXPORT, KW_HELP, KW_EXIT
+            KW_VIEW, KW_FIND,
+            KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT
     };
 
     private static final String[] MAIN_KEYWORDS_LIST = new String[] {
             KW_BY, KW_FROM, KW_TO, KW_ON,
-            KW_MARK, KW_SET,
+            KW_SET,
     };
 
     private static final HashSet<String> MAIN_KEYWORDS_SET = new HashSet<String>(Arrays.asList(MAIN_KEYWORDS_LIST));

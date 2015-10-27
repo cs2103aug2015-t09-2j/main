@@ -47,9 +47,6 @@ public class PropertyParser {
             case CommandKeywords.KW_SET :
                 command.setProperty(CommandProperties.EDIT_SET_PROPERTY, new EditTaskOption(propertyValue));
                 break;
-            case CommandKeywords.KW_MARK :
-                command.setProperty(CommandProperties.EDIT_MARK, propertyValue);
-                break;
             default :
                 // unknown property, do nothing
                 break;
