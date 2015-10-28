@@ -193,28 +193,37 @@ public class Parser {
                 Integer taskId = Integer.valueOf(viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);
                 command.setProperty(CommandProperties.TASK_ID, taskId);
                 break;
-            case CommandKeywords.KW_TASKS :
-                ViewTaskOption viewOption = ViewTaskOption.INCOMPLETED;
+            case CommandKeywords.KW_TASKS :                
+                Boolean viewCompletedTask = false;
                 if (TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length) {
                     switch (viewOptions[TASK_OPTION_VIEW_DETAIL_POS]) {
                         case CommandKeywords.KW_COMPLETED :
-                            viewOption = ViewTaskOption.COMPLETED;
+                            viewCompletedTask = true;
                             break;
                         case CommandKeywords.KW_INCOMPLETED :
-                            viewOption = ViewTaskOption.INCOMPLETED;
+                            viewCompletedTask = false;
                             break;
                         case CommandKeywords.KW_ALL :
-                            viewOption = ViewTaskOption.ALL;
+                            viewCompletedTask = null;
                             break;
                     }
                 }
-                command.setProperty(CommandProperties.TASKS_VIEW_OPTION, viewOption);
+                command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, viewCompletedTask);
                 break;
             default :
                 return new CommandDetail(CommandType.UNKNOWN);
         }
         // add time properties
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        // view task option
+        ViewTaskOption viewOption = ViewTaskOption.ALL;
+        if (command.hasProperty(CommandProperties.TIME_BY)){
+            viewOption = ViewTaskOption.DUE_BY;
+        }
+        else if (command.hasProperty(CommandProperties.TIME_FROM)){
+            viewOption = ViewTaskOption.START_FROM;
+        }
+        command.setProperty(CommandProperties.TASKS_VIEW_OPTION, viewOption);
         return command;
     }
 

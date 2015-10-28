@@ -155,6 +155,10 @@ public class CommandDetail {
         return getString(CommandProperties.FILE_PATH);
     }
     
+    public Boolean getTaskCompletedOption(){
+        return (Boolean) commandData.get(CommandProperties.TASKS_COMPLETED_OPTION);
+    }
+    
     public ViewTaskOption getViewTaskOption() {
         return (ViewTaskOption) commandData.get(CommandProperties.TASKS_VIEW_OPTION);
     }

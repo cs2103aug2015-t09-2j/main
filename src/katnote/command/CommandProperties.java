@@ -8,6 +8,7 @@ public class CommandProperties {
     public static final String TASK_CATEGORY  = "task_category";
     public static final String FIND_KEYWORDS = "find_keywords";
     public static final String TASKS_VIEW_OPTION = "view_tasks_option";
+    public static final String TASKS_COMPLETED_OPTION = "completed_option";
 
     public static final String TIME_BY = "due_time";
     public static final String TIME_TO = "end_time";
@@ -20,5 +21,5 @@ public class CommandProperties {
 
     public static final String LOCATION = "location";
     public static final String FILE_PATH = "file_path";
-    public static final String MAIN_CONTENT = "main_content";
+    public static final String MAIN_CONTENT = "main_content";    
 }
