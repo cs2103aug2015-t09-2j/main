@@ -40,7 +40,7 @@ public class GraphicalUserInterface extends Application {
     
     public static GraphicalUserInterface getInstance(){
         if(instance == null){
-            throw new NullPointerException();
+            throw new NullPointerException("App not initialized");
         }
         return instance;
     }

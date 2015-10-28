@@ -189,8 +189,6 @@ public class TaskViewFormatter {
             if ((dateToday.isEqual(startDate) || dateToday.isAfter(startDate)) && (dateToday.isBefore(endDate)
                     || dateToday.isEqual(endDate))) {
                 todayList.add(task);
-            } else {
-                break;
             }
         }
         return todayList;
@@ -209,8 +207,6 @@ public class TaskViewFormatter {
             if ((dateTomorrow.isEqual(startDate) || dateTomorrow.isAfter(startDate)) && (dateTomorrow.isBefore(endDate)
                     || dateTomorrow.isEqual(endDate))) {
                 tomorrowList.add(task);
-            } else {
-                break;
             }
         }
         return tomorrowList;
@@ -228,8 +224,6 @@ public class TaskViewFormatter {
             if ((eventDate.isEqual(startDate) || eventDate.isAfter(startDate)) && (eventDate.isBefore(endDate)
                     || eventDate.isEqual(endDate))) {
                 newEventList.add(task);
-            } else {
-                break;
             }
         }
 
