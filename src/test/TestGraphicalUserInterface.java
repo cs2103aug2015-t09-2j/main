@@ -94,9 +94,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         
         //absolute
         type("add do homework by 30/10/2015").push(KeyCode.ENTER);
-        testDataPackage1 = new TaskGroupPackage("Friday", 
+        testDataPackage1 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"1. do homework"}, 
-                new String[]{"Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 11:59 PM"});
         TaskGroupPackage[] testDataPackageArray = { testDataPackage1 };
         VBox taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);   
@@ -107,9 +107,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage1 = new TaskGroupPackage("Today", 
                 new String[]{"1. do homework1"}, 
                 new String[]{"Due: 11:59 PM"});        
-        testDataPackage2 = new TaskGroupPackage("Friday", 
+        testDataPackage2 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"2. do homework"}, 
-                new String[]{"Due: 30 Oct 15 11:59 PM"});        
+                new String[]{"Due: 11:59 PM"});        
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2 };
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray); 
@@ -123,9 +123,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage2 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"2. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});        
-        testDataPackage3 = new TaskGroupPackage("Friday", 
+        testDataPackage3 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"3. do homework"}, 
-                new String[]{"Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 };
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);   
@@ -139,9 +139,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage2 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"2. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});        
-        testDataPackage3 = new TaskGroupPackage("Friday", 
+        testDataPackage3 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"3. do homework3", "4. do homework"}, 
-                new String[]{"Due: 30 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 10:00 AM", "Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);    
@@ -159,9 +159,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage3 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"3. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});      
-        testDataPackage4 = new TaskGroupPackage("Friday", 
+        testDataPackage4 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"4. do homework3", "5. do homework"}, 
-                new String[]{"Due: 30 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 10:00 AM", "Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray); 
@@ -185,9 +185,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage3 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"3. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});      
-        testDataPackage4 = new TaskGroupPackage("Friday", 
+        testDataPackage4 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"4. do homework3", "5. do homework"}, 
-                new String[]{"Due: 30 Oct 15 10:00 AM", "Due: 30 Oct 15 11:59 PM"});
+                new String[]{"Due: 10:00 AM", "Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);    
@@ -203,12 +203,12 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage3 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"3. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});      
-        testDataPackage4 = new TaskGroupPackage("Friday", 
+        testDataPackage4 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"4. do homework3"}, 
-                new String[]{"Due: 30 Oct 15 10:00 AM"});
-        TaskGroupPackage testDataPackage5 = new TaskGroupPackage("Sunday", 
+                new String[]{"Due: 10:00 AM"});
+        TaskGroupPackage testDataPackage5 = new TaskGroupPackage("Sunday      01 Nov 15", 
                 new String[]{"5. do homework"}, 
-                new String[]{"Due: 01 Nov 15 11:59 PM"});
+                new String[]{"Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4, testDataPackage5 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);        
@@ -230,12 +230,12 @@ public class TestGraphicalUserInterface extends GuiTest {
         testDataPackage2 = new TaskGroupPackage("Tomorrow", 
                 new String[]{"2. do homework2"}, 
                 new String[]{"Due: 05:00 PM"});      
-        testDataPackage3 = new TaskGroupPackage("Friday", 
+        testDataPackage3 = new TaskGroupPackage("Friday      30 Oct 15", 
                 new String[]{"3. do homework3"}, 
-                new String[]{"Due: 30 Oct 15 10:00 AM"});
-        testDataPackage4 = new TaskGroupPackage("Sunday", 
+                new String[]{"Due: 10:00 AM"});
+        testDataPackage4 = new TaskGroupPackage("Sunday      01 Nov 15",
                 new String[]{"4. do homework"}, 
-                new String[]{"Due: 01 Nov 15 11:59 PM"});
+                new String[]{"Due: 11:59 PM"});
         testDataPackageArray = new TaskGroupPackage[]{ testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4 }; 
         taskGroupList = (VBox) find("#TaskList");
         verifyTaskGroupList(taskGroupList, testDataPackageArray);  
