@@ -1,0 +1,7 @@
+night 10.30pm
+afternoon 2.00pm
+wakeup 7.30am
+morning 8.00am
+sleeptime 11.00pm
+evening 7.30pm
+<start>

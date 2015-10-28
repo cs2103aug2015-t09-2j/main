@@ -28,6 +28,7 @@ public class TestModel {
     private static final int MAX_BUFFER_SIZE = 1024;
     private static final String TEST_PATH = "TestFiles/TestModel/";
     private static final String TEST_PATH_ADDTASK = "TestFiles/TestModel/addTaskExpected.txt";
+    private static final String TEST_PATH_SETDEFINITION = "TestFiles/TestModel/setDefinitionExpected.txt";
     
     // Messages
     private static final String MSG_ERR_IO = "I/O Exception.";
@@ -92,6 +93,7 @@ public class TestModel {
         for (int i=0; i<contentActual.size(); i++) {
             if(!contentActual.get(i).equals(contentExpected.get(i))) {
                 System.err.println("Mismatch on line: " + (i+1));
+                System.err.println("Actual Line = " + contentActual.get(i));
                 return false;
             }
         }
@@ -202,6 +204,36 @@ public class TestModel {
             // Clean Up
             clearExistingData(TEST_PATH);
             System.out.println("Result 1 - Task Added Correctly: " + result + " Expected: true");
+            System.out.println("=== End Test ===\n");
+            
+            assertTrue(result);
+            
+        } catch (Exception e) {
+            System.out.println(e);           
+            fail("Exception!");
+        }
+    }
+    
+    @Test
+    public void testSetDefinition() {
+        try {
+            clearExistingData(TEST_PATH);
+            
+            System.out.println("=== Add Task ===");
+            Model testModel = new Model(TEST_PATH);
+            
+            testModel.setDefinition("night", "10.30pm");
+            testModel.setDefinition("afternoon", "2.00pm");
+            testModel.setDefinition("morning", "8.00am");
+            testModel.setDefinition("sleeptime", "11.00pm");
+            testModel.setDefinition("wakeup", "7.30am");
+            testModel.setDefinition("evening", "7.30pm");
+            
+            boolean result = compareFile(testModel.getDataFilePath(), TEST_PATH_SETDEFINITION);
+            
+         // Clean Up
+            clearExistingData(TEST_PATH);
+            System.out.println("Result 1 - Definitions set correctly: " + result + " Expected: true");
             System.out.println("=== End Test ===\n");
             
             assertTrue(result);

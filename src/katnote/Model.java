@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class Model {
 	private StorageEncoder _encoder;
 	private StorageData _data;
 	
+	private Hashtable<String, String> _definitions;
+	
 	private ArrayList<Task> _dataLog;
 	private ArrayList<Task> _dataNormalTasks;
 	private ArrayList<Task> _dataFloatingTasks;
@@ -62,9 +65,12 @@ public class Model {
 	private static final String MSG_EDIT_TASK_COMPLETED = "Task: %s is marked completed.";
 	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
 	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
+	private static final String MSG_EDIT_TASK_REPLACED = "Task: %s is successfully replaced with %s";
 	private static final String MSG_UNDO_CONFIRM = "%s %s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s %s redone.";
 	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
+	private static final String MSG_DEFINITION_REPLACED = "Definition for %s set to %s";
+	private static final String MSG_DEFINITION_ADDED = "New definition for %s set to %s";
 	
 	private static final String MSG_ERR_IO = "I/O Exception.";
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
@@ -80,6 +86,8 @@ public class Model {
 	private static final String MSG_ERR_REVERSE_MODIFY = "Unable to perform reverse for modifying of task : ";
 	private static final String MSG_ERR_REVERSE_DELETE = "Unable to perform reverse for deleting of task : ";
 	private static final String MSG_ERR_REVERSE_COMPLETE = "Unable to perform reverse for completion of task : ";
+	private static final String MSG_ERR_REVERSE_REPLACE = "Unable to perform reverse for replacing of task : ";
+	private static final String MSG_ERR_REVERSE_CLEAR = "Unable to perform reverse for clear tasks.";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -106,6 +114,14 @@ public class Model {
 	private static final String EDIT_MODIFY = "Modify Task:";
 	private static final String EDIT_DELETE = "Delete Task:";
 	private static final String EDIT_COMPLETE = "Mark Task:";
+	private static final String EDIT_REPLACE = "Replaced Task:";
+	private static final String EDIT_CLEAR = "Clear Tasks:";
+	
+	// Standard Default Definitions
+	private static final String MORNING = "9.00am";
+	private static final String AFTERNOON = "12.00pm";
+	private static final String NIGHT = "9.00pm";
+	private static final String EVENING = "7.00pm";
 	
 	// Format
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
@@ -123,6 +139,7 @@ public class Model {
 		_dataNormalTasks = new ArrayList<Task>();
 		_dataFloatingTasks = new ArrayList<Task>();
 		_dataEventTasks = new ArrayList<Task>();
+		initDefinitions();
 		_dataLog = _decoder.decode();
 		splitTaskType(_dataLog);
 	}
@@ -207,13 +224,12 @@ public class Model {
 	        case CommandProperties.TIME_UNTIL :
 	            editedTask.setTerminateDate(editOption.getOptionValueDate());
 	            break;
-	            // TODO: 
-//	        case CommandProperties.TASK_DESCRIPTION :
-//	            editedTask.setDescription(editOption.getOptionValue());
-//	            break;
-//	        case CommandProperties.TASK_CATEGORY :
-//	            editedTask.setCategory(editOption.getOptionValue());
-//	            break;
+	        case CommandProperties.TASK_DESCRIPTION :
+	            editedTask.setDescription(editOption.getOptionValue());
+	            break;
+	        case CommandProperties.TASK_CATEGORY :
+	            editedTask.setCategory(editOption.getOptionValue());
+	            break;
 	        default:
 	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
 	    }
@@ -258,6 +274,42 @@ public class Model {
 	}
 	
 	/**
+	 * Deletes all the tasks of the specified type.
+	 * @return
+	 */
+	public String editClear(String type) {
+	    // TODO:
+	    return _response;
+	}
+	
+	public String replace(int taskID, Task newTask) {
+	    
+	    Task editedTask = _dataLog.get(taskID);
+	    Task oldTask = new Task(editedTask);
+	    
+	    // Replace with new data.
+	    editedTask.setTitle(newTask.getTitle());
+	    editedTask.setTaskType(newTask.getTaskType());
+	    editedTask.setStartDate(newTask.getStartDate());
+	    editedTask.setEndDate(newTask.getEndDate());
+	    editedTask.setRepeatOption(newTask.getRepeatOption());
+	    editedTask.setTerminateDate(newTask.getTerminateDate());
+	    editedTask.setDescription(newTask.getDescription());
+	    editedTask.setCategory(newTask.getCategory());
+	    editedTask.setCompleted(newTask.isCompleted());
+	    
+	    splitTaskType(_dataLog);
+	    
+	    // Update UndoLog
+	    _undoLog.push(EDIT_REPLACE);
+	    _undoTaskObjLog.push(oldTask);
+	    resetRedoLog();
+	    
+	    _response = String.format(MSG_EDIT_TASK_REPLACED, oldTask.getTitle() ,newTask.getTitle());
+	    return _response;
+	}
+	
+	/**
 	 * Reverses the last action under the _undoLog.
 	 * Undo-able actions : addTask, editModify, editDelete, editComplete
 	 * @return the response message of a the success of undoing.
@@ -293,6 +345,28 @@ public class Model {
 	    reverseRedo(redoAction, taskObj);
 		_response = String.format(MSG_REDO_CONFIRM, redoAction, taskObj.getTitle());
 		return _response;
+	}
+	
+	/**
+	 * Set a definition to a new value. Can be used to add a new definition
+	 * or replace an existing definition.
+	 * @param keyword, value
+	 * @return the response message of the success of setting the definition.
+	 * @throws Exception 
+	 */
+	public String setDefinition(String keyword, String value) throws Exception {
+	    
+	    if (_definitions.containsKey(keyword)) {
+	        _definitions.replace(keyword, value);
+	        _response = String.format(MSG_DEFINITION_REPLACED, keyword, value);
+	    } else {
+	        _definitions.put(keyword, value);
+	        _response = String.format(MSG_DEFINITION_ADDED, keyword, value);
+	    }
+	    
+	    _encoder.encode();
+	    
+	    return _response;
 	}
 	
 	/**
@@ -350,6 +424,10 @@ public class Model {
 	public ArrayList<Task> getEventTasks() {
 	    return _dataEventTasks;
 	}
+	
+	public Hashtable<String, String> getDefinitions() {
+	    return _definitions;
+	}
 
 	// Helper Methods	
 	private void resetRedoLog() {
@@ -372,6 +450,12 @@ public class Model {
 	            break;
 	        case EDIT_COMPLETE :
 	            undoComplete(taskObj);
+	            break;
+	        case EDIT_REPLACE :
+	            undoReplace(taskObj);
+	            break;
+	        case EDIT_CLEAR :
+	            undoClear();
 	            break;
 	        default :
 	            handleException(REVERSE_EXCEPTION, MSG_ERR_REVERSE_EXCEPTION + type);
@@ -449,6 +533,37 @@ public class Model {
             handleException(e, MSG_ERR_REVERSE_COMPLETE + taskObj.getTitle());
         }
     }
+	
+	private void undoReplace(Task taskObj) throws Exception {
+	    // Replace new task with old task
+	    try {
+	        Task newTask = _dataLog.get(taskObj.getID());
+	        Task redoTask = new Task(newTask);
+	        
+	        // Replace with new data.
+	        newTask.setTitle(taskObj.getTitle());
+	        newTask.setTaskType(taskObj.getTaskType());
+	        newTask.setStartDate(taskObj.getStartDate());
+	        newTask.setEndDate(taskObj.getEndDate());
+	        newTask.setRepeatOption(taskObj.getRepeatOption());
+	        newTask.setTerminateDate(taskObj.getTerminateDate());
+	        newTask.setDescription(taskObj.getDescription());
+	        newTask.setCategory(taskObj.getCategory());
+	        newTask.setCompleted(taskObj.isCompleted());
+	        
+	        splitTaskType(_dataLog);
+	        _encoder.encode();
+	        
+	        _redoLog.push(EDIT_REPLACE);
+            _redoTaskObjLog.push(redoTask);
+	    } catch (Exception e) {
+	        handleException(e, MSG_ERR_REVERSE_REPLACE + taskObj.getTitle());
+	    }
+	}
+	
+	private void undoClear() {
+	    //TODO: Awaiting implementation of clear() function.
+	}
     
 	private void reverseRedo(String type, Task taskObj) throws Exception {
 
@@ -464,6 +579,12 @@ public class Model {
                 break;
             case EDIT_COMPLETE :
                 redoComplete(taskObj);
+                break;
+            case EDIT_REPLACE :
+                redoReplace(taskObj);
+                break;
+            case EDIT_CLEAR :
+                redoClear();
                 break;
             default :
                 handleException(REVERSE_EXCEPTION, MSG_ERR_REVERSE_EXCEPTION + type);
@@ -539,6 +660,50 @@ public class Model {
 	    } catch (Exception e) {
 	        handleException(e, MSG_ERR_REVERSE_COMPLETE + taskObj.getTitle());
 	    }
+	}
+	
+	private void redoReplace(Task taskObj) throws Exception {
+	    // Change oldTask back to new Task
+	    try {
+            Task oldTask = _dataLog.get(taskObj.getID());
+            Task undoTask = new Task(oldTask);
+            
+            // Replace with new data.
+            oldTask.setTitle(taskObj.getTitle());
+            oldTask.setTaskType(taskObj.getTaskType());
+            oldTask.setStartDate(taskObj.getStartDate());
+            oldTask.setEndDate(taskObj.getEndDate());
+            oldTask.setRepeatOption(taskObj.getRepeatOption());
+            oldTask.setTerminateDate(taskObj.getTerminateDate());
+            oldTask.setDescription(taskObj.getDescription());
+            oldTask.setCategory(taskObj.getCategory());
+            oldTask.setCompleted(taskObj.isCompleted());
+            
+            splitTaskType(_dataLog);
+            _encoder.encode();
+            
+            _undoLog.push(EDIT_REPLACE);
+            _undoTaskObjLog.push(undoTask);
+            
+        } catch (Exception e) {
+            handleException(e, MSG_ERR_REVERSE_REPLACE + taskObj.getTitle());
+        }
+	}
+	
+	private void redoClear() {
+	    // TODO: Awaiting implementation of clear() function.
+	}
+	
+	/**
+	 * Add new definitions here. Initialises the definitions table with default keywords. Runs before decoding.
+	 */
+	private void initDefinitions() {
+	    
+	    _definitions = new Hashtable<String, String>();
+	    _definitions.put("morning", MORNING);
+	    _definitions.put("afternoon", AFTERNOON);
+	    _definitions.put("evening", EVENING);
+	    _definitions.put("night", NIGHT);
 	}
 	    
 	private void splitTaskType(Task task) {
@@ -635,6 +800,7 @@ public class Model {
 		public ArrayList<Task> decode() throws Exception {
 			
 		    // Setup Environment
+		    String[] headerTokens;
 		    ArrayList<Task> taskArray = new ArrayList<Task>();
 		    String line;
 		    
@@ -642,7 +808,9 @@ public class Model {
 			
 			// Read through data.txt
 			while ((line = bReader.readLine()) != null && !line.equals(MSG_LOG_START)) {
-			    // Read till start of task logs
+			    // Read header data. Till <start>
+			    headerTokens = line.split(" ");
+			    interpret(headerTokens);
 			}
 			
 			while ((line = bReader.readLine()) != null) {
@@ -658,6 +826,23 @@ public class Model {
 		}
 		
 		// Helper Method
+		private void interpret(String[] tokenArray) {
+		    
+		    // Add Definitions to hash table.
+		    if (tokenArray.length < 1) {
+		        // Discard
+		        return;
+		    } else {
+		        String keyword = tokenArray[0];
+		        String value = tokenArray[1];
+		        if (_definitions.containsKey(keyword)) {
+		            _definitions.replace(keyword, value);
+		        } else {
+		            _definitions.put(keyword, value);
+		        }
+		    }
+		}
+		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
         private Task parseLineToTask(String line) throws Exception {
 		    
@@ -723,6 +908,10 @@ public class Model {
 		    _id = 0;
 		    
 		    PrintWriter pWriter = createNewDataLog(_data.getDataFilePath());
+		    // Print all definitions before <start>
+		    for (String keyword : _definitions.keySet()) {
+		        pWriter.println(keyword + " " + _definitions.get(keyword));
+		    }
 		    pWriter.println(MSG_LOG_START);
 		    
 		    // Iterate through Log
