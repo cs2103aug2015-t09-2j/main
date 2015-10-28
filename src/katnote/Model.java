@@ -52,7 +52,6 @@ public class Model {
 	// Constants
 	private static final String DATA_FILENAME = "data.txt";
 	private static final int MAX_BUFFER_SIZE = 1024;
-	private static final int INDEX_TRANSLATION = 1; // For translating internal indexing to displayed indexing.
 	
 	private static final String NULL_DATE = "null";
 	private static final String STR_TRUE = "true";
@@ -66,6 +65,9 @@ public class Model {
 	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
 	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
 	private static final String MSG_EDIT_TASK_REPLACED = "Task: %s is successfully replaced with %s";
+	private static final String MSG_EDIT_TASK_CLEAR_ALL = "All tasks cleared.";
+	private static final String MSG_EDIT_TASK_CLEAR_COMPLETED = "All completed tasks cleared.";
+	private static final String MSG_EDIT_TASK_CLEAR_INCOMPLETE = "All incomplete tasks cleared.";
 	private static final String MSG_UNDO_CONFIRM = "%s %s undone.";
 	private static final String MSG_REDO_CONFIRM = "%s %s redone.";
 	private static final String MSG_IMPORT_CONFIRM = "Successfully imported %s to %s";
@@ -106,6 +108,10 @@ public class Model {
 	private static final String TYPE_NORMAL = "NORMAL";
 	private static final String TYPE_FLOATING = "FLOATING";
 	private static final String TYPE_EVENT = "EVENT";
+	
+	private static final String CLEAR_ALL = "clear all";
+	private static final String CLEAR_COMPLETED = "clear completed";
+	private static final String CLEAR_INCOMPLETE = "clear incomplete";
 	
 	// Undo and Redo
 	private static final Exception REVERSE_EXCEPTION = new Exception("Reverse Exception");
@@ -274,11 +280,45 @@ public class Model {
 	}
 	
 	/**
-	 * Deletes all the tasks of the specified type.
-	 * @return
+	 * Clears all tasks of the specified type.
+	 * Available types : CLEAR ALL, CLEAR COMPLETED, CLEAR INCOMPLETE.
+	 * This function is not undo-able.
+	 * @param type
+	 * @return the response message of the success of clearing all of the specified tasks.
+	 * @throws Exception
 	 */
-	public String editClear(String type) {
-	    // TODO:
+	public String editClear(String type) throws Exception {
+	    // TODO: Undo-functionality?
+	    switch (type) {
+	        case CLEAR_ALL :
+	            _dataLog.clear();
+	            splitTaskType(_dataLog);
+	            _encoder.encode();
+	            _response = MSG_EDIT_TASK_CLEAR_ALL;
+	            break;
+	        case CLEAR_COMPLETED :
+	            for (Task t : _dataLog) {
+	                if (t.isCompleted()) {
+	                    _dataLog.remove(t);
+	                }
+	            }
+	            splitTaskType(_dataLog);
+	            _encoder.encode();
+	            _response = MSG_EDIT_TASK_CLEAR_COMPLETED;
+	            break;
+	        case CLEAR_INCOMPLETE :
+	            for (Task t : _dataLog) {
+	                if (!t.isCompleted()) {
+	                    _dataLog.remove(t);
+	                }
+	            }
+	            splitTaskType(_dataLog);
+	            _encoder.encode();
+	            _response = MSG_EDIT_TASK_CLEAR_INCOMPLETE;
+	            break;
+	        default :
+	            return handleError(MSG_ERR_INVALID_ARGUMENTS);
+	    }
 	    return _response;
 	}
 	
