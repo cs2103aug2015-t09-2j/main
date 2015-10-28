@@ -30,7 +30,11 @@ public class Logic {
 
     // Error Messages
     private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; // %s is the command type
-    private static final String MSG_ERR_INVALID_ARGS = "Invalid arguments: %s"; // %s is the String of args
+    
+    // Response Messages
+    private static final String MSG_RESPONSE_SEARCH_KEYWORD = "Found %d tasks with keyword %s.";
+    private static final String MSG_RESPONSE_SEARCH_DEFAULT = "Found %d tasks.";
+    private static final String MSG_RESPONSE_VIEW = "Displaying %d tasks.";
 
     // Source Paths
     private static final String MSG_SOURCE_PATH = "sourcepath.txt";
@@ -161,24 +165,27 @@ public class Logic {
 
             case VIEW_TASK :
                 feedback.setViewState(viewTask(commandDetail));
+                //TODO: Set the response messages!
                 break;
 
             case UNDO :
                 feedback.setResponse(model_.undo());
-
                 updateViewState(vs);  
                 break;
 
             case REDO :
                 feedback.setResponse(model_.redo());
-
                 updateViewState(vs);
                 break;
 
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
-
                 updateViewState(vs);
+                String keyword = commandDetail.getFindKeywords();
+                
+                //TODO: REFACTOR
+                int tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
+                feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
                 break;
 
             case SET_LOCATION :
@@ -218,7 +225,7 @@ public class Logic {
         search.setIsCompleted(false);
      
         // search and return
-        vs = searchAndUpdate(vs, search);   
+        vs = searchAndUpdate(vs, search);
         return vs;
 
     }
@@ -234,34 +241,14 @@ public class Logic {
     private ViewState viewTask(CommandDetail commandDetail) {
         Search search = new Search();
         ViewState vs = new ViewState();
-        ViewTaskOption viewType = commandDetail.getViewTaskOption();
-        //System.out.println(viewType);
-        switch (viewType) {
-            case COMPLETED :
-                search.setIsCompleted(true);
-                break;
-                
-            case INCOMPLETED :
-                search.setIsCompleted(false);
-                break;
-            
-            case ALL :
-                search.setIsCompleted(null);
-                break;
-            
-            /*
-            case DUE_BY :
-                search.setDue(commandDetail.getDueDate());
-                break;
-            
-            case START_FROM :
-                search.setStart(commandDetail.getStartDate());
-                break;
-            */
-                
-            default:
-                break;
-        }  
+        
+        Boolean isCompleted = commandDetail.getTaskCompletedOption();
+        LocalDateTime dueDate = commandDetail.getDueDate();
+        LocalDateTime startDate = commandDetail.getStartDate();
+        
+        search.setIsCompleted(isCompleted);
+        search.setDue(dueDate);
+        search.setStart(startDate);
               
         // search and return
         vs = searchAndUpdate(vs, search);   
@@ -298,7 +285,7 @@ public class Logic {
         //update
         vs.setNormalTasks(sortByDueDate(normal));
         vs.setFloatingTasks(floating);
-        vs.setEventTasks(event); //TODO: sorting not included yet
+        vs.setEventTasks(event);
         
         return vs;
     }
@@ -312,7 +299,7 @@ public class Logic {
     private void updateViewState(ViewState vs) { 
         vs.setNormalTasks(processNormalTaskList(model_.getNormalTasks()));
         vs.setFloatingTasks(getIncomplete(model_.getFloatingTasks()));
-        vs.setEventTasks(processEventTaskList(model_.getEventTasks())); // TODO: Processing not included for now
+        vs.setEventTasks(processEventTaskList(model_.getEventTasks()));
     }
     
     /**
@@ -468,7 +455,6 @@ class Search {
     private Boolean isCompleted_; // will be set to null if searching for both
 
     private LocalDateTime start_; // for events only
-    private LocalDateTime end_; // for events only TODO: MAYBE REMOVING, CAN COMBINE WITH DUE_
     private LocalDateTime due_; // Includes comparison of time too
     
     public Search() { }
@@ -483,10 +469,6 @@ class Search {
 
     public void setStart(LocalDateTime start) {
         start_ = start;
-    }
-
-    public void setEnd(LocalDateTime end) { // for events (?) TODO: NOT CONFIRMED IF SHLD BE HERE
-        end_ = end;
     }
     
     public void setDue(LocalDateTime due) {
