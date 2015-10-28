@@ -97,6 +97,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     public void setUpTaskViewer() {
+        log.log(Level.INFO, "setUpTaskViewer");
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
         displayedTaskList = updateTaskViewer(logic.getInitialViewState());
@@ -104,12 +105,14 @@ public class GraphicalUserInterface extends Application {
     }
 
     public ArrayList<Task> updateTaskViewer(ViewState viewState) {
+        log.log(Level.INFO, "updateTaskViewer");
         TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
         taskViewer.loadTaskFormat(listFormat);
         return listFormat.getOrderedTaskList();
     }
 
     public void handleCommandInput(String inputText) {
+        log.log(Level.FINE, "input recieved: " + inputText);
         UIFeedback feedback;
         try {
             feedback = logic.execute(inputText);
@@ -124,6 +127,7 @@ public class GraphicalUserInterface extends Application {
                 }
             }
         } catch (Exception e) {
+            log.log(Level.WARNING, "Exception: " + e.getMessage());
             commandBarController.setErrorText(e.getMessage());
             e.printStackTrace();
         }
