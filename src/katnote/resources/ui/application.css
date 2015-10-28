@@ -9,6 +9,9 @@
 .check {
 	-fx-background-image: url('./checkmark.png');
 }
+.katImage {
+	-fx-background-image: url('./Kat.png');
+}
 .TaskRowDateText {
     -fx-font-family: "Sen Bold";
     -fx-text-fill: #FF9933;
