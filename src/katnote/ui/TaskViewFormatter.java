@@ -3,6 +3,7 @@ package katnote.ui;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,6 +21,8 @@ public class TaskViewFormatter {
     private static final String GROUP_TITLE_THE_REST = "The Rest";
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final int DISPLAY_LIMIT = 6;
+    private static final String DATE_PATTERN = "dd MMM yy";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
     private ArrayList<TaskViewGroup> _viewList = new ArrayList<TaskViewGroup>();
     private ArrayList<Task> _viewOrderedTaskList = new ArrayList<Task>();
@@ -67,11 +70,12 @@ public class TaskViewFormatter {
             return;
         }
         Queue<Task> normalTasksQueue = copyTasksIntoLinkedList(normalTasks);
+        ArrayList<Task> eventCopy = new ArrayList<Task>(events);
         if (_isGUIFormat) {
-            processForToday(normalTasksQueue, events);
-            processForTomorrow(normalTasksQueue, events);
-            processForTheWeek(normalTasksQueue, events);
-            processRemainingTasks(normalTasksQueue);
+            processForToday(normalTasksQueue, eventCopy);
+            processForTomorrow(normalTasksQueue, eventCopy);
+            processForTheWeek(normalTasksQueue, eventCopy);
+            processRemainingTasks(normalTasksQueue, eventCopy);
         }
     }
 
@@ -87,16 +91,20 @@ public class TaskViewFormatter {
                 continue;
             }
             ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList, eventRemainingWeekList);
-            _viewList.add(createTaskGroupDetailed(getDayString(dayDue.getDayOfWeek()), combinedList, false));
+            String dayOfWeekString = getDayString(dayDue.getDayOfWeek());
+            dayOfWeekString += "      " + dayDue.format(DATE_FORMAT);
+            
+            _viewList.add(createTaskGroupDetailed(dayOfWeekString, combinedList, true));
         }
     }
 
-    private void processRemainingTasks(Queue<Task> normalTasksQueue) {
-        if (normalTasksQueue.isEmpty()) {
+    private void processRemainingTasks(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
+        ArrayList<Task> remainingList = new ArrayList<Task>(normalTasksQueue);
+        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList, eventList);
+        if (combinedList.isEmpty()) {
             return;
         }
-        ArrayList<Task> remainingList = new ArrayList<Task>(normalTasksQueue);
-        _viewList.add(createTaskRemainingGroup(remainingList));
+        _viewList.add(createTaskRemainingGroup(combinedList));
     }
 
     private void processForTomorrow(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
@@ -189,6 +197,10 @@ public class TaskViewFormatter {
             if ((dateToday.isEqual(startDate) || dateToday.isAfter(startDate)) && (dateToday.isBefore(endDate)
                     || dateToday.isEqual(endDate))) {
                 todayList.add(task);
+                if(dateToday.isEqual(endDate)){
+                    eventList.remove(i);
+                    i--;
+                }
             }
         }
         return todayList;
@@ -207,6 +219,10 @@ public class TaskViewFormatter {
             if ((dateTomorrow.isEqual(startDate) || dateTomorrow.isAfter(startDate)) && (dateTomorrow.isBefore(endDate)
                     || dateTomorrow.isEqual(endDate))) {
                 tomorrowList.add(task);
+                if(dateTomorrow.isEqual(endDate)){
+                    eventList.remove(i);
+                    i--;
+                }
             }
         }
         return tomorrowList;
@@ -224,6 +240,10 @@ public class TaskViewFormatter {
             if ((eventDate.isEqual(startDate) || eventDate.isAfter(startDate)) && (eventDate.isBefore(endDate)
                     || eventDate.isEqual(endDate))) {
                 newEventList.add(task);
+                if(eventDate.isEqual(endDate)){
+                    eventList.remove(i);
+                    i--;
+                }
             }
         }
 

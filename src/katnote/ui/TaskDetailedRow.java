@@ -17,7 +17,7 @@ public class TaskDetailedRow extends AnchorPane {
     private static final String CHECKMARK_CLASS_NAME = "check";
     private static final String NORMAL_TASK_DATE_FORMAT = "Due: %1s %2s";
     private static final String NORMAL_TASK_TIME_FORMAT = "Due: %1s";
-    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s       End: %2s";
+    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s             End: %2s";
     private static final String DATE_TIME_PATTERN = "dd MMM yy hh:mm a";
     private static final String TIME_PATTERN = "hh:mm a";
     private static final String DATE_PATTERN = "dd MMM yy";
