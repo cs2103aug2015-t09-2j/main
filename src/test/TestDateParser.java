@@ -13,9 +13,9 @@ public class TestDateParser {
     @Test
     public void testRelativeParser1() {
         LocalDateTime date;
-        date = DateParser.parseDateTime("6am");
+        date = DateParser.parseDateTime("12am");
         assertNotNull(date);
-        //System.out.println(date.toString());
+        System.out.println(date.toString());
     }
     
     @Test

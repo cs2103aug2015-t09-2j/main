@@ -169,7 +169,11 @@ public class DateParser {
             int hour = Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR));
             int minute = m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE) != null
                     ? Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE)) : 0;
-            boolean isPM = DAY_PERIOD_PM.equals(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM));
+            String dayPM = m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM);
+            boolean isPM = DAY_PERIOD_PM.equals(dayPM);
+            if (dayPM != STR_EMPTY && hour == 12){ //special case 12am and 12pm
+                hour = 0;
+            }
             if (isPM) {
                 hour = (hour + DAY_HALF_NUMBER_OF_HOURS) % 24;
             }
