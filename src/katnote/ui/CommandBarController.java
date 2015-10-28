@@ -22,7 +22,7 @@ public class CommandBarController {
     @FXML
     void onKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            mainUI.handleCommandInput(this, commandBar.getText());
+            mainUI.handleCommandInput(commandBar.getText());
             commandBar.clear();
         }
     }

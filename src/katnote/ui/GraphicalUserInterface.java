@@ -18,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
+    private static GraphicalUserInterface instance;
     private static final boolean IS_GUI_FORMAT = true;
     private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
     private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
@@ -26,14 +27,31 @@ public class GraphicalUserInterface extends Application {
     private Stage primaryStage;
     private Logic logic;
     private TaskViewer taskViewer;
-    private ArrayList<Task> displayedTaskList;    
-    
-    public ArrayList<Task> getDisplayedTaskList(){
+    private ArrayList<Task> displayedTaskList;
+    private CommandBarController commandBarController;
+
+    public ArrayList<Task> getDisplayedTaskList() {
         return displayedTaskList;
+    }
+
+    public void start(String[] args) {
+        launch(args);
+    }    
+    
+    public static GraphicalUserInterface getInstance(){
+        if(instance == null){
+            throw new NullPointerException();
+        }
+        return instance;
+    }
+
+    public CommandBarController getCommandController() {
+        return commandBarController;
     }
 
     @Override
     public void start(Stage primaryStage) {
+        instance = this;
         loadResources();
         initialize(primaryStage);
 
@@ -65,7 +83,7 @@ public class GraphicalUserInterface extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(ROOT_LAYOUT_FXML));
             rootLayout = (BorderPane) loader.load();
-            CommandBarController commandBarController = loader.getController();
+            commandBarController = loader.getController();
             commandBarController.setMainUI(this);
 
             // Show the scene containing the root layout.
@@ -89,14 +107,14 @@ public class GraphicalUserInterface extends Application {
         TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
         taskViewer.loadTaskFormat(listFormat);
         return listFormat.getOrderedTaskList();
-    }    
+    }
 
-    public void handleCommandInput(CommandBarController commandBarController, String inputText) {
+    public void handleCommandInput(String inputText) {
         UIFeedback feedback;
         try {
             feedback = logic.execute(inputText);
             commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError());
-            if(feedback.isAnExit()){
+            if (feedback.isAnExit()) {
                 primaryStage.close();
             } else if (!feedback.isAnError()) {
                 ViewState viewState = feedback.getViewState();

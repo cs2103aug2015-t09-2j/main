@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
+import katnote.ui.CommandBarController;
 import katnote.ui.GraphicalUserInterface;
 import katnote.ui.TaskDetailedRow;
 import katnote.ui.TaskRow;
@@ -22,6 +23,8 @@ import katnote.ui.TaskViewGroup;
 public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     TextField commandInput;
+    GraphicalUserInterface app;
+    
     class TaskGroupPackage {
         private String groupHeader;
         private String[] taskDescription;
@@ -146,6 +149,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         //floating
         commandInput.setText("add do homework4");
         push(KeyCode.ENTER);
+        
         testDataPackage1 = new TaskGroupPackage("Task to do", 
                 new String[]{"1. do homework4"}, 
                 new String[]{});        
@@ -258,10 +262,14 @@ public class TestGraphicalUserInterface extends GuiTest {
         // reset data
         File f = new File("data.txt");
         f.delete();
-        new Thread(() -> GraphicalUserInterface.launch(GraphicalUserInterface.class)).start();
+        new Thread(() -> {
+            GraphicalUserInterface.launch(GraphicalUserInterface.class);
+        }).start();
         // let the application load
         sleep(2, TimeUnit.SECONDS);        
         click("#commandInputBox");
         commandInput = (TextField)find("#commandInputBox");
+        
+        app = GraphicalUserInterface.getInstance();
     }
 }
