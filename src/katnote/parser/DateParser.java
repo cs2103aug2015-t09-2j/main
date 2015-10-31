@@ -22,20 +22,28 @@ public class DateParser {
     private static final String RELATIVE_TIME_FRIDAY = "friday";
     private static final String RELATIVE_TIME_SATURDAY = "saturday";
     private static final String RELATIVE_TIME_SUNDAY = "sunday";
+    private static final String[] MONTHS_OF_YEAR = {
+            "january", "february", "march", "april", "may",
+            "june", "july", "august", "september",
+            "october", "november", "december"
+    };
+    private static final int MONTH_MIN_LENGTH = 3;
 
-    private static final String ABSOLUTE_DATE_PATTERN = "^(\\d+)\\/(\\d+)(?:\\/(\\d+))?";
+    private static final String ABSOLUTE_DATE_PATTERN = "(\\d+)\\/(\\w+)(?:\\/(\\d+))?";
     private static final int ABSOLUTE_DATE_PATTERN_POS_DAY = 1;
     private static final int ABSOLUTE_DATE_PATTERN_POS_MONTH = 2;
     private static final int ABSOLUTE_DATE_PATTERN_POS_YEAR = 3;
     
-    private static final String ABSOLUTE_DATE_TIME_PATTERN = "(?:^|\\s+)(\\d{1,2})(?::(\\d+))?(am|pm|)$";
+    private static final String ABSOLUTE_DATE_TIME_PATTERN = "(\\d{1,2})(?::(\\d+)(am|pm|)|(am|pm))";
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR = 1;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE = 2;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM = 3;
+    private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM_L = 4;
     
     
     private static final String DAY_PERIOD_PM = "pm";
     private static final int DAY_HALF_NUMBER_OF_HOURS = 12;
+    private static final int NUMBER_OF_MONTHS = 12;
     private static final int YEAR_TWO_DIGIT_LIMIT = 100;
     private static final int YEAR_TWO_DIGIT_OFFSET = 2000;
 
@@ -107,8 +115,9 @@ public class DateParser {
 
     private static LocalDate parseRelativeDate(String time) {
         switch (time.toLowerCase()) {
-            case RELATIVE_TIME_TODAY :
             case STR_EMPTY:
+                return LocalDate.MIN;
+            case RELATIVE_TIME_TODAY :            
                 return getToday();
             case RELATIVE_TIME_TOMORROW :
                 return getTomorrow();
@@ -135,6 +144,31 @@ public class DateParser {
         }
         return null;
     }
+    
+    private static String emptyIfNull(String s){
+        return (s == null) ? STR_EMPTY : s;
+    }
+    
+    /*
+     * Converts month string to number. Returns -1 if the value is invalid
+     */
+    private static int parseMonth(String monthStr){
+        monthStr = monthStr.toLowerCase();
+        try{
+            return Integer.parseInt(monthStr);
+        }
+        catch (NumberFormatException e){
+            if (monthStr.length() < MONTH_MIN_LENGTH){
+                return -1; // invalid months
+            }            
+            for (int i = 0; i < NUMBER_OF_MONTHS; i++){
+                if (MONTHS_OF_YEAR[i].startsWith(monthStr)){
+                    return i + 1;
+                }
+            }
+            return -1;
+        }
+    }
 
     /*
      * Converts string (absolute time format) to LocalDate
@@ -145,7 +179,7 @@ public class DateParser {
         Matcher m = Pattern.compile(ABSOLUTE_DATE_PATTERN).matcher(time);
         if (m.find()) {
             int dayOfMonth = Integer.parseInt(m.group(ABSOLUTE_DATE_PATTERN_POS_DAY));
-            int month = Integer.parseInt(m.group(ABSOLUTE_DATE_PATTERN_POS_MONTH));
+            int month = parseMonth(m.group(ABSOLUTE_DATE_PATTERN_POS_MONTH));
             int year = m.group(ABSOLUTE_DATE_PATTERN_POS_YEAR) != null
                     ? Integer.parseInt(m.group(ABSOLUTE_DATE_PATTERN_POS_YEAR)) : currentYear;
                     
@@ -169,7 +203,8 @@ public class DateParser {
             int hour = Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR));
             int minute = m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE) != null
                     ? Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE)) : 0;
-            String dayPM = m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM);
+            String dayPM = emptyIfNull(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM))
+                    + emptyIfNull(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM_L));
             boolean isPM = DAY_PERIOD_PM.equals(dayPM);
             if (dayPM != STR_EMPTY && hour == 12){ //special case 12am and 12pm
                 hour = 0;
