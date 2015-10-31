@@ -90,6 +90,7 @@ public class Model {
 	private static final String MSG_ERR_REVERSE_COMPLETE = "Unable to perform reverse for completion of task : ";
 	private static final String MSG_ERR_REVERSE_REPLACE = "Unable to perform reverse for replacing of task : ";
 	private static final String MSG_ERR_REVERSE_CLEAR = "Unable to perform reverse for clear tasks.";
+	private static final String MSG_ERR_START_AFTER_END = "Invalid start date. Start date is after end date.";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -219,6 +220,12 @@ public class Model {
 	            editedTask.setTitle(editOption.getOptionValue());
 	            break;
 	        case CommandProperties.TIME_FROM :
+	            if (!editedTask.getTaskType().equals(TaskType.EVENT)) {
+	                return handleError(MSG_ERR_INVALID_ARGUMENTS);
+	            }
+	            if (editedTask.getEndDate().isBefore(editOption.getOptionValueDate())) {
+	                return handleError(MSG_ERR_START_AFTER_END);
+	            }
 	            editedTask.setStartDate(editOption.getOptionValueDate());
 	            break;
 	        case CommandProperties.TIME_BY :
