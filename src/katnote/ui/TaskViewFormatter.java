@@ -357,7 +357,7 @@ public class TaskViewFormatter {
 
         for (int i = 0; i < list.size(); i++) {
             Task t = list.get(i);
-            TaskRow row = new TaskRow(index + ". " + t.getTitle(), t.isCompleted());
+            TaskRow row = new TaskRow(index, t.getTitle(), t.isCompleted());
             viewGroup.addTaskRow(row);
             _viewOrderedTaskList.add(t);
             index++;
