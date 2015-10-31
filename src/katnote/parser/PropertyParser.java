@@ -1,9 +1,11 @@
 package katnote.parser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
+import katnote.utils.DateTimeUtils;
 
 public class PropertyParser {
 
@@ -75,5 +77,27 @@ public class PropertyParser {
                 // String value
                 return optionValue;
         }
+    }
+
+    /*
+     * 
+     */
+    public static void synchronizeDateTimeValues(CommandDetail command) {
+        LocalDateTime startDate = command.getStartDate();
+        LocalDateTime endDate = command.getEndDate();
+        LocalDateTime dueDate = command.getDueDate();
+        if (dueDate != null && DateTimeUtils.hasMinDate(dueDate)){
+            dueDate = DateTimeUtils.changeDate(dueDate);
+            command.setProperty(CommandProperties.TIME_BY, dueDate);
+        }
+        if (startDate != null && endDate != null){
+            if (DateTimeUtils.hasMinDate(startDate) || DateTimeUtils.hasMinDate(endDate)){
+                LocalDate laterDate = DateTimeUtils.getLater(startDate, endDate).toLocalDate();
+                startDate = DateTimeUtils.changeDate(startDate, laterDate);
+                endDate = DateTimeUtils.changeDate(endDate, laterDate);
+                command.setProperty(CommandProperties.TIME_FROM, startDate);
+                command.setProperty(CommandProperties.TIME_TO, endDate);
+            }
+        }        
     }
 }

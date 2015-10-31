@@ -351,6 +351,7 @@ public class Parser {
      * Adds command properties to command detail
      */
     private static CommandDetail addCommandProperties(List<String> tokens, int pos, CommandDetail command) {
+        // add properties from tokens
         while (pos < tokens.size()) {
             String key = tokens.get(pos);
             pos++;
@@ -358,6 +359,8 @@ public class Parser {
             pos++;
             PropertyParser.parseProperty(key, value, command);
         }
+        // synchronize date time values
+        PropertyParser.synchronizeDateTimeValues(command);        
         return command;
     }
 
