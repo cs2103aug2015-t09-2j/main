@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<fx:root prefHeight="30.0" stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane prefHeight="20.0" prefWidth="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
-      <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="40.0">
+      <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <HBox styleClass="drawBroder">
          <children>
-            <Label fx:id="taskDescriptionLabel" prefHeight="30.0" styleClass="TaskRowText" text="Label" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="40.0" />
-            <Pane fx:id="checkmarkPane" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label fx:id="viewIndexLabel" styleClass="TaskRowText" text="100">
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </Label>
+            <Label fx:id="taskDescriptionLabel" maxWidth="400.0" styleClass="TaskRowText" text="Label" wrapText="true" />
          </children>
-      </AnchorPane>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
+      <Pane fx:id="checkmarkPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="30.0" />
    </children>
 </fx:root>

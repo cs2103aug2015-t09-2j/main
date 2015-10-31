@@ -22,6 +22,7 @@ public class TaskDetailedRow extends AnchorPane {
     private static final String TIME_PATTERN = "hh:mm a";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskDetailedRow.fxml";
+    private static final String DISPLAY_INDEX_STRING = "%d.";
 
     @FXML
     private Label taskDescriptionLabel;
@@ -29,6 +30,8 @@ public class TaskDetailedRow extends AnchorPane {
     private Label dateTimeLabel;
     @FXML
     private Pane checkmarkPane;
+    @FXML
+    private Label viewIndexLabel;
     private Task task;
     private int index;
     private boolean isDateHidden;
@@ -37,19 +40,20 @@ public class TaskDetailedRow extends AnchorPane {
         this(task, index, false);
     }
 
-    public TaskDetailedRow(Task task, int index, boolean isDateHidden) {
+    public TaskDetailedRow(Task task, int viewIndex, boolean isDateHidden) {
         loadFXML();
         this.task = task;
-        this.index = index;
+        this.index = viewIndex;
         this.isDateHidden = isDateHidden;
 
+        viewIndexLabel.setText(String.format(DISPLAY_INDEX_STRING, viewIndex));    
         setDescriptionProperty();
         setDateTimeProperty();
         setCompletedProperty();
     }
 
     private void setDescriptionProperty() {
-        taskDescriptionLabel.setText(index + ". " + task.getTitle());
+        taskDescriptionLabel.setText(task.getTitle());
     }
 
     public String getDescription() {

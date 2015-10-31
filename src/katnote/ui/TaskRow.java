@@ -11,19 +11,24 @@ import javafx.scene.layout.Pane;
 public class TaskRow extends AnchorPane {
     private static final String CHECKMARK_CLASS_NAME = "check";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskRow.fxml";
+    private static final String DISPLAY_INDEX_STRING = "%d.";
 
     @FXML
     private Label taskDescriptionLabel;
 
     @FXML
     private Label timeLabel;
+    
+    @FXML
+    private Label viewIndexLabel;
 
     @FXML
     private Pane checkmarkPane;
 
 
-    public TaskRow(String taskDescription, boolean isDone) {
+    public TaskRow(int viewIndex, String taskDescription, boolean isDone) {
         loadFXML();
+        viewIndexLabel.setText(String.format(DISPLAY_INDEX_STRING, viewIndex));        
         setTaskDescription(taskDescription);
         setCompletedProperty(isDone);
     }
