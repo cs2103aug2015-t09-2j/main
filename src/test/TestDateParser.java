@@ -1,18 +1,16 @@
 package test;
 
 import static org.junit.Assert.*;
-
-import java.time.LocalDateTime;
-
 import org.junit.Test;
 
 import katnote.parser.DateParser;
+import katnote.utils.KatDateTime;
 
 public class TestDateParser {
 
     @Test
     public void testRelativeParser1() {
-        LocalDateTime date;
+        KatDateTime date;
         date = DateParser.parseDateTime("7pm tomorrow");
         assertNotNull(date);
         System.out.println(date.toString());
@@ -21,12 +19,17 @@ public class TestDateParser {
     //*
     @Test
     public void testAbsoluteDateParser(){
-        LocalDateTime date;
+        KatDateTime date;
         
-        // Test "25/10"
+        // Test "7pm" (only time)
+        date = DateParser.parseDateTime("7pm");
+        assertNotNull(date);
+        assertEquals("19:00", date.toString());
+        
+        // Test "25/10" (only date)
         date = DateParser.parseDateTime("25/10");
         assertNotNull(date);
-        assertEquals("2015-10-25T12:00", date.toString());
+        assertEquals("2015-10-25", date.toString());
         
         // Test "19/11/2015 12:00pm"
         date = DateParser.parseDateTime("19/11/2015 12:00pm");

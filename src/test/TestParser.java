@@ -37,7 +37,7 @@ public class TestParser {
 
     @Test
     public void testEditCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("EDit task 4 set task_title hello");
+        CommandDetail commandDetail = Parser.parseCommand("EDit task 4 task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
@@ -46,7 +46,7 @@ public class TestParser {
 
     @Test
     public void testEditCommand2() {
-        CommandDetail commandDetail = Parser.parseCommand("edit 4 set task_title hello");
+        CommandDetail commandDetail = Parser.parseCommand("edit 4 task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
@@ -55,7 +55,7 @@ public class TestParser {
     
     @Test
     public void testMarkCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("mark task 4 completed");
+        CommandDetail commandDetail = Parser.parseCommand("mark 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("completed", commandDetail.getMarkOption());

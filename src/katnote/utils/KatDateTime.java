@@ -104,4 +104,18 @@ public class KatDateTime {
             _time = newDateTime.getTime();
         }
     }
+    
+    public String toString(){
+        if (hasDate()){
+            if (hasTime()){ // has both date and time
+                return toLocalDateTime().toString();
+            }
+            else{ // has only date
+                return _date.toString();
+            }
+        }
+        else{ // has only time
+            return _time.toString();
+        }
+    }
 }

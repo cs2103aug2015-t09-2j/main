@@ -249,11 +249,14 @@ public class Parser {
      */
     private static CommandDetail parseEditCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.EDIT_MODIFY);
-        // read task id
-        Integer taskId = Integer.valueOf(tokens.get(TOKENS_OPTION_POS));
-        command.setProperty(CommandProperties.TASK_ID, taskId);        
-        // add set option
-        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        // read command option
+        String commandOption = tokens.get(TOKENS_OPTION_POS);
+        Integer taskId;        
+        taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
+        String editOption = StringUtils.removeFirstWord(commandOption);
+        // set properties
+        command.setProperty(CommandProperties.TASK_ID, taskId);
+        command.setProperty(CommandProperties.EDIT_SET_PROPERTY, new EditTaskOption(editOption));
         return command;
     }
     
@@ -295,7 +298,7 @@ public class Parser {
         String newStartDate;        
         taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
         newStartDate = StringUtils.removeFirstWord(commandOption);
-        
+        // set properties
         command.setProperty(CommandProperties.TASK_ID, taskId);
         command.setProperty(CommandProperties.TIME_FROM,
                 PropertyParser.parseOptionValue(CommandProperties.TIME_FROM, newStartDate));
