@@ -66,7 +66,7 @@ public class TaskDetailedRow extends AnchorPane {
 
     private void setDateTimeProperty() {
         if (task.getTaskType() == TaskType.NORMAL) {
-            LocalDateTime date = task.getEndDate();
+            LocalDateTime date = task.getEndDate().toLocalDateTime();
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
             String dateString = date.format(dateFormat);
             DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern(TIME_PATTERN);
@@ -79,8 +79,8 @@ public class TaskDetailedRow extends AnchorPane {
             }
             dateTimeLabel.setText(dateTime);
         } else if (task.getTaskType() == TaskType.EVENT) {
-            LocalDateTime startDate = task.getStartDate();
-            LocalDateTime endDate = task.getEndDate();
+            LocalDateTime startDate = task.getStartDate().toLocalDateTime();
+            LocalDateTime endDate = task.getEndDate().toLocalDateTime();
             DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
             String startDateString = startDate.format(dateTimeFormat);
             String endDateString = endDate.format(dateTimeFormat);

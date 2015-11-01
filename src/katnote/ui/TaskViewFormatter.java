@@ -149,12 +149,12 @@ public class TaskViewFormatter {
     private Task extractTheEarlierTasks(ArrayList<Task> normalList, ArrayList<Task> eventList) {
         Task normalTask = normalList.get(0);
         Task event = eventList.get(0);
-        LocalDate eventStartDate = event.getStartDate().toLocalDate();
-        LocalTime eventStartTime = event.getStartDate().toLocalTime();
-        LocalDate eventEndDate = event.getEndDate().toLocalDate();
-        LocalTime eventEndTime = event.getEndDate().toLocalTime();
-        LocalDate dueDate = normalTask.getEndDate().toLocalDate();
-        LocalTime dueTime = normalTask.getEndDate().toLocalTime();
+        LocalDate eventStartDate = event.getStartDate().getDate();
+        LocalTime eventStartTime = event.getStartDate().getTime();
+        LocalDate eventEndDate = event.getEndDate().getDate();
+        LocalTime eventEndTime = event.getEndDate().getTime();
+        LocalDate dueDate = normalTask.getEndDate().getDate();
+        LocalTime dueTime = normalTask.getEndDate().getTime();
 
         if (eventStartDate.isBefore(dueDate)) {
             return eventList.remove(0);
@@ -192,8 +192,8 @@ public class TaskViewFormatter {
 
         for (int i = 0; i < eventList.size(); i++) {
             Task task = eventList.get(i);
-            startDate = task.getStartDate().toLocalDate();
-            endDate = task.getEndDate().toLocalDate();
+            startDate = task.getStartDate().getDate();
+            endDate = task.getEndDate().getDate();
             if ((dateToday.isEqual(startDate) || dateToday.isAfter(startDate))
                     && (dateToday.isBefore(endDate) || dateToday.isEqual(endDate))) {
                 todayList.add(task);
@@ -214,8 +214,8 @@ public class TaskViewFormatter {
 
         for (int i = 0; i < eventList.size(); i++) {
             Task task = eventList.get(i);
-            startDate = task.getStartDate().toLocalDate();
-            endDate = task.getEndDate().toLocalDate();
+            startDate = task.getStartDate().getDate();
+            endDate = task.getEndDate().getDate();
             if ((dateTomorrow.isEqual(startDate) || dateTomorrow.isAfter(startDate))
                     && (dateTomorrow.isBefore(endDate) || dateTomorrow.isEqual(endDate))) {
                 tomorrowList.add(task);
@@ -235,8 +235,8 @@ public class TaskViewFormatter {
 
         for (int i = 0; i < eventList.size(); i++) {
             Task task = eventList.get(i);
-            startDate = task.getStartDate().toLocalDate();
-            endDate = task.getEndDate().toLocalDate();
+            startDate = task.getStartDate().getDate();
+            endDate = task.getEndDate().getDate();
             if ((eventDate.isEqual(startDate) || eventDate.isAfter(startDate))
                     && (eventDate.isBefore(endDate) || eventDate.isEqual(endDate))) {
                 newEventList.add(task);
@@ -257,7 +257,7 @@ public class TaskViewFormatter {
         LocalDate dateToday = LocalDate.now();
 
         while (task != null) {
-            date = task.getEndDate().toLocalDate();
+            date = task.getEndDate().getDate();
             if (date.isEqual(dateToday)) {
                 todayList.add(taskQueue.remove());
             } else {
@@ -285,7 +285,7 @@ public class TaskViewFormatter {
         LocalDate dateTomorrow = LocalDate.now().plusDays(1);
 
         while (task != null) {
-            date = task.getEndDate().toLocalDate();
+            date = task.getEndDate().getDate();
             if (date.isEqual(dateTomorrow)) {
                 tomorrowList.add(taskQueue.remove());
             } else {
@@ -303,7 +303,7 @@ public class TaskViewFormatter {
         LocalDate date;
 
         while (task != null) {
-            date = task.getEndDate().toLocalDate();
+            date = task.getEndDate().getDate();
             if (date.isEqual(dueDate)) {
                 dueList.add(taskQueue.remove());
             } else {
