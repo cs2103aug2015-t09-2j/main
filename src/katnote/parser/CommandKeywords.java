@@ -9,7 +9,7 @@ public class CommandKeywords {
     public static final String KW_EDIT = "edit";
     public static final String KW_EDIT_TASK = "edit task";
     public static final String KW_MARK = "mark";
-    public static final String KW_MARK_TASK = "mark task";
+    public static final String KW_POSTPONE = "postpone";
     public static final String KW_DELETE = "delete";
     public static final String KW_DELETE_TASK = "delete task";
     public static final String KW_VIEW = "view";
@@ -42,8 +42,7 @@ public class CommandKeywords {
     
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
-            KW_ADD, KW_EDIT_TASK, KW_EDIT,
-            KW_MARK_TASK, KW_MARK,
+            KW_ADD, KW_EDIT_TASK, KW_EDIT, KW_MARK,
             KW_DELETE_TASK, KW_DELETE,
             // KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK,
             KW_VIEW, KW_FIND,

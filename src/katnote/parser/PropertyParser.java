@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
+import katnote.command.CommandType;
 import katnote.utils.DateTimeUtils;
 
 public class PropertyParser {
@@ -97,6 +98,10 @@ public class PropertyParser {
                 endDate = DateTimeUtils.changeDate(endDate, laterDate);
                 command.setProperty(CommandProperties.TIME_FROM, startDate);
                 command.setProperty(CommandProperties.TIME_TO, endDate);
+            }
+            // for view tasks, considers due date as end date
+            if (command.getCommandType() == CommandType.VIEW_TASK){
+                command.setProperty(CommandProperties.TIME_BY, endDate);
             }
         }        
     }

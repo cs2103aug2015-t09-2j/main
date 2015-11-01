@@ -67,8 +67,9 @@ public class Parser {
                 case CommandKeywords.KW_DELETE_TASK:
                     return parseDeleteCommand(tokens);
                 case CommandKeywords.KW_MARK:
-                case CommandKeywords.KW_MARK_TASK:
                     return parseMarkCommand(tokens);
+                case CommandKeywords.KW_POSTPONE:
+                    return parsePostponeCommand(tokens);
                 case CommandKeywords.KW_EDIT:
                 case CommandKeywords.KW_EDIT_TASK:
                     return parseEditCommand(tokens);
@@ -167,10 +168,10 @@ public class Parser {
         String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
         command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-        if (command.hasProperty(CommandProperties.TIME_BY)) {
-            command.setProperty(CommandProperties.TASK_TYPE, TaskType.NORMAL);
-        } else if (command.hasProperty(CommandProperties.TIME_FROM) && command.hasProperty(CommandProperties.TIME_TO)) {
+        if (command.hasProperty(CommandProperties.TIME_FROM) && command.hasProperty(CommandProperties.TIME_TO)) {
             command.setProperty(CommandProperties.TASK_TYPE, TaskType.EVENT);
+        } else if (command.hasProperty(CommandProperties.TIME_BY)) {
+            command.setProperty(CommandProperties.TASK_TYPE, TaskType.NORMAL);
         } else {
             command.setProperty(CommandProperties.TASK_TYPE, TaskType.FLOATING);
         }
@@ -278,6 +279,26 @@ public class Parser {
         
         command.setProperty(CommandProperties.TASK_ID, taskId);
         command.setProperty(CommandProperties.EDIT_MARK, markOption);
+        return command;
+    }
+    
+    /*
+     * Parses postpone command. Command format:
+     *   - postpone TASK_ID NEW_START_DATE
+
+     */
+    private static CommandDetail parsePostponeCommand(List<String> tokens) throws Exception {
+        CommandDetail command = new CommandDetail(CommandType.POSTPONE);
+        // read command option
+        String commandOption = tokens.get(TOKENS_OPTION_POS);
+        Integer taskId;
+        String newStartDate;        
+        taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
+        newStartDate = StringUtils.removeFirstWord(commandOption);
+        
+        command.setProperty(CommandProperties.TASK_ID, taskId);
+        command.setProperty(CommandProperties.TIME_FROM,
+                PropertyParser.parseOptionValue(CommandProperties.TIME_FROM, newStartDate));
         return command;
     }
 
