@@ -189,7 +189,7 @@ public class Logic {
                 break;
 
             case SET_LOCATION :
-                String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
+                String newSaveLocation = (String) commandDetail.getFilePath();
                 setSourcePath(newSaveLocation);
                 feedback.setResponse(model_.setLocation(commandDetail));
                 
