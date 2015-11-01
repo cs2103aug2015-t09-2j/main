@@ -83,7 +83,7 @@ public class TaskViewFormatter {
         ArrayList<Task> remainingList;
         ArrayList<Task> eventRemainingWeekList;
 
-        for (int i = 2; i < NUMBER_OF_DAYS_A_WEEK; i++) {
+        for (int i = 2; i <= NUMBER_OF_DAYS_A_WEEK; i++) {
             LocalDate dayDue = LocalDate.now().plusDays(i);
             remainingList = extractTaskDueThisDate(normalTasksQueue, dayDue);
             eventRemainingWeekList = extractEventsHappeningThisDate(eventList, dayDue);
