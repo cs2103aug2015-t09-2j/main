@@ -1,7 +1,6 @@
 package katnote.parser;
 
-import java.time.LocalDateTime;
-
+import katnote.utils.KatDateTime;
 import katnote.utils.StringUtils;
 
 public class EditTaskOption {
@@ -30,7 +29,7 @@ public class EditTaskOption {
         return PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
 
-    public LocalDateTime getOptionValueDate() {
-        return (LocalDateTime) PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
+    public KatDateTime getOptionValueDate() {
+        return (KatDateTime) PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
     }
 }
