@@ -250,7 +250,7 @@ public class Parser {
         CommandDetail command = new CommandDetail(CommandType.EDIT_MODIFY);
         // read task id
         Integer taskId = Integer.valueOf(tokens.get(TOKENS_OPTION_POS));
-        command.setProperty(CommandProperties.TASK_ID, taskId);
+        command.setProperty(CommandProperties.TASK_ID, taskId);        
         // add set option
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         return command;

@@ -279,7 +279,7 @@ public class Logic {
     private ViewState searchAndUpdate(ViewState vs, Search search) {
         //search
         ArrayList<Task> normal = search.searchData(model_.getNormalTasks());
-        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks());
+        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks()); //TODO:
         ArrayList<Task> event = search.searchData(model_.getEventTasks());
         
         //update

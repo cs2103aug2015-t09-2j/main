@@ -424,11 +424,11 @@ public class Model {
 	 */
 	public String setLocation(CommandDetail commandDetail) throws Exception {
 	    
-	    if (commandDetail.getProperty(CommandProperties.LOCATION) == null) {
+	    if (commandDetail.getFilePath() == null) {
 	        return handleException(new IllegalArgumentException(), MSG_ERR_INVALID_ARGUMENTS);
 	    }
 		
-		String newSaveLocation = (String) commandDetail.getProperty(CommandProperties.LOCATION);
+		String newSaveLocation = commandDetail.getFilePath();
 
 		_response = _data.setPath(newSaveLocation);
 		return _response;
