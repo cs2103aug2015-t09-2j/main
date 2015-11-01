@@ -1,18 +1,18 @@
 package katnote.command;
 
 public class CommandProperties {
-    public static final String TASK_TITLE = "task_title";
+    public static final String TASK_TITLE = "title";
     public static final String TASK_ID = "task_id";
     public static final String TASK_TYPE = "task_type";
-    public static final String TASK_DESCRIPTION  = "task_description";
-    public static final String TASK_CATEGORY  = "task_category";
+    public static final String TASK_DESCRIPTION  = "description";
+    public static final String TASK_CATEGORY  = "category";
     public static final String FIND_KEYWORDS = "find_keywords";
     public static final String TASKS_VIEW_OPTION = "view_tasks_option";
     public static final String TASKS_COMPLETED_OPTION = "completed_option";
 
-    public static final String TIME_BY = "due_time";
-    public static final String TIME_TO = "end_time";
-    public static final String TIME_FROM = "start_time";
+    public static final String TIME_BY = "due";
+    public static final String TIME_TO = "end";
+    public static final String TIME_FROM = "start";
     public static final String TIME_REPEAT = "repeat";
     public static final String TIME_UNTIL = "until";
 

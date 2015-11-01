@@ -22,12 +22,12 @@ Editing tasks
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **edit [task]** `<task_id>` due `<due_time_value>` | Edit due time of the task | edit task 1 set due 20/11/2015 10:20am |
-| **edit [task]** `<task_id>` start `<start_time_value>` | Edit start time of the task | edit task 1 set start 20/11/2015 10:00am |
-| **edit [task]** `<task_id>` end `<end_time_value>` | Edit end time of the task | edit task 1 set end 20/11/2015 8:00pm |
-| **edit [task]** `<task_id>` title `<task_title_value>` | Edit task title | edit task 1 set title "buy milks" |
-| **edit [task]** `<task_id>` task_description `<task_description_value>` | Edit task title | edit task 1 set task_description "zzz" |
-| **edit [task]** `<task_id>` category `<category_name>` | Edit category name of the task | edit task 1 set category shopping |
+| **edit [task]** `<task_id>` **due** `<due_time_value>` | Edit due time of the task | edit task 1 set due 20/11/2015 10:20am |
+| **edit [task]** `<task_id>` **start** `<start_time_value>` | Edit start time of the task | edit task 1 set start 20/11/2015 10:00am |
+| **edit [task]** `<task_id>` **end** `<end_time_value>` | Edit end time of the task | edit task 1 set end 20/11/2015 8:00pm |
+| **edit [task]** `<task_id>` **title** `<task_title_value>` | Edit task title | edit task 1 set title "buy milks" |
+| **edit [task]** `<task_id>` **description** `<task_description_value>` | Edit task title | edit task 1 set description "zzz" |
+| **edit [task]** `<task_id>` **category** `<category_name>` | Edit category name of the task | edit task 1 set category shopping |
 
 
 Marking tasks as completed/incompleted
@@ -35,8 +35,8 @@ Marking tasks as completed/incompleted
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **mark** `<task_id>` completed | Mark task as completed | mark task 1 completed |
-| **mark** `<task_id>` incompleted | Mark task as incompleted | mark 1 incompleted |
+| **mark** `<task_id>` **completed** | Mark task as completed | mark task 1 completed |
+| **mark** `<task_id>` **incompleted** | Mark task as incompleted | mark 1 incompleted |
 
 
 Deleting tasks
@@ -53,8 +53,8 @@ Viewing and searching tasks
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
 | **view tasks** `[completed/incompleted]` | View all tasks (completed or not) | view tasks view tasks completed view tasks incompleted |
-| **view tasks** `[completed/incompleted]` on `<date>` | View all tasks (completed or not) on a specific day | view tasks on monday view tasks completed on tuesday view task incompleted on 11/10 |
-| **view tasks** `[completed/incompleted]` from `<start_time>` to `<end_time>` | View all tasks (completed or not) happened between `<start_time>` and `<end_time>` | view tasks from 11/10 2am to 20/10 3pm |
+| **view tasks** `[completed/incompleted]` **on** `<date>` | View all tasks (completed or not) on a specific day | view tasks on monday view tasks completed on tuesday view task incompleted on 11/10 |
+| **view tasks** `[completed/incompleted]` **from** `<start_time>` **to** `<end_time>` | View all tasks (completed or not) happened between `<start_time>` and `<end_time>` | view tasks from 11/10 2am to 20/10 3pm |
 | **view task** `<task_id>` | View task with a specific id | view task 1 |
 | **find** `<keyword>` | Search and filter tasks according to the title of the tasks | find cat |
 | **find** `<keyword>` **in** `<category>` | Search for task of specific category with keyword | find cat in shopping |
