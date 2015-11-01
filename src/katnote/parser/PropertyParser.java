@@ -1,12 +1,13 @@
 package katnote.parser;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.command.CommandType;
 import katnote.utils.DateTimeUtils;
+import katnote.utils.KatDateTime;
 
 public class PropertyParser {
 
@@ -62,17 +63,17 @@ public class PropertyParser {
      * 
      */
     public static Object parseOptionValue(String optionName, String optionValue) {
-        LocalDateTime date;
+        KatDateTime date;
         switch (optionName) {
             case CommandProperties.TIME_FROM :
                 // Date time value
-                date = DateParser.parseDateTime(optionValue, DateParser.BEGIN_OF_DAY);
+                date = DateParser.parseDateTime(optionValue);
                 return date;
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
             case CommandProperties.TIME_UNTIL :
                 // Date time value
-                date = DateParser.parseDateTime(optionValue, DateParser.END_OF_DAY);
+                date = DateParser.parseDateTime(optionValue);
                 return date;
             default :
                 // String value
@@ -81,23 +82,36 @@ public class PropertyParser {
     }
 
     /*
-     * 
+     * Automatically fills in the missing parts DateTime value of CommandDetail object
      */
     public static void synchronizeDateTimeValues(CommandDetail command) {
-        LocalDateTime startDate = command.getStartDate();
-        LocalDateTime endDate = command.getEndDate();
-        LocalDateTime dueDate = command.getDueDate();
-        if (dueDate != null && DateTimeUtils.hasMinDate(dueDate)){
-            dueDate = DateTimeUtils.changeDate(dueDate);
-            command.setProperty(CommandProperties.TIME_BY, dueDate);
+        KatDateTime startDate = command.getStartDate();
+        KatDateTime endDate = command.getEndDate();
+        KatDateTime dueDate = command.getDueDate();
+        // If command has only due date
+        if (dueDate != null && dueDate.hasDate()){
+            dueDate.changeDate();
+            // if there is no time field, consider the time as end of day
+            if (!dueDate.hasTime()){
+                dueDate.changeTime(KatDateTime.END_OF_DAY_TIME);
+            }
         }
+        // If command has startDate and endDate
         if (startDate != null && endDate != null){
-            if (DateTimeUtils.hasMinDate(startDate) || DateTimeUtils.hasMinDate(endDate)){
-                LocalDate laterDate = DateTimeUtils.getLater(startDate, endDate).toLocalDate();
-                startDate = DateTimeUtils.changeDate(startDate, laterDate);
-                endDate = DateTimeUtils.changeDate(endDate, laterDate);
+            if (startDate.hasDate() || endDate.hasDate()){
+                LocalDate laterDate = DateTimeUtils.getLater(startDate.getDate(), endDate.getDate());
+                startDate.changeDate(laterDate);
+                endDate.changeDate(laterDate);
                 command.setProperty(CommandProperties.TIME_FROM, startDate);
                 command.setProperty(CommandProperties.TIME_TO, endDate);
+            }
+            // if there is no time field, consider start date as begin of day and 
+            // end date as end of day
+            if (!startDate.hasTime()){
+                startDate.changeTime(LocalTime.MIDNIGHT);
+            }
+            if (!endDate.hasTime()){
+                endDate.changeTime(KatDateTime.END_OF_DAY_TIME);
             }
             // for view tasks, considers due date as end date
             if (command.getCommandType() == CommandType.VIEW_TASK){

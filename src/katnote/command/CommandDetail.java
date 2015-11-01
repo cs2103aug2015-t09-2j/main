@@ -1,11 +1,11 @@
 package katnote.command;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import katnote.parser.EditTaskOption;
 import katnote.parser.ViewTaskOption;
 import katnote.task.TaskType;
+import katnote.utils.KatDateTime;
 
 public class CommandDetail {
     protected CommandType commandType;
@@ -87,8 +87,8 @@ public class CommandDetail {
      * 
      * @param key
      */
-    public LocalDateTime getDate(String key) {
-        return (LocalDateTime) commandData.get(key);
+    public KatDateTime getDate(String key) {
+        return (KatDateTime) commandData.get(key);
     }
 
     public EditTaskOption getEditTaskOption() {
@@ -119,21 +119,21 @@ public class CommandDetail {
     /*
      * Returns start date
      */
-    public LocalDateTime getStartDate() {
+    public KatDateTime getStartDate() {
         return getDate(CommandProperties.TIME_FROM);
     }
 
     /*
      * Returns end date
      */
-    public LocalDateTime getEndDate() {
+    public KatDateTime getEndDate() {
         return getDate(CommandProperties.TIME_TO);
     }
 
     /*
      * Returns due date
      */
-    public LocalDateTime getDueDate() {
+    public KatDateTime getDueDate() {
         return getDate(CommandProperties.TIME_BY);
     }
 

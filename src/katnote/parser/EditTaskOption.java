@@ -1,7 +1,6 @@
 package katnote.parser;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import katnote.utils.StringUtils;
 

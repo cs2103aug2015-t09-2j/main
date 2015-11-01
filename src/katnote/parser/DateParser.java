@@ -2,10 +2,11 @@ package katnote.parser;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import katnote.utils.KatDateTime;
 
 public class DateParser {
 
@@ -50,9 +51,7 @@ public class DateParser {
     // default hours of day when no hour given
     public static final int MIDDLE_OF_DAY = 0;
     public static final int BEGIN_OF_DAY = 1;
-    public static final int END_OF_DAY = 2;
-    
-    private static final LocalTime END_OF_DAY_TIME = LocalTime.of(23, 59);
+    public static final int END_OF_DAY = 2;       
 
     /*
      * Gets today Date time
@@ -173,7 +172,7 @@ public class DateParser {
     /*
      * Converts string (absolute time format) to LocalDate
      */
-    private static LocalDate parseAbsoluteDate(String time, int defaultTimeOption) {
+    private static LocalDate parseAbsoluteDate(String time) {
         int currentYear = LocalDate.now().getYear();
         // matcher
         Matcher m = Pattern.compile(ABSOLUTE_DATE_PATTERN).matcher(time);
@@ -194,10 +193,10 @@ public class DateParser {
     }
     
     /*
-     * Extracts time of day from time string. If no time of day found, return default
-     * time of day instead
+     * Extracts time of day from time string. If no time of day found, return null
+     * instead
      */
-    private static LocalTime extractTimeOfDay(String time, int defaultTimeOption){
+    private static LocalTime extractTimeOfDay(String time){
         Matcher m = Pattern.compile(ABSOLUTE_DATE_TIME_PATTERN).matcher(time);
         if (m.find()) {
             int hour = Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR));
@@ -214,16 +213,8 @@ public class DateParser {
             }
             return LocalTime.of(hour, minute);
         }
-        else{ // when time of day not found, use default time option
-            switch (defaultTimeOption) {
-                case BEGIN_OF_DAY :
-                    return LocalTime.MIN;
-                case MIDDLE_OF_DAY :
-                    return LocalTime.NOON;
-                case END_OF_DAY :
-                    return END_OF_DAY_TIME;
-            }
-            return LocalTime.now();
+        else{ // when time of day not found, return null
+            return null;
         }
     }
     
@@ -235,27 +226,20 @@ public class DateParser {
     }
 
     /*
-     * Converts string to LocalDateTime object
+     * Converts string to KatDateTime object
      */
-    public static LocalDateTime parseDateTime(String time) {
-        return parseDateTime(time, MIDDLE_OF_DAY);
-    }
-
-    /*
-     * Converts string to LocalDateTime object
-     */
-    public static LocalDateTime parseDateTime(String time, int defaultTimeOption) {
+    public static KatDateTime parseDateTime(String time) {
         // get time of day and trim
-        LocalTime timeOfDay = extractTimeOfDay(time, defaultTimeOption);
+        LocalTime timeOfDay = extractTimeOfDay(time);
         time = trimTimeOfDay(time);
         // check if time is relative time
         LocalDate date = parseRelativeDate(time);
         if (date != null) { // date == null means it is not relative time
-            return LocalDateTime.of(date,  timeOfDay);
+            return new KatDateTime(date,  timeOfDay);
         }
         // check some absolute time format
-        date = parseAbsoluteDate(time, defaultTimeOption);
-        return LocalDateTime.of(date,  timeOfDay);
+        date = parseAbsoluteDate(time);
+        return new KatDateTime(date,  timeOfDay);
 
     }
 
