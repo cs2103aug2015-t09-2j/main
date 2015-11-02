@@ -63,6 +63,10 @@ public class TaskDetailedRow extends AnchorPane {
     public String getDateString() {
         return dateTimeLabel.getText();
     }
+    
+    public String getIndexString() {
+        return viewIndexLabel.getText();
+    }
 
     private void setDateTimeProperty() {
         if (task.getTaskType() == TaskType.NORMAL) {

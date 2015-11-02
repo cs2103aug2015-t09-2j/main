@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -25,15 +26,17 @@ public class TestGraphicalUserInterface extends GuiTest {
     TextField commandInput;
     GraphicalUserInterface app;
     
-    class TaskGroupPackage {
+    public static class TaskGroupPackage {
         private String groupHeader;
         private String[] taskDescription;
         private String[] dateString;
+        private String[] indexString;
         
-        TaskGroupPackage(String groupHeader, String[] taskDescription, String[] dateString){
+        public TaskGroupPackage(String groupHeader, String[] taskDescription, String[] dateString, String[] indexString){
             this.groupHeader = groupHeader;
             this.taskDescription = taskDescription;
             this.dateString = dateString;
+            this.indexString = indexString;
         }
         
         public String getGroupHeader(){
@@ -45,6 +48,9 @@ public class TestGraphicalUserInterface extends GuiTest {
         public String[] getDateString(){
             return dateString;
         }
+        public String[] getIndexString(){
+            return indexString;
+        }
         
     }
     
@@ -55,6 +61,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         
         String[] expectedTaskDescription = expectedDataSet.getTaskDesciptions();
         String[] expectedDateString = expectedDataSet.getDateString();
+        String[] expectedIndexString = expectedDataSet.getIndexString();
         assertEquals(expectedTaskDescription.length, noOfChildren);
         ObservableList<Node> list = taskGroup.getListChildren().getChildren();
         
@@ -69,6 +76,7 @@ public class TestGraphicalUserInterface extends GuiTest {
                 TaskDetailedRow row = (TaskDetailedRow)list.get(i);
                 assertEquals(expectedTaskDescription[i], row.getDescription());
                 assertEquals(expectedDateString[i], row.getDateString());
+                assertEquals(expectedIndexString[i], row.getIndexString());
             }               
         }
              
@@ -84,12 +92,25 @@ public class TestGraphicalUserInterface extends GuiTest {
 
     @Test
     public void systemTest(){
-        testAddingTasks();
-        testEditingTasks();
-        testMarkingTasksDone();
+        SystemTestDataParser testData = new SystemTestDataParser();
+        ArrayList<String> inputs = testData.getInputs();
+        ArrayList<TaskGroupPackage[]> outputs = testData.getOutputs();
+        
+        assertEquals(inputs.size(), outputs.size());
+        for(int i = 0; i < inputs.size(); i++){
+            String input = inputs.get(i);
+            TaskGroupPackage[] testDataPackageArray = outputs.get(i);
+            type(input).push(KeyCode.ENTER);
+            sleep(1, TimeUnit.SECONDS); 
+            
+            
+            VBox taskGroupList = (VBox) find("#TaskList");
+            verifyTaskGroupList(taskGroupList, testDataPackageArray); 
+        }
+        
     }
     
-    public void testAddingTasks() {
+/*    public void testAddingTasks() {
         TaskGroupPackage testDataPackage1, testDataPackage2, testDataPackage3, testDataPackage4;
         
         //absolute
@@ -251,7 +272,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         sleep(1, TimeUnit.SECONDS);  
         
     }
-
+*/
     @Override
     protected Parent getRootNode() {
         return null;
