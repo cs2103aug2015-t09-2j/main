@@ -1,6 +1,7 @@
 package katnote.parser;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import katnote.command.CommandDetail;
@@ -99,17 +100,23 @@ public class PropertyParser {
                 dueDate.changeTime(KatDateTime.END_OF_DAY_TIME);
             }
         }
+        // for command view tasks, if there is no end date, considered it as a very far time,
+        if (command.getCommandType() == CommandType.VIEW_TASK){
+            if (endDate == null){
+                endDate = new KatDateTime(LocalDateTime.MAX);
+                command.setProperty(CommandProperties.TIME_TO, endDate);
+            }
+            // also considered the due date as the end date
+            command.setProperty(CommandProperties.TIME_BY, endDate);
+            dueDate = endDate;
+        }
         // If command has startDate and endDate
-        if (startDate != null && endDate != null){                  
-            if (startDate.hasDate() || endDate.hasDate()){                
+        if (startDate != null && endDate != null){                       
+            if (!startDate.hasDate() && !endDate.hasDate()){ // at least one of them does not have date
                 LocalDate laterDate = DateTimeUtils.getLater(startDate.getDate(), endDate.getDate());
                 startDate.changeDate(laterDate);
                 endDate.changeDate(laterDate);
             }
-            else{ // if there is no date specified, consider it as today
-                startDate.changeDate();
-                endDate.changeDate();
-            }            
             // if there is no time field, consider start date as begin of day and 
             // end date as end of day
             if (!startDate.hasTime()){
@@ -117,11 +124,7 @@ public class PropertyParser {
             }            
             if (!endDate.hasTime()){
                 endDate.changeTime(KatDateTime.END_OF_DAY_TIME);
-            }            
-            // for view tasks, considers due date as end date
-            if (command.getCommandType() == CommandType.VIEW_TASK){
-                command.setProperty(CommandProperties.TIME_BY, endDate);
-            }            
-        }        
+            }                     
+        }
     }
 }

@@ -218,11 +218,14 @@ public class Parser {
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
         // view task option
         ViewTaskOption viewOption = ViewTaskOption.ALL;
-        if (command.hasProperty(CommandProperties.TIME_BY)){
-            viewOption = ViewTaskOption.DUE_BY;
-        }
-        else if (command.hasProperty(CommandProperties.TIME_FROM)){
+        if (command.hasProperty(CommandProperties.TIME_FROM)){
             viewOption = ViewTaskOption.START_FROM;
+            if (!command.hasProperty(CommandProperties.TIME_BY)){
+                
+            }
+        }
+        else if (command.hasProperty(CommandProperties.TIME_BY)){
+            viewOption = ViewTaskOption.DUE_BY;
         }
         command.setProperty(CommandProperties.TASKS_VIEW_OPTION, viewOption);
         return command;
