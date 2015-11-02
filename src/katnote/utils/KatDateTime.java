@@ -34,12 +34,8 @@ public class KatDateTime {
     /*
      * Converts this KatDateTime object to LocalDateTime
      */
-    public LocalDateTime toLocalDateTime(){
-        if ((_date == null) && (_time == null)) {
-            return LocalDateTime.of(_date, _time);
-        } else {
-            return null;
-        }
+    public LocalDateTime toLocalDateTime() {
+        return LocalDateTime.of(_date, _time);
     }
     
     /*

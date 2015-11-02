@@ -131,7 +131,7 @@ public class Logic {
         UIFeedback feedback = new UIFeedback();
         ViewState vs = feedback.getViewState();
         int taskID; // for edit/delete commands
-        int tasksFound; // number of tasks displayed for view/search commands
+        int tasksFound = 0; // number of tasks displayed for view/search commands
 
         Task task;
         switch (type) {
@@ -176,7 +176,18 @@ public class Logic {
                 feedback.setViewState(viewTask(commandDetail)); //note: viewTask sorts the list as well
                 
                 //TODO: REFACTOR
-                tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
+                if (vs.getEventTasks() != null) {
+                    tasksFound += vs.getEventTasks().size();
+                }
+                
+                if (vs.getNormalTasks() != null) {
+                    tasksFound += vs.getNormalTasks().size();
+                }
+                
+                if (vs.getFloatingTasks() != null) {
+                    tasksFound += vs.getFloatingTasks().size();
+                }
+                
                 feedback.setResponse(String.format(MSG_RESPONSE_VIEW, tasksFound));
                 break;
 
@@ -196,7 +207,18 @@ public class Logic {
                 String keyword = commandDetail.getFindKeywords();
                 
                 //TODO: REFACTOR
-                tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
+                if (vs.getEventTasks() != null) {
+                    tasksFound += vs.getEventTasks().size();
+                }
+                
+                if (vs.getNormalTasks() != null) {
+                    tasksFound += vs.getNormalTasks().size();
+                }
+                
+                if (vs.getFloatingTasks() != null) {
+                    tasksFound += vs.getFloatingTasks().size();
+                }
+               
                 feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
                 break;
 
@@ -253,10 +275,22 @@ public class Logic {
     private ViewState viewTask(CommandDetail commandDetail) {
         Search search = new Search();
         ViewState vs = new ViewState();
+        LocalDateTime dueDate;
+        LocalDateTime startDate;
         
         Boolean isCompleted = commandDetail.getTaskCompletedOption();
-        LocalDateTime dueDate = commandDetail.getDueDate().toLocalDateTime();
-        LocalDateTime startDate = commandDetail.getStartDate().toLocalDateTime();
+        
+        if (commandDetail.getDueDate() == null) {
+            dueDate = null;
+        } else {
+            dueDate = commandDetail.getDueDate().toLocalDateTime();
+        }
+
+        if (commandDetail.getStartDate() == null) {
+            startDate = null;
+        } else {
+            startDate = commandDetail.getStartDate().toLocalDateTime();
+        }
         
         search.setIsCompleted(isCompleted);
         search.setDue(dueDate);

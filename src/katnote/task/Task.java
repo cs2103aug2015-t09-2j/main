@@ -102,14 +102,21 @@ public class Task {
             // TODO: setID(some_number);
             setTitle(commandDetail.getTitle());
             setTaskType(commandDetail.getTaskType());
-            setStartDate(commandDetail.getStartDate().toLocalDateTime());
+            
+            if (commandDetail.getStartDate() != null) {
+                setStartDate(commandDetail.getStartDate().toLocalDateTime());
+            }
+            
             // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
+            
             if (commandDetail.getEndDate() != null) {
                 setEndDate(commandDetail.getEndDate().toLocalDateTime());
             }
+            
             if (commandDetail.getDueDate() != null) {
                 setEndDate(commandDetail.getDueDate().toLocalDateTime());
             }
+            
             // TODO:
             // setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
             // TODO: setCategory(args[INDEX_CATEGORY]);
