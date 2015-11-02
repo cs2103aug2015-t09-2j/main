@@ -112,7 +112,7 @@ public class PropertyParser {
         }
         // If command has startDate and endDate
         if (startDate != null && endDate != null){                       
-            if (!startDate.hasDate() && !endDate.hasDate()){ // at least one of them does not have date
+            if (!startDate.hasDate() || !endDate.hasDate()){ // at least one of them does not have date
                 LocalDate laterDate = DateTimeUtils.getLater(startDate.getDate(), endDate.getDate());
                 startDate.changeDate(laterDate);
                 endDate.changeDate(laterDate);
