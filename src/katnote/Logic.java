@@ -21,6 +21,7 @@ import katnote.parser.ViewTaskOption;
 import katnote.task.Task;
 import katnote.task.TaskDueDateComparator;
 import katnote.task.TaskStartDateComparator;
+import katnote.task.TaskType;
 
 public class Logic {
 
@@ -130,6 +131,7 @@ public class Logic {
         UIFeedback feedback = new UIFeedback();
         ViewState vs = feedback.getViewState();
         int taskID; // for edit/delete commands
+        int tasksFound; // number of tasks displayed for view/search commands
 
         Task task;
         switch (type) {
@@ -164,8 +166,11 @@ public class Logic {
                 break;
 
             case VIEW_TASK :
-                feedback.setViewState(viewTask(commandDetail));
-                //TODO: Set the response messages!
+                feedback.setViewState(viewTask(commandDetail)); //note: viewTask sorts the list as well
+                
+                //TODO: REFACTOR
+                tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
+                feedback.setResponse(String.format(MSG_RESPONSE_VIEW, tasksFound));
                 break;
 
             case UNDO :
@@ -184,7 +189,7 @@ public class Logic {
                 String keyword = commandDetail.getFindKeywords();
                 
                 //TODO: REFACTOR
-                int tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
+                tasksFound = vs.getEventTasks().size() + vs.getFloatingTasks().size() + vs.getNormalTasks().size(); 
                 feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
                 break;
 
@@ -232,7 +237,7 @@ public class Logic {
 
     /**
      * Returns the list of tasks that should be displayed according to the
-     * viewing criteria
+     * viewing criteria (and is sorted)
      * 
      * @param commandDetail
      *            specifies the criteria of what tasks should be retrieved
@@ -243,8 +248,8 @@ public class Logic {
         ViewState vs = new ViewState();
         
         Boolean isCompleted = commandDetail.getTaskCompletedOption();
-        LocalDateTime dueDate = commandDetail.getDueDate();
-        LocalDateTime startDate = commandDetail.getStartDate();
+        LocalDateTime dueDate = commandDetail.getDueDate().toLocalDateTime();
+        LocalDateTime startDate = commandDetail.getStartDate().toLocalDateTime();
         
         search.setIsCompleted(isCompleted);
         search.setDue(dueDate);
@@ -279,16 +284,17 @@ public class Logic {
     private ViewState searchAndUpdate(ViewState vs, Search search) {
         //search
         ArrayList<Task> normal = search.searchData(model_.getNormalTasks());
-        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks()); //TODO:
+        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks());
         ArrayList<Task> event = search.searchData(model_.getEventTasks());
         
         //update
         vs.setNormalTasks(sortByDueDate(normal));
         vs.setFloatingTasks(floating);
-        vs.setEventTasks(event);
+        vs.setEventTasks(sortByStartDate(event));
         
         return vs;
     }
+    
     
     /**
      * Updates input ViewState with the processed data from Model - sorted 
@@ -478,28 +484,31 @@ class Search {
     /* Main search method */
     
     public ArrayList<Task> searchData(ArrayList<Task> list) {
-        ArrayList<Task> searched = new ArrayList<Task>(list);
+        ArrayList<Task> searched = new ArrayList<Task>(list);    
         
         if (list.size() <= 0) {
             return searched;
         }
         
+        TaskType type = list.get(0).getTaskType();
+        
         if (keyword_ != null) {
             searched = new ArrayList<Task>(findByKeyword(searched));
         }
         
-        if (due_ != null) {
-            searched = new ArrayList<Task>(findDueBy(searched));
+        if (type != TaskType.FLOATING) {
+            if (due_ != null) {
+                searched = new ArrayList<Task>(findDueBy(searched));
+            }
+            
+            if (isCompleted_ != null) {
+                searched = new ArrayList<Task>(findByIsCompleted(searched));
+            }
+            
+            if (start_ != null) {
+                searched = new ArrayList<Task>(findStartFrom(searched));
+            }
         }
-        
-        if (isCompleted_ != null) {
-            searched = new ArrayList<Task>(findByIsCompleted(searched));
-        }
-        
-        if (start_ != null) {
-            searched = new ArrayList<Task>(findStartFrom(searched));
-        }
-        
         return searched;
         
     }
@@ -556,21 +565,29 @@ class Search {
      * input date. Comparison inclusive till seconds.
      * 
      * @param data
-     *            ArrayList of tasks to be searched
-     * @param input
-     *            The date that tasks found should be due by
+     *            ArrayList of tasks to be searched.
      * @return List of tasks with due dates/time before or equals to the
-     *         input date
+     *         input date. 
      */
     private ArrayList<Task> findDueBy(ArrayList<Task> data) {
-        //LocalDate duedate = due_.toLocalDate();
-        
-        LocalDateTime duedate = due_;
         ArrayList<Task> tasksFound = new ArrayList<Task>();
-
+        LocalDateTime duedate = due_;
+        LocalDateTime taskDue;
+        
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
-            LocalDateTime taskDue = task.getEndDate();
+            TaskType type = task.getTaskType();
+            
+            if (type == TaskType.FLOATING || task.getEndDate() == null) {
+                break;
+            }
+            
+            if (type == TaskType.EVENT) { 
+                taskDue = task.getStartDate(); 
+            } else {
+                taskDue = task.getEndDate();
+            }
+            
             if (!taskDue.isAfter(duedate)) {
                 tasksFound.add(task);
             }
@@ -584,18 +601,28 @@ class Search {
      * 
      * @param data
      *            ArrayList of tasks to be searched. Note TaskType == EVENT
-     * @param input
-     *            The date that tasks found should start from
      * @return List of tasks with start date/time after or equals to the
      *         input date (regardless of time)
      */
     private ArrayList<Task> findStartFrom(ArrayList<Task> data) {
         LocalDateTime start = start_;
         ArrayList<Task> tasksFound = new ArrayList<Task>();
-
+        LocalDateTime taskStart;
+        
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
-            LocalDateTime taskStart = task.getEndDate();
+            TaskType type = task.getTaskType();
+            
+            if (type == TaskType.FLOATING || task.getEndDate() == null) {
+                break;
+            }
+            
+            if (type == TaskType.EVENT) { // compare using start date if its an event          
+                taskStart = task.getStartDate();
+            } else {
+                taskStart = task.getEndDate();
+            }
+            
             if (!taskStart.isBefore(start)) {
                 tasksFound.add(task);
             }
