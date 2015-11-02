@@ -156,6 +156,13 @@ public class Logic {
                 
                 updateViewState(vs);
                 break;
+            
+            case POSTPONE:
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
+                feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));
+                
+                updateViewState(vs);
+                break;
 
             case DELETE_TASK :
                 // get index from commandDetail
