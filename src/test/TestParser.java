@@ -71,6 +71,14 @@ public class TestParser {
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("completed", commandDetail.getMarkOption());
     }
+    
+    @Test
+    public void testPostponeCommand1() {
+        CommandDetail commandDetail = Parser.parseCommand("postpone 4 5/11");
+        assertEquals(CommandType.POSTPONE, commandDetail.getCommandType());
+        assertEquals(4, commandDetail.getTaskIndex());
+        assertEquals("2015-11-05", commandDetail.getStartDate().toString());
+    }
 
     @Test
     public void testDeleteCommand1() {
