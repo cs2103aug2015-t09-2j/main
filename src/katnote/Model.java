@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -97,7 +98,7 @@ public class Model {
 	private static final String MSG_ERR_REVERSE_CLEAR = "Unable to perform reverse for clear tasks.";
 	private static final String MSG_ERR_REVERSE_POSTPONE = "Unable to perform reverse for postponed task.";
 	private static final String MSG_ERR_START_AFTER_END = "Invalid start date. Start date is after end date.";
-	private static final String MSG_ERR_INVALID_TASK_TYPE = "Invalid Task Type. Expecting Event but given %s";
+	private static final String MSG_ERR_INVALID_TASK_TYPE = "Invalid Task Type. Expecting Event task type.";
 	
 	private static final String MSG_LOG_START = "<start>";
 	
@@ -432,20 +433,37 @@ public class Model {
 		return _response;
 	}
 	
-	public String postpone(int taskID, KatDateTime newStartDate) throws Exception {
+	public String postpone(int taskID, KatDateTime newDate) throws Exception {
 
 	    Task editedTask = _dataLog.get(taskID);
 	    
 	    if (!editedTask.getTaskType().equals(TaskType.EVENT)) {
-	        return handleError(String.format(MSG_ERR_INVALID_TASK_TYPE, editedTask.getTaskType()));
+	        return handleError(String.format(MSG_ERR_INVALID_TASK_TYPE));
 	    }
 	    
 	    Task oldTask = new Task(editedTask);
-	    LocalDate start = editedTask.getStartDate().toLocalDate();
-	    LocalDate end = editedTask.getEndDate().toLocalDate();
-	    Period timeDiff = Period.between(end, start);
+	    LocalDateTime start = editedTask.getStartDate();
+	    LocalDateTime end = editedTask.getEndDate();
+	    
+	    // Construct newStartDate
+	    if (!newDate.hasDate() && !newDate.hasTime()) {
+	        return handleError(MSG_ERR_INVALID_ARGUMENTS);
+	    }
+	    System.out.println(!newDate.hasDate() && !newDate.hasTime());
+	    if (!newDate.hasDate()) {
+	        newDate.changeDate(start.toLocalDate());
+	    } else if (!newDate.hasTime()) {
+	        newDate.changeTime(start.toLocalTime());
+	    } else {
+	        return handleError(MSG_ERR_INVALID_ARGUMENTS);
+	    }
+	    
+	    // Make new dates
+	    LocalDateTime newStartDate = newDate.toLocalDateTime();
+	    LocalDateTime newEndDate = addTimeDiff(start, end, newStartDate);
+
 	    editedTask.setStartDate(newStartDate);
-	    editedTask.setEndDate(editedTask.getStartDate().plus(timeDiff));
+	    editedTask.setEndDate(newEndDate);
 	    
 	    _encoder.encode();
 	    
@@ -821,6 +839,28 @@ public class Model {
 	    _definitions.put("afternoon", AFTERNOON);
 	    _definitions.put("evening", EVENING);
 	    _definitions.put("night", NIGHT);
+	}
+	
+	private LocalDateTime addTimeDiff(LocalDateTime start, LocalDateTime end, LocalDateTime newStart) {
+	    
+	    LocalDateTime newEnd = newStart;
+	    
+	    long years = start.until(end, ChronoUnit.YEARS);
+	    newEnd = newEnd.plusYears(years);
+	    
+	    long months = start.until(end, ChronoUnit.MONTHS);
+        newEnd = newEnd.plusMonths(months);
+
+        long days = start.until(end, ChronoUnit.DAYS);
+        newEnd = newEnd.plusDays(days);
+        
+        long hours = start.until(end, ChronoUnit.HOURS);
+        newEnd = newEnd.plusHours(hours);
+        
+        long minutes = start.until(end, ChronoUnit.MINUTES) % 60;
+        newEnd = newEnd.plusMinutes(minutes);
+        
+	    return newEnd;
 	}
 	    
 	private void splitTaskType(Task task) {
