@@ -1,2 +1,8 @@
+night 9.00pm
+afternoon 12.00pm
+morning 9.00am
+evening 7.00pm
 <start>
-{"id":"0","title":"feed cat","task_type":"NORMAL","start_date":"null","end_date":"2015-10-23T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"0","title":"meet client at Marina Hotel","task_type":"EVENT","start_date":"2015-11-05T13:00:00","end_date":"2015-11-05T14:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"1","title":"visit vet","task_type":"NORMAL","start_date":"null","end_date":"2015-11-02T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"2","title":"today","task_type":"NORMAL","start_date":"null","end_date":"2015-11-02T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
