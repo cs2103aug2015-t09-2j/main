@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import org.json.simple.JSONArray;
 
 import katnote.command.CommandDetail;
-import katnote.utils.KatDateTime;
 
 /**
  * This will be the association class used across KatNote. It will be the
@@ -22,10 +21,10 @@ public class Task {
     private Integer _id;
     private String _title;
     private TaskType _taskType;
-    private KatDateTime _startDate;
-    private KatDateTime _endDate;
+    private LocalDateTime _startDate;
+    private LocalDateTime _endDate;
     private String _repeatOption;
-    private KatDateTime _terminateDate; // only for recurring tasks
+    private LocalDateTime _terminateDate; // only for recurring tasks
     private String _description;
     private String _category;
     private Boolean _completed = false;
@@ -143,12 +142,12 @@ public class Task {
     
     // Helper Methods
 
-    private KatDateTime stringToDate(String dateStr) throws ParseException {
+    private LocalDateTime stringToDate(String dateStr) throws ParseException {
         if (dateStr.equals(NULL_DATE)) {
             return null;
         } else {
             LocalDateTime date = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
-            return new KatDateTime(date);
+            return date;
         }
     }
 
@@ -186,19 +185,19 @@ public class Task {
         _taskType = taskType;
     }
 
-    public KatDateTime getStartDate() {
+    public LocalDateTime getStartDate() {
         return _startDate;
     }
 
-    public void setStartDate(KatDateTime _startDate) {
+    public void setStartDate(LocalDateTime _startDate) {
         this._startDate = _startDate;
     }
 
-    public KatDateTime getEndDate() {
+    public LocalDateTime getEndDate() {
         return _endDate;
     }
 
-    public void setEndDate(KatDateTime _endDate) {
+    public void setEndDate(LocalDateTime _endDate) {
         this._endDate = _endDate;
     }
 
@@ -210,11 +209,11 @@ public class Task {
         this._repeatOption = _repeatOption;
     }
 
-    public KatDateTime getTerminateDate() {
+    public LocalDateTime getTerminateDate() {
         return _terminateDate;
     }
 
-    public void setTerminateDate(KatDateTime _terminateDate) {
+    public void setTerminateDate(LocalDateTime _terminateDate) {
         this._terminateDate = _terminateDate;
     }
 
