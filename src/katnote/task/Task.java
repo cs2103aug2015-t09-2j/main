@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import org.json.simple.JSONArray;
 
 import katnote.command.CommandDetail;
+import katnote.utils.DateTimeUtils;
+import katnote.utils.KatDateTime;
 
 /**
  * This will be the association class used across KatNote. It will be the
@@ -192,6 +194,10 @@ public class Task {
     public void setStartDate(LocalDateTime _startDate) {
         this._startDate = _startDate;
     }
+    
+    public void setStartDate(KatDateTime newStartDate) {
+        _startDate = DateTimeUtils.updateDateTime(_startDate, newStartDate);
+    }
 
     public LocalDateTime getEndDate() {
         return _endDate;
@@ -199,6 +205,10 @@ public class Task {
 
     public void setEndDate(LocalDateTime _endDate) {
         this._endDate = _endDate;
+    }
+    
+    public void setEndDate(KatDateTime newEndDate) {
+        _endDate = DateTimeUtils.updateDateTime(_endDate, newEndDate);
     }
 
     public String getRepeatOption() {

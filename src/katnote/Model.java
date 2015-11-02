@@ -23,6 +23,7 @@ import katnote.command.CommandProperties;
 import katnote.parser.EditTaskOption;
 import katnote.task.Task;
 import katnote.task.TaskType;
+import katnote.utils.DateTimeUtils;
 
 /**
  * The main class in the Storage component.
@@ -230,12 +231,14 @@ public class Model {
 	            if (!editedTask.getTaskType().equals(TaskType.EVENT)) {
 	                return handleError(MSG_ERR_INVALID_ARGUMENTS);
 	            }
-	            if (editedTask.getEndDate().isBefore(editOption.getOptionValueDate())) {
+	            LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
+	            if (editedTask.getEndDate().isBefore(newStartDate)) {
 	                return handleError(MSG_ERR_START_AFTER_END);
 	            }
 	            editedTask.setStartDate(editOption.getOptionValueDate());
 	            break;
 	        case CommandProperties.TIME_BY :
+	        case CommandProperties.TIME_TO :
 	            editedTask.setEndDate(editOption.getOptionValueDate());
 	            break;
 	        case CommandProperties.TIME_REPEAT :
