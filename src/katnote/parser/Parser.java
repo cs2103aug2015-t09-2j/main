@@ -26,6 +26,7 @@ public class Parser {
     private static final int TOKENS_PROPERTIES_START_POS = 1;
     private static final int TOKENS_TASK_NAME_POS = 0;
     private static final int TOKENS_OPTION_POS = 0;
+    private static final int TOKENS_POSTPONE_DATE_POS = 2;
 
     private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
     private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
@@ -296,11 +297,13 @@ public class Parser {
     private static CommandDetail parsePostponeCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.POSTPONE);
         // read command option
-        String commandOption = tokens.get(TOKENS_OPTION_POS);
-        Integer taskId;
-        String newStartDate;        
-        taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
-        newStartDate = StringUtils.removeFirstWord(commandOption);
+        String commandOption = StringUtils.join(tokens, STR_SPACE).toLowerCase();
+        Integer taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
+        String newStartDate = StringUtils.removeFirstWord(commandOption);
+        // check if newStartDate starts with "to"
+        if (newStartDate.startsWith(CommandKeywords.KW_TO)){
+            newStartDate = newStartDate.replaceFirst(IGNORE_CASES_PATTERN + CommandKeywords.KW_TO, STR_EMPTY).trim();
+        }
         // set properties
         command.setProperty(CommandProperties.TASK_ID, taskId);
         command.setProperty(CommandProperties.TIME_FROM,

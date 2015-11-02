@@ -56,8 +56,10 @@ public class StringUtils {
         boolean first = true;
         for (String s : parts) {
             if (!first) {
-                builder.append(delim);
-                first = true;
+                builder.append(delim);                
+            }
+            else{
+                first = false;
             }
             builder.append(s);
         }
