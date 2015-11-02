@@ -24,6 +24,7 @@ import katnote.parser.EditTaskOption;
 import katnote.task.Task;
 import katnote.task.TaskType;
 import katnote.utils.DateTimeUtils;
+import katnote.utils.KatDateTime;
 
 /**
  * The main class in the Storage component.
@@ -431,7 +432,7 @@ public class Model {
 		return _response;
 	}
 	
-	public String postpone(int taskID, CommandDetail commandDetail) throws Exception {
+	public String postpone(int taskID, KatDateTime newStartDate) throws Exception {
 
 	    Task editedTask = _dataLog.get(taskID);
 	    
@@ -443,7 +444,7 @@ public class Model {
 	    LocalDate start = editedTask.getStartDate().toLocalDate();
 	    LocalDate end = editedTask.getEndDate().toLocalDate();
 	    Period timeDiff = Period.between(end, start);
-	    editedTask.setStartDate(commandDetail.getStartDate());
+	    editedTask.setStartDate(newStartDate);
 	    editedTask.setEndDate(editedTask.getStartDate().plus(timeDiff));
 	    
 	    _encoder.encode();
