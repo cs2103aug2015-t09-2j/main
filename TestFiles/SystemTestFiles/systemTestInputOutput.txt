@@ -157,3 +157,83 @@ Due: 10:00 AM
 5.
 do homework
 Due: 11:59 PM
+
+INPUT
+edit
+5
+due
+DATE_INPUT
+d/MM/yy
+6
+
+OUTPUT
+DATE_DIRECT_OUTPUT
+Task to do
+1
+1.
+study notes
+
+DATE_DIRECT_OUTPUT
+Today
+1
+2.
+do homework1
+Due: 11:59 PM
+DATE_DIRECT_OUTPUT
+Tomorrow
+1
+3.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+6
+1
+4.
+do homework
+Due: 11:59 PM
+DATE_OUTPUT
+7
+1
+5.
+do homework3
+Due: 10:00 AM
+
+DIRECT_INPUT
+mark 2 done
+
+OUTPUT
+DATE_DIRECT_OUTPUT
+Task to do
+1
+1.
+study notes
+
+DATE_DIRECT_OUTPUT
+Tomorrow
+1
+2.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+6
+1
+3.
+do homework
+Due: 11:59 PM
+DATE_OUTPUT
+7
+1
+4.
+do homework3
+Due: 10:00 AM
+
+DIRECT_INPUT
+view tasks completed
+
+OUTPUT
+DATE_DIRECT_OUTPUT
+Today
+1
+1.
+do homework1
+Due: 11:59 PM
