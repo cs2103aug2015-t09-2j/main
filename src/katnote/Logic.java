@@ -231,6 +231,13 @@ public class Logic {
                 String newSaveLocation = (String) commandDetail.getFilePath();
                 setSourcePath(newSaveLocation);
                 feedback.setResponse(model_.setLocation(commandDetail));
+                updateViewState(vs);
+                
+            case IMPORT :
+                //String importLocation = (String) commandDetail.getFilePath();
+                feedback.setResponse(model_.importData(commandDetail));
+                
+                updateViewState(vs);
                 
             case EXIT :
                 feedback.setExit(true);
