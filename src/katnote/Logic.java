@@ -174,7 +174,7 @@ public class Logic {
 
             case VIEW_TASK :
                 feedback.setViewState(viewTask(commandDetail)); //note: viewTask sorts the list as well
-                
+                vs = feedback.getViewState();
                 //TODO: REFACTOR
                 if (vs.getEventTasks() != null) {
                     tasksFound += vs.getEventTasks().size();
@@ -203,6 +203,7 @@ public class Logic {
 
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
+                vs = feedback.getViewState();
                 updateViewState(vs);
                 String keyword = commandDetail.getFindKeywords();
                 
