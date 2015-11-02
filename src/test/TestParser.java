@@ -34,6 +34,17 @@ public class TestParser {
         assertNotNull(commandDetail.getDueDate());
         //System.out.println("Due Date = " + commandDetail.getDueDate().toString());
     }
+    
+    @Test
+    public void testAddCommand3() {
+        CommandDetail commandDetail = Parser.parseCommand("hello from tomorrow 2pm to 5pm");
+        assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
+        assertEquals("hello", commandDetail.getTitle());
+        assertNotNull(commandDetail.getStartDate());
+        assertNotNull(commandDetail.getEndDate());
+        //System.out.println("Start Date = " + commandDetail.getStartDate().toString());
+        //System.out.println("End Date = " + commandDetail.getEndDate().toString());
+    }
 
     @Test
     public void testEditCommand1() {

@@ -87,7 +87,7 @@ public class PropertyParser {
     public static void synchronizeDateTimeValues(CommandDetail command) {
         KatDateTime startDate = command.getStartDate();
         KatDateTime endDate = command.getEndDate();
-        KatDateTime dueDate = command.getDueDate();
+        KatDateTime dueDate = command.getDueDate();        
         // If command has only due date
         if (dueDate != null && dueDate.hasDate()){
             dueDate.changeDate();
@@ -97,26 +97,28 @@ public class PropertyParser {
             }
         }
         // If command has startDate and endDate
-        if (startDate != null && endDate != null){
-            if (startDate.hasDate() || endDate.hasDate()){
+        if (startDate != null && endDate != null){                  
+            if (startDate.hasDate() || endDate.hasDate()){                
                 LocalDate laterDate = DateTimeUtils.getLater(startDate.getDate(), endDate.getDate());
                 startDate.changeDate(laterDate);
                 endDate.changeDate(laterDate);
-                command.setProperty(CommandProperties.TIME_FROM, startDate);
-                command.setProperty(CommandProperties.TIME_TO, endDate);
             }
+            else{ // if there is no date specified, consider it as today
+                startDate.changeDate();
+                endDate.changeDate();
+            }            
             // if there is no time field, consider start date as begin of day and 
             // end date as end of day
             if (!startDate.hasTime()){
                 startDate.changeTime(LocalTime.MIDNIGHT);
-            }
+            }            
             if (!endDate.hasTime()){
                 endDate.changeTime(KatDateTime.END_OF_DAY_TIME);
-            }
+            }            
             // for view tasks, considers due date as end date
             if (command.getCommandType() == CommandType.VIEW_TASK){
                 command.setProperty(CommandProperties.TIME_BY, endDate);
-            }
+            }            
         }        
     }
 }
