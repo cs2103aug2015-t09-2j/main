@@ -42,7 +42,7 @@ public class CommandKeywords {
     
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
-            KW_ADD, KW_EDIT_TASK, KW_EDIT, KW_MARK,
+            KW_ADD, KW_EDIT_TASK, KW_EDIT, KW_MARK, KW_POSTPONE,
             KW_DELETE_TASK, KW_DELETE,
             // KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK,
             KW_VIEW, KW_FIND,
