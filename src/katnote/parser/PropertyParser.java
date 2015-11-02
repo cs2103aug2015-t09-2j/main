@@ -89,8 +89,11 @@ public class PropertyParser {
         KatDateTime endDate = command.getEndDate();
         KatDateTime dueDate = command.getDueDate();        
         // If command has only due date
-        if (dueDate != null && dueDate.hasDate()){
-            dueDate.changeDate();
+        if (dueDate != null){
+            // if no date specified, considered it as today
+            if (!dueDate.hasDate()){
+                dueDate.changeDate();
+            }            
             // if there is no time field, consider the time as end of day
             if (!dueDate.hasTime()){
                 dueDate.changeTime(KatDateTime.END_OF_DAY_TIME);
