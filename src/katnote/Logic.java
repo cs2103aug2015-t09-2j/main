@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -22,6 +23,7 @@ import katnote.task.Task;
 import katnote.task.TaskDueDateComparator;
 import katnote.task.TaskStartDateComparator;
 import katnote.task.TaskType;
+import katnote.utils.KatDateTime;
 
 public class Logic {
 
@@ -175,6 +177,7 @@ public class Logic {
             case VIEW_TASK :
                 feedback.setViewState(viewTask(commandDetail)); //note: viewTask sorts the list as well
                 vs = feedback.getViewState();
+                
                 //TODO: REFACTOR
                 if (vs.getEventTasks() != null) {
                     tasksFound += vs.getEventTasks().size();
@@ -204,7 +207,8 @@ public class Logic {
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
                 vs = feedback.getViewState();
-                updateViewState(vs);
+                
+                //updateViewState(vs);
                 String keyword = commandDetail.getFindKeywords();
                 
                 //TODO: REFACTOR
@@ -289,8 +293,16 @@ public class Logic {
 
         if (commandDetail.getStartDate() == null) {
             startDate = null;
-        } else {
-            startDate = commandDetail.getStartDate().toLocalDateTime();
+        } else {           
+            KatDateTime katDate = commandDetail.getStartDate();
+            
+            if (katDate.getTime() == null) {
+                LocalDate date = katDate.getDate();
+                LocalTime dummy = LocalTime.of(00, 00);
+                startDate = LocalDateTime.of(date, dummy);
+            } else { 
+                startDate = commandDetail.getStartDate().toLocalDateTime();
+            }
         }
         
         search.setIsCompleted(isCompleted);
@@ -538,19 +550,18 @@ class Search {
             searched = new ArrayList<Task>(findByKeyword(searched));
         }
         
-        if (type != TaskType.FLOATING) {
-            if (due_ != null) {
-                searched = new ArrayList<Task>(findDueBy(searched));
-            }
-            
-            if (isCompleted_ != null) {
-                searched = new ArrayList<Task>(findByIsCompleted(searched));
-            }
-            
-            if (start_ != null) {
-                searched = new ArrayList<Task>(findStartFrom(searched));
-            }
+        if (due_ != null) {
+            searched = new ArrayList<Task>(findDueBy(searched));
         }
+
+        if (isCompleted_ != null) {
+            searched = new ArrayList<Task>(findByIsCompleted(searched));
+        }
+
+        if (start_ != null) {
+            searched = new ArrayList<Task>(findStartFrom(searched));
+        }
+
         return searched;
         
     }
@@ -644,9 +655,10 @@ class Search {
      * @param data
      *            ArrayList of tasks to be searched. Note TaskType == EVENT
      * @return List of tasks with start date/time after or equals to the
-     *         input date (regardless of time)
+     *         input date
      */
     private ArrayList<Task> findStartFrom(ArrayList<Task> data) {
+        //System.out.println("Starting findStartFrom");
         LocalDateTime start = start_;
         ArrayList<Task> tasksFound = new ArrayList<Task>();
         LocalDateTime taskStart;
@@ -656,16 +668,18 @@ class Search {
             TaskType type = task.getTaskType();
             
             if (type == TaskType.FLOATING || task.getEndDate() == null) {
+                //System.out.println("Is floating task.");
                 break;
             }
             
-            if (type == TaskType.EVENT) { // compare using start date if its an event          
-                taskStart = task.getStartDate();
+            if (type == TaskType.EVENT) {        
+                taskStart = task.getEndDate();
             } else {
                 taskStart = task.getEndDate();
             }
             
             if (!taskStart.isBefore(start)) {
+                //System.out.println(task.getTitle() + " is added");
                 tasksFound.add(task);
             }
         }
