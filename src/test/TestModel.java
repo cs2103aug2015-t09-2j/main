@@ -18,6 +18,7 @@ import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.task.Task;
 import katnote.task.TaskType;
+import katnote.utils.KatDateTime;
 
 import org.junit.Test;
 
@@ -29,6 +30,7 @@ public class TestModel {
     private static final String TEST_PATH = "TestFiles/TestModel/";
     private static final String TEST_PATH_ADDTASK = "TestFiles/TestModel/addTaskExpected.txt";
     private static final String TEST_PATH_SETDEFINITION = "TestFiles/TestModel/setDefinitionExpected.txt";
+    private static final String TEST_PATH_SETLOCATION = "TestFiles/TestModel/setLocationExpected.txt";
     
     // Messages
     private static final String MSG_ERR_IO = "I/O Exception.";
@@ -114,7 +116,7 @@ public class TestModel {
      * @param due
      * @return the task object.
      */
-    private CommandDetail createTask(String title, TaskType taskType, LocalDateTime start, LocalDateTime end, LocalDateTime due) {
+    private CommandDetail createTask(String title, TaskType taskType, KatDateTime start, KatDateTime end, KatDateTime due) {
         
         CommandDetail cmd = new CommandDetail();
         if (!title.isEmpty()) {
@@ -154,16 +156,24 @@ public class TestModel {
             String newPath = "TestFiles/NewTestModel/";
             
             Model testModel = new Model(TEST_PATH);
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 11, 26, 23, 59, 59));
+            CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
+            Task task1 = new Task(addTaskCmd1);
             CommandDetail testCmd = new CommandDetail();
-            testCmd.setProperty(CommandProperties.LOCATION, newPath);
+            testCmd.setProperty(CommandProperties.FILE_PATH, newPath);
+            
+            testModel.addTask(task1);
             
             testModel.setLocation(testCmd);
             
             File newFile = new File(newPath + DATA_FILENAME);
             File oldFile = new File(TEST_PATH + DATA_FILENAME);
             
+            boolean result3 = compareFile(testModel.getDataFilePath(), TEST_PATH_SETLOCATION);
+            
             System.out.println("Result 1 - New File exist: " + newFile.exists() + " Expected: true");
             System.out.println("Result 2 - Old File exist: " + oldFile.exists() + " Expected: false");
+            System.out.println("Result 3 - New File contents are correct: " + result3 + "Expected: true");
             boolean result1 = newFile.exists();
             boolean result2 = oldFile.exists();
             
@@ -175,6 +185,7 @@ public class TestModel {
             
             assertTrue(result1);
             assertFalse(result2);
+            assertTrue(result3);
             
         } catch (Exception e) {
             System.out.println(e);            
@@ -191,7 +202,7 @@ public class TestModel {
             Model testModel = new Model(TEST_PATH);
             CommandDetail addTaskCmd;
             
-            LocalDateTime date1 = LocalDateTime.of(2015, 10, 23, 23, 59);
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 10, 23, 23, 59));
             //System.out.println("Date Field: " + date1.format(DATE_FORMATTER));
             
             addTaskCmd = createTask("feed cat", TaskType.NORMAL, null, null, date1);
@@ -301,8 +312,8 @@ public class TestModel {
             
             System.out.println("=== Delete Task ===");
             Model testModel = new Model(TEST_PATH);
-            LocalDateTime date1 = LocalDateTime.of(2015, 11, 26, 23, 59, 59);
-            LocalDateTime date2 = LocalDateTime.of(2015, 12, 23, 23, 59, 59);
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 11, 26, 23, 59, 59));
+            KatDateTime date2 = new KatDateTime(LocalDateTime.of(2015, 12, 23, 23, 59, 59));
             CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
             CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
             CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
@@ -359,8 +370,8 @@ public class TestModel {
             
             System.out.println("=== Encoding and Decoding ===");
             Model testModel = new Model(TEST_PATH);
-            LocalDateTime date1 = LocalDateTime.of(2015, 11, 26, 23, 59, 59);
-            LocalDateTime date2 = LocalDateTime.of(2015, 12, 23, 23, 59, 59);
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 11, 26, 23, 59, 59));
+            KatDateTime date2 = new KatDateTime(LocalDateTime.of(2015, 12, 23, 23, 59, 59));
             CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
             CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
             CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
@@ -412,8 +423,8 @@ public class TestModel {
             
             System.out.println("=== Undo and Redo ===");
             Model testModel = new Model(TEST_PATH);
-            LocalDateTime date1 = LocalDateTime.of(2015, 11, 26, 23, 59, 59);
-            LocalDateTime date2 = LocalDateTime.of(2015, 12, 23, 23, 59, 59);
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 11, 26, 23, 59, 59));
+            KatDateTime date2 = new KatDateTime(LocalDateTime.of(2015, 12, 23, 23, 59, 59));
             CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
             CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
             CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
