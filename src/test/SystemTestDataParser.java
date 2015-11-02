@@ -49,6 +49,10 @@ public class SystemTestDataParser {
                     list.toArray(arrayToStore);
                     outputs.add(arrayToStore);
                     //System.out.println();
+                } else if(line.equals("DIRECT_INPUT")){
+                    input = reader.readLine();
+                    inputs.add(input);
+                    reader.readLine();
                 }
                 line = reader.readLine();
             }

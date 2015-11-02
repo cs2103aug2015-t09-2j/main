@@ -100,8 +100,10 @@ public class TestGraphicalUserInterface extends GuiTest {
         for(int i = 0; i < inputs.size(); i++){
             String input = inputs.get(i);
             TaskGroupPackage[] testDataPackageArray = outputs.get(i);
-            type(input).push(KeyCode.ENTER);
-            sleep(1, TimeUnit.SECONDS); 
+            //type(input).push(KeyCode.ENTER);
+            commandInput.setText(input);
+            sleep(1, TimeUnit.SECONDS);
+            push(KeyCode.ENTER);
             
             
             VBox taskGroupList = (VBox) find("#TaskList");
