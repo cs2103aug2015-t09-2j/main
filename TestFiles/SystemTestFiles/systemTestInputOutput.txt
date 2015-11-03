@@ -7,6 +7,7 @@ d/MM/yy
 7
 
 OUTPUT
+Task: do homework added.
 DATE_OUTPUT
 7
 1
@@ -22,6 +23,7 @@ DATE_DIRECT_INPUT
 today
 
 OUTPUT
+Task: do homework1 added.
 DATE_DIRECT_OUTPUT
 Today
 1
@@ -43,6 +45,7 @@ DATE_DIRECT_INPUT
 tomorrow 5pm
 
 OUTPUT
+Task: do homework2 added.
 DATE_DIRECT_OUTPUT
 Today
 1
@@ -72,6 +75,7 @@ d/MM/yy
 10am
 
 OUTPUT
+Task: do homework3 added.
 DATE_DIRECT_OUTPUT
 Today
 1
@@ -98,6 +102,7 @@ DIRECT_INPUT
 add do homework4
 
 OUTPUT
+Task: do homework4 added.
 DATE_DIRECT_OUTPUT
 Task to do
 1
@@ -130,6 +135,7 @@ DIRECT_INPUT
 edit 1 title study notes
 
 OUTPUT
+Task: study notes is successfully modified.
 DATE_DIRECT_OUTPUT
 Task to do
 1
@@ -167,6 +173,7 @@ d/MM/yy
 6
 
 OUTPUT
+Task: do homework is successfully modified.
 DATE_DIRECT_OUTPUT
 Task to do
 1
@@ -202,6 +209,7 @@ DIRECT_INPUT
 mark 2 done
 
 OUTPUT
+Task: do homework1 is marked completed.
 DATE_DIRECT_OUTPUT
 Task to do
 1
@@ -231,6 +239,7 @@ DIRECT_INPUT
 view tasks completed
 
 OUTPUT
+Displaying 1 tasks.
 DATE_DIRECT_OUTPUT
 Today
 1

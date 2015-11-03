@@ -12,6 +12,7 @@ import org.loadui.testfx.GuiTest;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
@@ -20,41 +21,14 @@ import katnote.ui.GraphicalUserInterface;
 import katnote.ui.TaskDetailedRow;
 import katnote.ui.TaskRow;
 import katnote.ui.TaskViewGroup;
+import test.ViewDataPackage.TaskGroupPackage;
 
 public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     TextField commandInput;
-    GraphicalUserInterface app;
+    GraphicalUserInterface app;     
     
-    public static class TaskGroupPackage {
-        private String groupHeader;
-        private String[] taskDescription;
-        private String[] dateString;
-        private String[] indexString;
-        
-        public TaskGroupPackage(String groupHeader, String[] taskDescription, String[] dateString, String[] indexString){
-            this.groupHeader = groupHeader;
-            this.taskDescription = taskDescription;
-            this.dateString = dateString;
-            this.indexString = indexString;
-        }
-        
-        public String getGroupHeader(){
-            return groupHeader;
-        }
-        public String[] getTaskDesciptions(){
-            return taskDescription;
-        }
-        public String[] getDateString(){
-            return dateString;
-        }
-        public String[] getIndexString(){
-            return indexString;
-        }
-        
-    }
-    
-    public void verifyTaskGroup(TaskViewGroup taskGroup, TaskGroupPackage expectedDataSet){
+    public void verifyTaskGroup(TaskGroupPackage expectedDataSet, TaskViewGroup taskGroup){
         String groupHeader = taskGroup.getGroupHeaderText();
         assertEquals(groupHeader, expectedDataSet.getGroupHeader());
         int noOfChildren = taskGroup.getListChildren().getChildren().size();
@@ -82,32 +56,37 @@ public class TestGraphicalUserInterface extends GuiTest {
              
     }
 
-    public void verifyTaskGroupList(VBox taskGroupList, TaskGroupPackage[] testDataPackageArray){
+    public void verifyTaskGroupList(TaskGroupPackage[] testDataPackageArray, VBox taskGroupList){
         ObservableList<Node> nodes = taskGroupList.getChildren();
         for(int i = 0; i < nodes.size(); i++){
             TaskViewGroup viewGroup = (TaskViewGroup) nodes.get(i);
-            verifyTaskGroup(viewGroup, testDataPackageArray[i]);
+            verifyTaskGroup(testDataPackageArray[i], viewGroup);
         }        
+    }
+    
+    public void verifyView(ViewDataPackage data){
+        Label responseLabel = (Label) find("#responseLabel");
+        VBox taskGroupList = (VBox) find("#TaskList");
+        assertEquals(data.getResponse(), responseLabel.getText());
+        verifyTaskGroupList(data.getViewList(), taskGroupList);
     }
 
     @Test
     public void systemTest(){
         SystemTestDataParser testData = new SystemTestDataParser();
         ArrayList<String> inputs = testData.getInputs();
-        ArrayList<TaskGroupPackage[]> outputs = testData.getOutputs();
+        ArrayList<ViewDataPackage> outputs = testData.getOutputs();
         
         assertEquals(inputs.size(), outputs.size());
         for(int i = 0; i < inputs.size(); i++){
             String input = inputs.get(i);
-            TaskGroupPackage[] testDataPackageArray = outputs.get(i);
+            ViewDataPackage data = outputs.get(i);
             //type(input).push(KeyCode.ENTER);
             commandInput.setText(input);
             sleep(1, TimeUnit.SECONDS);
             push(KeyCode.ENTER);
             
-            
-            VBox taskGroupList = (VBox) find("#TaskList");
-            verifyTaskGroupList(taskGroupList, testDataPackageArray); 
+            verifyView(data);            
         }
         
     }

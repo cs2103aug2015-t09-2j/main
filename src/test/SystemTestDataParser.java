@@ -11,7 +11,7 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import test.TestGraphicalUserInterface.TaskGroupPackage;
+import test.ViewDataPackage.TaskGroupPackage;
 
 public class SystemTestDataParser {
     public static final String SYSTEM_TEST_FILE = "TestFiles/SystemTestFiles/systemTestInputOutput.txt";
@@ -20,9 +20,9 @@ public class SystemTestDataParser {
     private static final String DATE_PATTERN = "dd MMM yy";
     BufferedReader reader = null;
     ArrayList<String> inputs = new ArrayList<String>();
-    ArrayList<TaskGroupPackage[]> outputs = new ArrayList<TaskGroupPackage[]>();
+    ArrayList<ViewDataPackage> outputs = new ArrayList<ViewDataPackage>();
     
-    public ArrayList<TaskGroupPackage[]> getOutputs() {
+    public ArrayList<ViewDataPackage> getOutputs() {
         return outputs;
     }
 
@@ -32,7 +32,6 @@ public class SystemTestDataParser {
     
     
     public SystemTestDataParser() {
-        File f = new File(SYSTEM_TEST_FILE);
         try {
             reader = new BufferedReader(new FileReader(SYSTEM_TEST_FILE));
             String line = null;
@@ -44,10 +43,8 @@ public class SystemTestDataParser {
                     inputs.add(input);
                     //System.out.println(input);
                 } else if(line.equals("OUTPUT")){
-                    ArrayList<TaskGroupPackage> list = processOutput(reader);
-                    TaskGroupPackage[] arrayToStore = new TaskGroupPackage[list.size()];
-                    list.toArray(arrayToStore);
-                    outputs.add(arrayToStore);
+                    ViewDataPackage list = processOutput(reader);
+                    outputs.add(list);
                     //System.out.println();
                 } else if(line.equals("DIRECT_INPUT")){
                     input = reader.readLine();
@@ -96,11 +93,15 @@ public class SystemTestDataParser {
         return line;
     }
     
-    public ArrayList<TaskGroupPackage> processOutput(BufferedReader reader){
-        String line = null;
+    public ViewDataPackage processOutput(BufferedReader reader){
+        String line = null;        
+        String response = null;
         TaskGroupPackage dataPack = null;
         ArrayList<TaskGroupPackage> array = new ArrayList<TaskGroupPackage>();
         try {
+            //response is placed after output header
+            line = reader.readLine();
+            response = line;
             line = reader.readLine();
             while(line != null && !line.isEmpty()){
                 if(line.equals("DATE_OUTPUT")){
@@ -123,7 +124,7 @@ public class SystemTestDataParser {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return array;
+        return new ViewDataPackage(array, response);
     }
     
     public TaskGroupPackage processGroupPackage(BufferedReader reader, String header) throws IOException{
