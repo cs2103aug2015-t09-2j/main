@@ -8,6 +8,7 @@ public class CommandKeywords {
     public static final String KW_ADD = "add";
     public static final String KW_EDIT = "edit";
     public static final String KW_EDIT_TASK = "edit task";
+    public static final String KW_CHANGE = "change";
     public static final String KW_MARK = "mark";
     public static final String KW_POSTPONE = "postpone";
     public static final String KW_DELETE = "delete";
@@ -36,13 +37,15 @@ public class CommandKeywords {
     public static final String KW_FROM = "from";
     public static final String KW_TO = "to";
     public static final String KW_ON = "on";
+    public static final String KW_AT = "at";
 
     // keywords for view, add properties
     public static final String KW_SET = "set";
     
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
-            KW_ADD, KW_EDIT_TASK, KW_EDIT, KW_MARK, KW_POSTPONE,
+            KW_ADD, KW_MARK, KW_POSTPONE,
+            KW_EDIT_TASK, KW_EDIT, KW_CHANGE,
             KW_DELETE_TASK, KW_DELETE,
             // KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK,
             KW_VIEW, KW_FIND,
@@ -50,7 +53,7 @@ public class CommandKeywords {
     };
 
     private static final String[] MAIN_KEYWORDS_LIST = new String[] {
-            KW_BY, KW_FROM, KW_TO, KW_ON,
+            KW_BY, KW_FROM, KW_TO, KW_ON, KW_AT,
             KW_SET,
     };
 

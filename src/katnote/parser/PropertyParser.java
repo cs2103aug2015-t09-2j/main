@@ -67,12 +67,9 @@ public class PropertyParser {
         KatDateTime date;
         switch (optionName) {
             case CommandProperties.TIME_FROM :
-                // Date time value
-                date = DateParser.parseDateTime(optionValue);
-                return date;
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
-            case CommandProperties.TIME_UNTIL :
+            case CommandProperties.TIME_UNTIL :            
                 // Date time value
                 date = DateParser.parseDateTime(optionValue);
                 return date;

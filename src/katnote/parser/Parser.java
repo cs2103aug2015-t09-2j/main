@@ -73,6 +73,7 @@ public class Parser {
                     return parsePostponeCommand(tokens);
                 case CommandKeywords.KW_EDIT:
                 case CommandKeywords.KW_EDIT_TASK:
+                case CommandKeywords.KW_CHANGE:
                     return parseEditCommand(tokens);
                 case CommandKeywords.KW_IMPORT:
                     return parseImportCommand(tokens);
