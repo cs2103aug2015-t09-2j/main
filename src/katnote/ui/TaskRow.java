@@ -28,9 +28,13 @@ public class TaskRow extends AnchorPane {
 
     public TaskRow(int viewIndex, String taskDescription, boolean isDone) {
         loadFXML();
-        viewIndexLabel.setText(String.format(DISPLAY_INDEX_STRING, viewIndex));        
+        setIndexProperty(viewIndex);        
         setTaskDescription(taskDescription);
         setCompletedProperty(isDone);
+    }
+
+    private void setIndexProperty(int viewIndex) {
+        viewIndexLabel.setText(String.format(DISPLAY_INDEX_STRING, viewIndex));
     }
 
     public String getDescription() {

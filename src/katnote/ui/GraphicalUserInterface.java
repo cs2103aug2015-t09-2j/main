@@ -19,7 +19,6 @@ import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
     private static GraphicalUserInterface instance;
-    private static final boolean IS_GUI_FORMAT = true;
     private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
     private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
 
@@ -106,7 +105,7 @@ public class GraphicalUserInterface extends Application {
 
     public ArrayList<Task> updateTaskViewer(ViewState viewState) {
         log.log(Level.INFO, "updateTaskViewer");
-        TaskViewFormatter listFormat = new TaskViewFormatter(viewState, IS_GUI_FORMAT);
+        TaskViewFormatter listFormat = new TaskViewFormatter(viewState);
         taskViewer.loadTaskFormat(listFormat);
         return listFormat.getOrderedTaskList();
     }

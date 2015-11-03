@@ -42,6 +42,7 @@ public class TaskViewer extends AnchorPane {
 
     private void updateTaskView(TaskViewFormatter listFormat) {
         ArrayList<TaskViewGroup> viewList = listFormat.getFormattedViewGroupList();
+
         for (TaskViewGroup viewGroup : viewList) {
             taskViewGroupList.getChildren().add(viewGroup);
         }

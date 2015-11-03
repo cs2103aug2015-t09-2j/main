@@ -19,18 +19,17 @@ public class TaskViewFormatter {
     private static final String GROUP_TITLE_TODAY = "Today";
     private static final String GROUP_TITLE_TOMORROW = "Tomorrow";
     private static final String GROUP_TITLE_THE_REST = "The Rest";
+    private static final String GROUP_TITLE_SEARCH_RESULT = "Search Result";
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
-    private static final int DISPLAY_LIMIT = 6;
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
     private ArrayList<TaskViewGroup> _viewList = new ArrayList<TaskViewGroup>();
     private ArrayList<Task> _viewOrderedTaskList = new ArrayList<Task>();
-    private boolean _isGUIFormat;
     private int index = 1;
 
-    public TaskViewFormatter(ViewState viewState, boolean isGUIFormat) {
-        _isGUIFormat = isGUIFormat;
+    public TaskViewFormatter(ViewState viewState) {
+        //if not search state
         ArrayList<Task> floatingTasks = viewState.getFloatingTasks();
         processFloatingTask(floatingTasks);
         processNormalTasksAndEvents(viewState.getNormalTasks(), viewState.getEventTasks());
@@ -54,15 +53,13 @@ public class TaskViewFormatter {
     public ArrayList<TaskViewGroup> getFormattedViewGroupList() {
         return _viewList;
     }
-
-    /**
-     * Retrieves the type of format whether it is GUI or Text based
-     * 
-     * @return true - if formatted for GUI, false - if formatted for Command
-     *         Line
-     */
-    public boolean isGUIFormat() {
-        return _isGUIFormat;
+    
+    private void processSearchListing(ArrayList<Task> normalTasksList, ArrayList<Task> eventList) {
+        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTasksList, eventList);
+        if (combinedList.isEmpty()) {
+            return;
+        }
+        _viewList.add(createTaskGroupDetailed(GROUP_TITLE_SEARCH_RESULT, combinedList, false));
     }
 
     private void processNormalTasksAndEvents(ArrayList<Task> normalTasks, ArrayList<Task> events) {
@@ -71,14 +68,35 @@ public class TaskViewFormatter {
         }
         Queue<Task> normalTasksQueue = copyTasksIntoLinkedList(normalTasks);
         ArrayList<Task> eventCopy = new ArrayList<Task>(events);
-        if (_isGUIFormat) {
-            processForToday(normalTasksQueue, eventCopy);
-            processForTomorrow(normalTasksQueue, eventCopy);
-            processForTheWeek(normalTasksQueue, eventCopy);
-            processRemainingTasks(normalTasksQueue, eventCopy);
-        }
+        processForToday(normalTasksQueue, eventCopy);
+        processForTomorrow(normalTasksQueue, eventCopy);
+        processForTheWeek(normalTasksQueue, eventCopy);
+        //processRemainingTasks(normalTasksQueue, eventCopy);
     }
 
+
+    private void processForToday(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
+        ArrayList<Task> todayList = extractTasksDueToday(normalTasksQueue);
+        ArrayList<Task> eventTodayList = extractEventsHappeningToday(eventList);
+        if (todayList.isEmpty() && eventTodayList.isEmpty()) {
+            return;
+        }
+        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(todayList, eventTodayList);
+        TaskViewGroup taskGroupForToday = createTaskTodayGroup(combinedList);
+        _viewList.add(taskGroupForToday);
+    }
+
+    private void processForTomorrow(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
+        ArrayList<Task> tomorrowList = extractTaskDueTomorrow(normalTasksQueue);
+        ArrayList<Task> eventTomorrowList = extractEventsHappeningTomorrow(eventList);
+        if (tomorrowList.isEmpty() && eventTomorrowList.isEmpty()) {
+            return;
+        }
+        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(tomorrowList, eventTomorrowList);
+        TaskViewGroup taskGroupForTomorrow = createTaskTomorrowGroup(combinedList);
+        _viewList.add(taskGroupForTomorrow);
+    }
+    
     private void processForTheWeek(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
         ArrayList<Task> remainingList;
         ArrayList<Task> eventRemainingWeekList;
@@ -107,26 +125,11 @@ public class TaskViewFormatter {
         _viewList.add(createTaskRemainingGroup(combinedList));
     }
 
-    private void processForTomorrow(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
-        ArrayList<Task> tomorrowList = extractTaskDueTomorrow(normalTasksQueue);
-        ArrayList<Task> eventTomorrowList = extractEventsHappeningTomorrow(eventList);
-        if (tomorrowList.isEmpty() && eventTomorrowList.isEmpty()) {
+    private void processFloatingTask(ArrayList<Task> floatingTasks) {
+        if (floatingTasks == null || floatingTasks.isEmpty()) {
             return;
         }
-        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(tomorrowList, eventTomorrowList);
-        TaskViewGroup taskGroupForTomorrow = createTaskTomorrowGroup(combinedList);
-        _viewList.add(taskGroupForTomorrow);
-    }
-
-    private void processForToday(Queue<Task> normalTasksQueue, ArrayList<Task> eventList) {
-        ArrayList<Task> todayList = extractTasksDueToday(normalTasksQueue);
-        ArrayList<Task> eventTodayList = extractEventsHappeningToday(eventList);
-        if (todayList.isEmpty() && eventTodayList.isEmpty()) {
-            return;
-        }
-        ArrayList<Task> combinedList = combineNormalAndEventsOrdered(todayList, eventTodayList);
-        TaskViewGroup taskGroupForToday = createTaskTodayGroup(combinedList);
-        _viewList.add(taskGroupForToday);
+        _viewList.add(createFloatingTaskGroup(floatingTasks));
     }
 
     private ArrayList<Task> combineNormalAndEventsOrdered(ArrayList<Task> normalList, ArrayList<Task> eventList) {
@@ -179,52 +182,15 @@ public class TaskViewFormatter {
         }
     }
 
-    private TaskViewGroup createTaskTodayGroup(ArrayList<Task> todayList) {
-        TaskViewGroup todayGroup = createTaskGroupDetailed(GROUP_TITLE_TODAY, todayList, true);
-        return todayGroup;
-    }
-
     private ArrayList<Task> extractEventsHappeningToday(ArrayList<Task> eventList) {
-        ArrayList<Task> todayList = new ArrayList<Task>();
-        LocalDate startDate;
-        LocalDate endDate;
         LocalDate dateToday = LocalDate.now();
-
-        for (int i = 0; i < eventList.size(); i++) {
-            Task task = eventList.get(i);
-            startDate = task.getStartDate().toLocalDate();
-            endDate = task.getEndDate().toLocalDate();
-            if ((dateToday.isEqual(startDate) || dateToday.isAfter(startDate))
-                    && (dateToday.isBefore(endDate) || dateToday.isEqual(endDate))) {
-                todayList.add(task);
-                if (dateToday.isEqual(endDate)) {
-                    eventList.remove(i);
-                    i--;
-                }
-            }
-        }
+        ArrayList<Task> todayList = extractEventsHappeningThisDate(eventList, dateToday);
         return todayList;
     }
 
     private ArrayList<Task> extractEventsHappeningTomorrow(ArrayList<Task> eventList) {
-        ArrayList<Task> tomorrowList = new ArrayList<Task>();
-        LocalDate startDate;
-        LocalDate endDate;
         LocalDate dateTomorrow = LocalDate.now().plusDays(1);
-
-        for (int i = 0; i < eventList.size(); i++) {
-            Task task = eventList.get(i);
-            startDate = task.getStartDate().toLocalDate();
-            endDate = task.getEndDate().toLocalDate();
-            if ((dateTomorrow.isEqual(startDate) || dateTomorrow.isAfter(startDate))
-                    && (dateTomorrow.isBefore(endDate) || dateTomorrow.isEqual(endDate))) {
-                tomorrowList.add(task);
-                if (dateTomorrow.isEqual(endDate)) {
-                    eventList.remove(i);
-                    i--;
-                }
-            }
-        }
+        ArrayList<Task> tomorrowList = extractEventsHappeningThisDate(eventList, dateTomorrow);
         return tomorrowList;
     }
 
@@ -250,49 +216,19 @@ public class TaskViewFormatter {
         return newEventList;
     }
 
-    private ArrayList<Task> extractTasksDueToday(Queue<Task> taskQueue) {
-        ArrayList<Task> todayList = new ArrayList<Task>();
-        Task task = taskQueue.peek();
-        LocalDate date;
-        LocalDate dateToday = LocalDate.now();
-
-        while (task != null) {
-            date = task.getEndDate().toLocalDate();
-            if (date.isEqual(dateToday)) {
-                todayList.add(taskQueue.remove());
-            } else {
-                break;
-            }
-            task = taskQueue.peek();
-        }
-        return todayList;
-    }
-
-    private TaskViewGroup createTaskTomorrowGroup(ArrayList<Task> tomorrowList) {
-        TaskViewGroup tomorrowGroup = createTaskGroupDetailed(GROUP_TITLE_TOMORROW, tomorrowList, true);
-        return tomorrowGroup;
-    }
-
     private String getDayString(DayOfWeek day) {
         return day.getDisplayName(TextStyle.FULL, Locale.US);
     }
 
+    private ArrayList<Task> extractTasksDueToday(Queue<Task> taskQueue) {
+        LocalDate dateToday = LocalDate.now();
+        ArrayList<Task> todayList = extractTaskDueThisDate(taskQueue, dateToday);
+        return todayList;
+    }
+
     private ArrayList<Task> extractTaskDueTomorrow(Queue<Task> taskQueue) {
-        ArrayList<Task> tomorrowList = new ArrayList<Task>();
-
-        Task task = taskQueue.peek();
-        LocalDate date;
         LocalDate dateTomorrow = LocalDate.now().plusDays(1);
-
-        while (task != null) {
-            date = task.getEndDate().toLocalDate();
-            if (date.isEqual(dateTomorrow)) {
-                tomorrowList.add(taskQueue.remove());
-            } else {
-                break;
-            }
-            task = taskQueue.peek();
-        }
+        ArrayList<Task> tomorrowList = extractTaskDueThisDate(taskQueue, dateTomorrow);
         return tomorrowList;
     }
 
@@ -313,29 +249,30 @@ public class TaskViewFormatter {
         }
         return dueList;
     }
+    
+    private TaskViewGroup createTaskTodayGroup(ArrayList<Task> todayList) {
+        TaskViewGroup todayGroup = createTaskGroupDetailed(GROUP_TITLE_TODAY, todayList, true);
+        return todayGroup;
+    }
+
+    private TaskViewGroup createTaskTomorrowGroup(ArrayList<Task> tomorrowList) {
+        TaskViewGroup tomorrowGroup = createTaskGroupDetailed(GROUP_TITLE_TOMORROW, tomorrowList, true);
+        return tomorrowGroup;
+    }
 
     private TaskViewGroup createTaskRemainingGroup(ArrayList<Task> list) {
         TaskViewGroup remainingGroup = createTaskGroupDetailed(GROUP_TITLE_THE_REST, list, false);
         return remainingGroup;
     }
 
-    private LinkedList<Task> copyTasksIntoLinkedList(ArrayList<Task> list) {
-        LinkedList<Task> linkedList = new LinkedList<Task>(list);
-        return linkedList;
-    }
-
-    private void processFloatingTask(ArrayList<Task> floatingTasks) {
-        if (floatingTasks == null || floatingTasks.isEmpty()) {
-            return;
-        }
-        if (_isGUIFormat) {
-            _viewList.add(createFloatingTaskGroup(floatingTasks));
-        }
-    }
-
     private TaskViewGroup createFloatingTaskGroup(ArrayList<Task> floatingTasks) {
         TaskViewGroup floatingGroup = createTaskGroup(GROUP_TITLE_FLOATING_TASKS, floatingTasks);
         return floatingGroup;
+    }
+
+    private LinkedList<Task> copyTasksIntoLinkedList(ArrayList<Task> list) {
+        LinkedList<Task> linkedList = new LinkedList<Task>(list);
+        return linkedList;
     }
 
     private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list, boolean isDateHidden) {
@@ -348,7 +285,6 @@ public class TaskViewFormatter {
             _viewOrderedTaskList.add(t);
             index++;
         }
-
         return viewGroup;
     }
 
@@ -362,8 +298,6 @@ public class TaskViewFormatter {
             _viewOrderedTaskList.add(t);
             index++;
         }
-
         return viewGroup;
     }
-
 }
