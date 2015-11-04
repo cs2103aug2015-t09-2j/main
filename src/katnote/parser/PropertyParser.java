@@ -1,3 +1,4 @@
+//@@author A0126517H
 package katnote.parser;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import katnote.utils.KatDateTime;
 
 public class PropertyParser {
 
-    /*
+    /**
      * Converts the property string value into appropriate Object based on
      * propertyName. For example, parseProperty(“from”, “24/10/2015”) will
      * return a Date object representing 24/10/2015.
@@ -58,9 +59,13 @@ public class PropertyParser {
         }
     }
 
-    /*
+    /**
      * Converts the option string value into appropriate Object based on
      * optionName.
+     * 
+     * @param optionName
+     * @param optionValue
+     * @return
      * 
      */
     public static Object parseOptionValue(String optionName, String optionValue) {
@@ -73,14 +78,31 @@ public class PropertyParser {
                 // Date time value
                 date = DateParser.parseDateTime(optionValue);
                 return date;
+            case CommandProperties.TASKS_COMPLETED_OPTION:
+                // completed option: true, false and null (null is for both completed and incompleted) 
+                Boolean completedValue = false;
+                switch (optionValue){
+                    case CommandKeywords.KW_COMPLETED :
+                        completedValue = true;
+                        break;
+                    case CommandKeywords.KW_INCOMPLETED :
+                        completedValue = false;
+                        break;
+                    case CommandKeywords.KW_ALL :
+                        completedValue = null;
+                        break;
+                }
+                return completedValue;
             default :
                 // String value
                 return optionValue;
         }
     }
 
-    /*
+    /**
      * Automatically fills in the missing parts DateTime value of CommandDetail object
+     * 
+     * @param command
      */
     public static void synchronizeDateTimeValues(CommandDetail command) {
         KatDateTime startDate = command.getStartDate();

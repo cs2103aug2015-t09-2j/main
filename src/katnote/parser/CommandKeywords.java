@@ -1,3 +1,4 @@
+//@@author A0126517H
 package katnote.parser;
 
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class CommandKeywords {
     public static final String KW_SET_LOCATION = "set location";
     public static final String KW_EXIT = "exit";
 
-    // property keywords
+    // keywords for command properties
     public static final String KW_SINGLE_TASK = "task";
     public static final String KW_TASKS = "tasks";
     public static final String KW_ALL = "all";
@@ -59,8 +60,10 @@ public class CommandKeywords {
 
     private static final HashSet<String> MAIN_KEYWORDS_SET = new HashSet<String>(Arrays.asList(MAIN_KEYWORDS_LIST));
 
-    /*
+    /**
      * Checks a token whether it is a main keyword or not
+     * @param token
+     * @return true if token is in main keywords list, otherwise false
      */
     public static final boolean isMainKeyword(String token) {
         return MAIN_KEYWORDS_SET.contains(token.toLowerCase());

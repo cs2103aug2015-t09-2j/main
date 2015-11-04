@@ -1,3 +1,4 @@
+//@@author A0126517H
 package katnote.parser;
 
 import java.util.ArrayList;
@@ -13,7 +14,9 @@ import katnote.command.CommandType;
 import katnote.task.TaskType;
 import katnote.utils.StringUtils;
 
-public class Parser {       
+public class Parser {
+    
+    // command split pattern
     private static final String COMMAND_SPLIT_PATTERN = "(?:([^\"]\\S*)|\"(.+?)\")\\s*";
     private static final int COMMAND_SPLIT_PATTERN_NORMAL_POS = 1;
     private static final int COMMAND_SPLIT_PATTERN_QUOTED_POS = 2;
@@ -26,7 +29,6 @@ public class Parser {
     private static final int TOKENS_PROPERTIES_START_POS = 1;
     private static final int TOKENS_TASK_NAME_POS = 0;
     private static final int TOKENS_OPTION_POS = 0;
-    private static final int TOKENS_POSTPONE_DATE_POS = 2;
 
     private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
     private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
@@ -35,7 +37,7 @@ public class Parser {
     // Class logger
     private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());    
 
-    /*
+    /**
      * Converts the input command string into CommandDetail format containing
      * command type as well as all data field related to that type of command.
      * 
@@ -97,7 +99,7 @@ public class Parser {
         }
     }
 
-    /*
+    /**
      * Determines the start keyword of the command
      * 
      * @param truncatedCommand This StringBuilder object used to store the
@@ -123,7 +125,7 @@ public class Parser {
         return CommandKeywords.KW_ADD;
     }
 
-    /*
+    /**
      * Splits the command string based on space but take quoted substrings as one
      * word
      * 
@@ -199,17 +201,7 @@ public class Parser {
             case CommandKeywords.KW_TASKS :                
                 Boolean viewCompletedTask = false;
                 if (TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length) {
-                    switch (viewOptions[TASK_OPTION_VIEW_DETAIL_POS]) {
-                        case CommandKeywords.KW_COMPLETED :
-                            viewCompletedTask = true;
-                            break;
-                        case CommandKeywords.KW_INCOMPLETED :
-                            viewCompletedTask = false;
-                            break;
-                        case CommandKeywords.KW_ALL :
-                            viewCompletedTask = null;
-                            break;
-                    }
+                    viewCompletedTask = (Boolean) PropertyParser.parseOptionValue(CommandProperties.TASKS_COMPLETED_OPTION, viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);              
                 }
                 command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, viewCompletedTask);
                 break;
@@ -249,7 +241,7 @@ public class Parser {
 
     /*
      * Parses edit command. Command format:
-     *   - edit [task] TASK_ID TASK_OPTION_NAME TASK_OPTION_VALUE
+     *   - edit TASK_ID TASK_OPTION_NAME TASK_OPTION_VALUE
      * 
      */
     private static CommandDetail parseEditCommand(List<String> tokens) throws Exception {
@@ -267,8 +259,8 @@ public class Parser {
     
     /*
      * Parses mark command. Command format:
-     *   - mark [task] TASK_ID completed/incompleted
-     *   - mark [task] completed/incompleted TASK_ID
+     *   - mark TASK_ID completed/incompleted
+     *   - mark completed/incompleted TASK_ID
      */
     private static CommandDetail parseMarkCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.EDIT_COMPLETE);
@@ -286,6 +278,8 @@ public class Parser {
         }
         
         command.setProperty(CommandProperties.TASK_ID, taskId);
+        command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, 
+                PropertyParser.parseOptionValue(CommandProperties.TASKS_COMPLETED_OPTION, markOption));
         command.setProperty(CommandProperties.EDIT_MARK, markOption);
         return command;
     }
@@ -314,7 +308,7 @@ public class Parser {
 
     /*
      * Parses delete command. Command format:
-     *   - delete [task] TASK_ID
+     *   - delete TASK_ID
      * 
      */
     private static CommandDetail parseDeleteCommand(List<String> tokens) throws Exception {
@@ -391,7 +385,7 @@ public class Parser {
             PropertyParser.parseProperty(key, value, command);
         }
         // synchronize date time values
-        PropertyParser.synchronizeDateTimeValues(command);        
+        PropertyParser.synchronizeDateTimeValues(command);
         return command;
     }
 

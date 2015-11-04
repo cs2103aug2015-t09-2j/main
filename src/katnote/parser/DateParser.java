@@ -1,3 +1,4 @@
+//@@author A0126517H
 package katnote.parser;
 
 import java.time.DayOfWeek;
@@ -30,18 +31,20 @@ public class DateParser {
     };
     private static final int MONTH_MIN_LENGTH = 3;
 
+    // Date pattern and properties positions
     private static final String ABSOLUTE_DATE_PATTERN = "(\\d+)\\/(\\w+)(?:\\/(\\d+))?";
     private static final int ABSOLUTE_DATE_PATTERN_POS_DAY = 1;
     private static final int ABSOLUTE_DATE_PATTERN_POS_MONTH = 2;
     private static final int ABSOLUTE_DATE_PATTERN_POS_YEAR = 3;
     
+    //Time pattern and properties positions
     private static final String ABSOLUTE_DATE_TIME_PATTERN = "(\\d{1,2})(?::(\\d+)(am|pm|)|(am|pm))";
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR = 1;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE = 2;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM = 3;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM_L = 4;
     
-    
+    //Special constants related to time
     private static final String DAY_PERIOD_PM = "pm";
     private static final int DAY_HALF_NUMBER_OF_HOURS = 12;
     private static final int NUMBER_OF_MONTHS = 12;
@@ -53,15 +56,19 @@ public class DateParser {
     public static final int BEGIN_OF_DAY = 1;
     public static final int END_OF_DAY = 2;       
 
-    /*
+    /**
      * Gets today Date time
+     * 
+     * @return the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getToday() {
         return LocalDate.now();
     }
 
-    /*
+    /**
      * Gets tomorrow Date time
+     * 
+     * @return the date after the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getTomorrow() {
         LocalDate date = LocalDate.now();
@@ -69,8 +76,10 @@ public class DateParser {
         return date;
     }
 
-    /*
+    /**
      * Gets next week Date time
+     * 
+     * @return the date which is 7 days after the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getNextWeek() {
         LocalDate date = LocalDate.now();
@@ -78,11 +87,11 @@ public class DateParser {
         return date;
     }
 
-    /*
+    /**
      * Finds the next desired weekday
      * 
      * @param desiredWeekday the next desired weekday
-     * 
+     * @return the next desired weekday date after the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getNextWeekDay(DayOfWeek desiredWeekday) {
         LocalDate date = LocalDate.now();
@@ -94,8 +103,10 @@ public class DateParser {
         }
     }
 
-    /*
+    /**
      * Gets next month Date time
+     * 
+     * @return the date which is 1 month after the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getNextMonth() {
         LocalDate date = LocalDate.now();
@@ -103,8 +114,10 @@ public class DateParser {
         return date;
     }
 
-    /*
+    /**
      * Gets next year Date time
+     * 
+     * @return the date which is 1 year after the current date using the system clock and default time-zone, not null
      */
     public static LocalDate getNextYear() {
         LocalDate date = LocalDate.now();
@@ -112,6 +125,9 @@ public class DateParser {
         return date;
     }
 
+    /*
+     * Converts the relative time string into LocalDate object
+     */
     private static LocalDate parseRelativeDate(String time) {
         switch (time.toLowerCase()) {
             case STR_EMPTY:
@@ -148,8 +164,12 @@ public class DateParser {
         return (s == null) ? STR_EMPTY : s;
     }
     
-    /*
+    /**
      * Converts month string to number. Returns -1 if the value is invalid
+     * 
+     * @param monthStr
+     * 
+     * @return
      */
     private static int parseMonth(String monthStr){
         monthStr = monthStr.toLowerCase();
@@ -225,8 +245,12 @@ public class DateParser {
         return time.replaceFirst(ABSOLUTE_DATE_TIME_PATTERN, "").trim();
     }
 
-    /*
+    /**
      * Converts string to KatDateTime object
+     * 
+     * @param time
+     * 
+     * @return New KatDateTime object representing the time string 
      */
     public static KatDateTime parseDateTime(String time) {
         // get time of day and trim

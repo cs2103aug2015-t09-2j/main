@@ -1,3 +1,4 @@
+//@@author A0126517H
 package katnote.utils;
 
 import java.util.Arrays;
@@ -5,8 +6,8 @@ import java.util.List;
 
 public class StringUtils {
 
-    /*
-     * get the last word of the string
+    /**
+     * Gets the last word of the string
      */
     public static String getLastWord(String input) {
         String[] parts = input.trim().split("\\s+");
@@ -14,8 +15,8 @@ public class StringUtils {
         return lastWord;
     }
 
-    /*
-     * Trim the last word from string
+    /**
+     * Trims the last word from string
      */
     public static String trimLastWord(String input) {
         List<String> parts = Arrays.asList(input.split("\\s+"));
@@ -23,8 +24,8 @@ public class StringUtils {
         return join(parts, " ");
     }
 
-    /*
-     * Remove the first word from input string For example: if input string is
+    /**
+     * Removes the first word from input string For example: if input string is
      * "hello I am a programmer", the returned output is "I am a programmer"
      * 
      * @param input the input string
@@ -35,8 +36,8 @@ public class StringUtils {
         return input.replaceFirst(getFirstWord(input), "").trim();
     }
 
-    /*
-     * Return the first word of input string For example: if input string is
+    /**
+     * Returns the first word of input string For example: if input string is
      * "hello I am a programmer", the returned output is "hello"
      * 
      * @param input the input string
@@ -48,8 +49,8 @@ public class StringUtils {
         return firstWord;
     }
 
-    /*
-     * Join string array into a string
+    /**
+     * Joins string array into a string
      */
     public static String join(List<String> parts, String delim) {
         StringBuilder builder = new StringBuilder();
@@ -66,7 +67,7 @@ public class StringUtils {
         return builder.toString();
     }
     
-    /*
+    /**
      * Concatenates string list
      */
     public static String concat(String ...strings){
