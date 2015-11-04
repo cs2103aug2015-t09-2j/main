@@ -18,7 +18,7 @@ public class TaskViewFormatter {
 
     private static final int FRONT_INDEX = 0;
     private static final int NUMBER_OF_DAYS_A_WEEK = 7;
-    private static final String GROUP_TITLE_OVERDUE = "OVERDUE";
+    private static final String GROUP_TITLE_OVERDUE = "Overdue";
     private static final String GROUP_TITLE_TODAY = "Today";
     private static final String GROUP_TITLE_TOMORROW = "Tomorrow";
     private static final String GROUP_TITLE_SEARCH_RESULT = "Search Result";
