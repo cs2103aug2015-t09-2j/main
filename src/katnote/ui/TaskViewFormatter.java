@@ -15,6 +15,7 @@ import katnote.task.Task;
 
 public class TaskViewFormatter {
 
+    private static final int FRONT_INDEX = 0;
     private static final int NUMBER_OF_DAYS_A_WEEK = 7;
     private static final String GROUP_TITLE_OVERDUE = "OVERDUE";
     private static final String GROUP_TITLE_TODAY = "Today";
@@ -24,6 +25,7 @@ public class TaskViewFormatter {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s             End: %2s";
 
     private ArrayList<TaskViewGroup> _viewList = new ArrayList<TaskViewGroup>();
     private ArrayList<Task> _viewOrderedTaskList = new ArrayList<Task>();
@@ -81,8 +83,8 @@ public class TaskViewFormatter {
         if(overdueList.isEmpty()){
             return;
         }
-        TaskViewGroup taskGroupForToday = createTaskOverdueGroup(overdueList);
-        _viewList.add(taskGroupForToday);
+        TaskViewGroup taskGroupOverDue = createTaskOverdueGroup(overdueList);
+        _viewList.add(taskGroupOverDue);
         
     }
 
@@ -149,9 +151,9 @@ public class TaskViewFormatter {
         while (!normalList.isEmpty() || !eventList.isEmpty()) {
             Task earlierToDo;
             if (normalList.isEmpty()) {
-                earlierToDo = eventList.remove(0);
+                earlierToDo = eventList.remove(FRONT_INDEX);
             } else if (eventList.isEmpty()) {
-                earlierToDo = normalList.remove(0);
+                earlierToDo = normalList.remove(FRONT_INDEX);
             } else {
                 earlierToDo = extractTheEarlierTasks(normalList, eventList);
             }
@@ -171,25 +173,25 @@ public class TaskViewFormatter {
         LocalTime dueTime = normalTask.getEndDate().toLocalTime();
 
         if (eventStartDate.isBefore(dueDate)) {
-            return eventList.remove(0);
+            return eventList.remove(FRONT_INDEX);
         } else if (eventStartDate.isEqual(dueDate)) {
             if (eventStartTime.isBefore(dueTime)) {
-                return eventList.remove(0);
+                return eventList.remove(FRONT_INDEX);
             } else {
-                return normalList.remove(0);
+                return normalList.remove(FRONT_INDEX);
             }
         } else if (eventStartDate.isAfter(dueDate)) {
-            return normalList.remove(0);
+            return normalList.remove(FRONT_INDEX);
         } else if (dueDate.isBefore(eventEndDate)) {
-            return normalList.remove(0);
+            return normalList.remove(FRONT_INDEX);
         } else if (dueDate.isEqual(eventEndDate)) {
             if (dueTime.isBefore(eventEndTime)) {
-                return normalList.remove(0);
+                return normalList.remove(FRONT_INDEX);
             } else {
-                return eventList.remove(0);
+                return eventList.remove(FRONT_INDEX);
             }
         } else {
-            return eventList.remove(0);
+            return eventList.remove(FRONT_INDEX);
         }
     }
 
