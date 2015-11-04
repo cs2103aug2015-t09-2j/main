@@ -1,3 +1,4 @@
+//@@author A0125447E
 package katnote.ui;
 
 import java.time.DayOfWeek;
@@ -25,7 +26,6 @@ public class TaskViewFormatter {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final String DATE_PATTERN = "dd MMM yy";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(DATE_PATTERN);
-    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s             End: %2s";
 
     private ArrayList<TaskViewGroup> _viewList = new ArrayList<TaskViewGroup>();
     private ArrayList<Task> _viewOrderedTaskList = new ArrayList<Task>();
