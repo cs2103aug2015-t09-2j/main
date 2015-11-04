@@ -1,0 +1,8 @@
+night 9.00pm
+afternoon 12.00pm
+morning 9.00am
+evening 7.00pm
+<start>
+{"id":"0","title":"myEvents","task_type":"EVENT","start_date":"2015-11-05T00:00:00","end_date":"2015-11-08T18:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"1","title":"ghost!","task_type":"FLOATING","start_date":"null","end_date":"null","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"2","title":"help me help","task_type":"NORMAL","start_date":"null","end_date":"2015-11-08T14:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}

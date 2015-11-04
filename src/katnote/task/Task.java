@@ -155,7 +155,11 @@ public class Task {
     }
     
     public void setEndDate(KatDateTime newEndDate) {
-        _endDate = DateTimeUtils.updateDateTime(_endDate, newEndDate);
+        if (_endDate == null) {
+            _endDate = newEndDate.toLocalDateTime();
+        } else {
+            _endDate = DateTimeUtils.updateDateTime(_endDate, newEndDate);
+        }
     }
 
     public String getRepeatOption() {
