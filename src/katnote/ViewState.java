@@ -14,7 +14,15 @@ public class ViewState {
     
     //Constructor
     public ViewState() {
-       
+        normalTasks_ = new ArrayList<Task>();
+        floatingTasks_ = new ArrayList<Task>();
+        eventTasks_ = new ArrayList<Task>();
+    }
+    
+    public ViewState(ViewState vs) {
+        normalTasks_ = vs.getNormalTasks();
+        floatingTasks_ = vs.getFloatingTasks();
+        eventTasks_ = vs.getEventTasks();
     }
     
     public ViewState(ArrayList<Task> normalTasks,
@@ -30,7 +38,7 @@ public class ViewState {
         allTasks_ = new ArrayList<Task> (all);
     }
     
-    // Accessors 
+    // Accessors/Getters 
     public ArrayList<Task> getNormalTasks() {
         return normalTasks_;
     }
@@ -45,6 +53,24 @@ public class ViewState {
     
     public ArrayList<Task> getAllTasks() {
         return allTasks_;
+    }
+    
+    public int getViewStateSize() {
+        int size = 0;
+        
+        if (eventTasks_ != null) {
+            size += eventTasks_.size();
+        }
+        
+        if (normalTasks_ != null) {
+            size += normalTasks_.size();
+        }
+        
+        if (floatingTasks_ != null) {
+            size += floatingTasks_.size();
+        }
+        
+        return size;
     }
     
     // Setters

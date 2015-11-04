@@ -5,6 +5,7 @@ package katnote;
 public class UIFeedback {
     private boolean isError_; // true if UIFeedback contains an error reponseMessage
     private boolean isExit_;
+    private boolean isSearch_;
     private ViewState viewState_;
     private String responseMessage_;
     
@@ -14,6 +15,7 @@ public class UIFeedback {
         viewState_ = new ViewState();
         isExit_ = false;
         isError_ = false;
+        isSearch_ = false;
     }
     
     public UIFeedback(boolean isError, ViewState vs, String responseMessage) {
@@ -21,6 +23,7 @@ public class UIFeedback {
         viewState_ = vs;
         responseMessage_ = responseMessage;
         isExit_ = false;
+        isSearch_ = false;
     }
      
     /*-- Public Methods --*/
@@ -31,6 +34,10 @@ public class UIFeedback {
     
     public void setExit(boolean isExit) {
         isExit_ = isExit;
+    }
+    
+    public void setSearch(boolean isSearch) {
+        isSearch_ = isSearch;
     }
     
     public void setViewState(ViewState vs) {
@@ -47,6 +54,10 @@ public class UIFeedback {
     
     public boolean isAnExit() {
         return isExit_;
+    }
+    
+    public boolean isASearch() {
+        return isSearch_;
     }
     
     /**

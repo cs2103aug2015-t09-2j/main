@@ -14,11 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import katnote.command.CommandDetail;
-import katnote.command.CommandProperties;
 import katnote.command.CommandType;
 import katnote.parser.EditTaskOption;
 import katnote.parser.Parser;
-import katnote.parser.ViewTaskOption;
 import katnote.task.Task;
 import katnote.task.TaskDueDateComparator;
 import katnote.task.TaskStartDateComparator;
@@ -51,6 +49,7 @@ public class Logic {
         if (!sourcePath.exists()) {
             sourcePath.createNewFile();
         }
+        
         BufferedReader br = new BufferedReader(new FileReader(sourcePath));
         String line;
         line = br.readLine();
@@ -87,19 +86,17 @@ public class Logic {
      * @throws Exception
      */
     public UIFeedback execute(String command) throws Exception {
-        UIFeedback feedback;
         CommandDetail parsedTask = Parser.parseCommand(command);
-        feedback = process(parsedTask);
+        UIFeedback feedback = process(parsedTask);
         return feedback;
     }
     
     /**
-     * Reads from Model to retrieve the current uncompleted tasks data
+     * Reads from Model to retrieve the default view state
      * @return viewState to be displayed when software starts up
      */
     public ViewState getInitialViewState() {
-        ViewState vs = new ViewState();
-        updateViewState(vs);
+        ViewState vs = new ViewState(getDefaultViewState());
         return vs;
     }
     
@@ -131,113 +128,82 @@ public class Logic {
     public UIFeedback process(CommandDetail commandDetail) throws Exception {
         CommandType type = commandDetail.getCommandType();
         UIFeedback feedback = new UIFeedback();
-        ViewState vs = feedback.getViewState();
         int taskID; // for edit/delete commands
-        int tasksFound = 0; // number of tasks displayed for view/search commands
-
-        Task task;
+        int tasksFound; //number of tasks displayed for view/search commands
+        
         switch (type) {
             case ADD_TASK :
-                task = new Task(commandDetail);
+                Task task = new Task(commandDetail);
                 feedback.setResponse(model_.addTask(task));
-                
-                updateViewState(vs);
+                feedback.setViewState(getDefaultViewState());
                 break;
 
             case EDIT_MODIFY :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 EditTaskOption editOptions = commandDetail.getEditTaskOption();
-                feedback.setResponse(model_.editModify(taskID, editOptions));
                 
-                updateViewState(vs);                
+                feedback.setResponse(model_.editModify(taskID, editOptions));               
+                feedback.setViewState(getDefaultViewState());            
                 break;
 
             case EDIT_COMPLETE :
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
-                feedback.setResponse(model_.editComplete(taskID));
-                
-                updateViewState(vs);
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());               
+                feedback.setResponse(model_.editComplete(taskID));                
+                feedback.setViewState(getDefaultViewState());
                 break;
             
             case POSTPONE:
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
-                feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));
-                
-                updateViewState(vs);
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());               
+                feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));                
+                feedback.setViewState(getDefaultViewState());
                 break;
 
             case DELETE_TASK :
-                // get index from commandDetail
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
-                feedback.setResponse(model_.editDelete(taskID)); // pass ID to Model
-                
-                updateViewState(vs);               
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());                
+                feedback.setResponse(model_.editDelete(taskID));               
+                feedback.setViewState(getDefaultViewState());             
                 break;
 
-            case VIEW_TASK :
-                feedback.setViewState(viewTask(commandDetail)); //note: viewTask sorts the list as well
-                vs = feedback.getViewState();
+            case VIEW_TASK :             
+                feedback.setViewState(find(commandDetail));
+                //feedback.setSearch(true);
                 
-                //TODO: REFACTOR
-                if (vs.getEventTasks() != null) {
-                    tasksFound += vs.getEventTasks().size();
-                }
-                
-                if (vs.getNormalTasks() != null) {
-                    tasksFound += vs.getNormalTasks().size();
-                }
-                
-                if (vs.getFloatingTasks() != null) {
-                    tasksFound += vs.getFloatingTasks().size();
-                }
-                
+                tasksFound = feedback.getViewState().getViewStateSize();               
                 feedback.setResponse(String.format(MSG_RESPONSE_VIEW, tasksFound));
+                
                 break;
 
             case UNDO :
                 feedback.setResponse(model_.undo());
-                updateViewState(vs);  
+                feedback.setViewState(getDefaultViewState()); 
                 break;
 
             case REDO :
                 feedback.setResponse(model_.redo());
-                updateViewState(vs);
+                feedback.setViewState(getDefaultViewState());
                 break;
 
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
-                vs = feedback.getViewState();
+                feedback.setSearch(true);
                 
-                //updateViewState(vs);
-                String keyword = commandDetail.getFindKeywords();
-                
-                //TODO: REFACTOR
-                if (vs.getEventTasks() != null) {
-                    tasksFound += vs.getEventTasks().size();
-                }
-                
-                if (vs.getNormalTasks() != null) {
-                    tasksFound += vs.getNormalTasks().size();
-                }
-                
-                if (vs.getFloatingTasks() != null) {
-                    tasksFound += vs.getFloatingTasks().size();
-                }
-               
+                tasksFound = feedback.getViewState().getViewStateSize();            
+                String keyword = commandDetail.getFindKeywords();               
                 feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
+                
                 break;
 
             case SET_LOCATION :
                 String newSaveLocation = (String) commandDetail.getFilePath();
                 setSourcePath(newSaveLocation);
                 feedback.setResponse(model_.setLocation(commandDetail));
-                updateViewState(vs);
+                feedback.setViewState(getDefaultViewState());
+                break;
                 
             case IMPORT :
-                //String importLocation = (String) commandDetail.getFilePath();
-                feedback.setResponse(model_.importData(commandDetail));
-                
-                updateViewState(vs);
+                feedback.setResponse(model_.importData(commandDetail));                
+                feedback.setViewState(getDefaultViewState());
+                break;
                 
             case EXIT :
                 feedback.setExit(true);
@@ -246,8 +212,7 @@ public class Logic {
             default :
                 feedback.setError(true);
                 feedback.setResponse(String.format(MSG_ERR_INVALID_TYPE, type));
-
-                updateViewState(vs);
+                feedback.setViewState(getDefaultViewState());
                 break;
         }
         return feedback;
@@ -255,74 +220,146 @@ public class Logic {
 
 
     /**
-     * Search for tasks that match the specifications in the commandDetail input
+     * Searches for tasks that match the specifications in the commandDetail input,
+     * then returns a sorted view state.
      * 
      * @param commandDetail
      *            Contains the criteria for searching
-     * @return An ArrayList of tasks that match the search criteria
+     * @return ViewState object containing the filtered and sorted tasks.
      */
 
     private ViewState find(CommandDetail commandDetail) {
         Search search = new Search(); 
         ViewState vs = new ViewState();
         
-        // Find by keyword, incomplete tasks:
-        search.setKeyword(commandDetail.getFindKeywords());
-        search.setIsCompleted(false);
+        // Getting the search parameters
+        Boolean isCompleted = commandDetail.getTaskCompletedOption();       
+        LocalDateTime dueDate = getSearchDueDateFromCommandDetail(commandDetail);
+        LocalDateTime startDate = getSearchStartDateFromCommandDetail(commandDetail);
+        String keyword = commandDetail.getFindKeywords();
+        
+        // Setting the search parameters
+        search.setIsCompleted(isCompleted);
+        search.setDue(dueDate);
+        search.setStart(startDate); 
+        search.setKeyword(keyword);
      
         // search and return
-        vs = searchAndUpdate(vs, search);
+        vs = getSearchedAndSortedViewState(search);
         return vs;
 
-    }
+    } 
 
+    /*-- Helper Functions --*/
+    
     /**
-     * Returns the list of tasks that should be displayed according to the
-     * viewing criteria (and is sorted)
-     * 
-     * @param commandDetail
-     *            specifies the criteria of what tasks should be retrieved
-     * @return ArrayList of tasks that satisfy the view criteria
+     * Searches through Model data based on the input Search object and returns
+     * a searched and sorted ViewState object.
+     * @param search
+     *          Search object containing the information for sorting
+     * @return ViewState object containing lists of tasks that are searched according to the
+     * input Search object and sorted in order of their due dates whenever possible.
      */
-    private ViewState viewTask(CommandDetail commandDetail) {
-        Search search = new Search();
-        ViewState vs = new ViewState();
-        LocalDateTime dueDate;
+    private ViewState getSearchedAndSortedViewState(Search search) {
+        
+        //search
+        ArrayList<Task> normal = search.searchData(model_.getNormalTasks());
+        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks());
+        ArrayList<Task> event = search.searchData(model_.getEventTasks());
+        
+        //set
+        ViewState vs = new ViewState(normal, floating, event);
+        
+        //Sort
+        sortViewStateByDate(vs);
+        
+        return vs;
+    }
+    
+    /**
+     * Returns the processed ViewState object - filtered out tasks not within the week,
+     * and completed tasks, and is sorted by date.
+     * 
+     * @return ViewState object with the processed data from Model.
+     */
+    private ViewState getDefaultViewState() {
+        ViewState vs = new ViewState(model_.getNormalTasks(),
+                                     model_.getFloatingTasks(),
+                                     model_.getEventTasks());  
+        filterFirstWeek(vs);
+        filterIncompleted(vs);
+        sortViewStateByDate(vs);
+        return vs;       
+    }
+    
+    /**
+     * Gives the LocalDateTime form of the startDate search parameter from the input commandDetail.
+     * null is returned if no such parameter exists. A default day (today) and time (00:00) will be
+     * set in the LocalDateTime object if either of the fields are not specified.
+     * @param commandDetail
+     *              Contains the KatDateTime object startDate, a search parameter.  
+     * @return The LocalDateTime object of the startDate search parameter. 
+     */
+    private LocalDateTime getSearchStartDateFromCommandDetail (CommandDetail commandDetail) {
         LocalDateTime startDate;
         
-        Boolean isCompleted = commandDetail.getTaskCompletedOption();
-        
-        if (commandDetail.getDueDate() == null) {
-            dueDate = null;
-        } else {
-            dueDate = commandDetail.getDueDate().toLocalDateTime();
-        }
-
         if (commandDetail.getStartDate() == null) {
             startDate = null;
         } else {           
             KatDateTime katDate = commandDetail.getStartDate();
             
-            if (katDate.getTime() == null) {
+            // if time isn't specified, set a default time 00:00
+            if (katDate.getTime() == null) { 
                 LocalDate date = katDate.getDate();
-                LocalTime dummy = LocalTime.of(00, 00);
-                startDate = LocalDateTime.of(date, dummy);
-            } else { 
+                LocalTime defaultTime = LocalTime.of(00, 00);
+                startDate = LocalDateTime.of(date, defaultTime);
+                
+            // if date isn't specified, set default date today
+            } else if (katDate.getDate() == null) { 
+                LocalDate defaultDate = LocalDate.now();
+                LocalTime time = katDate.getTime();
+                startDate = LocalDateTime.of(defaultDate, time);
+            } else{
                 startDate = commandDetail.getStartDate().toLocalDateTime();
             }
         }
-        
-        search.setIsCompleted(isCompleted);
-        search.setDue(dueDate);
-        search.setStart(startDate);
-              
-        // search and return
-        vs = searchAndUpdate(vs, search);   
-        return vs;
+        return startDate;
     }
+    
+    /**
+     * Gives the LocalDateTime form of the duetDate search parameter from the input commandDetail.
+     * null is returned if no such parameter exists. A default day (today) and time (23:59) will be
+     * set in the returned LocalDateTime object if either of the fields are not specified.
+     * @param commandDetail
+     *              Contains the KatDateTime object dueDate, a search parameter.  
+     * @return The LocalDateTime object of the dueDate search parameter. 
+     */
+    private LocalDateTime getSearchDueDateFromCommandDetail (CommandDetail commandDetail) {
+        LocalDateTime dueDate;
+        
+        if (commandDetail.getDueDate() == null) {          
+            dueDate = null;
+        } else {  
+            //System.out.println("dueDate from command detail not null.");
+            KatDateTime katDate = commandDetail.getDueDate();
             
-
-    /*-- Helper Functions --*/
+            // if time isn't specified, set a default time 23:59
+            if (katDate.getTime() == null) { 
+                LocalDate date = katDate.getDate();
+                LocalTime defaultTime = LocalTime.of(23, 59);
+                dueDate = LocalDateTime.of(date, defaultTime);
+                
+            // if date isn't specified, set default date today
+            } else if (katDate.getDate() == null) { 
+                LocalDate defaultDate = LocalDate.now();
+                LocalTime time = katDate.getTime();
+                dueDate = LocalDateTime.of(defaultDate, time);
+            } else{
+                dueDate = commandDetail.getDueDate().toLocalDateTime();
+            }
+        }
+        return dueDate;
+    }
 
     private void setSourcePath(String newPath) throws FileNotFoundException {
 
@@ -331,101 +368,79 @@ public class Logic {
         pw.println(newPath);
         pw.close();
     }
-    
+       
     /**
-     * Searches through the Model data based on the input Search object and updates 
-     * the input ViewState with the newly searched state.
+     * Sorts viewState in accordance to date. Normal tasks are sorted by
+     * their due dates; Events are sorted by their start dates.
      * @param vs
-     *          ViewState to be updated
-     * @param search
-     *          Search object containing the information for sorting
-     * @return ViewState object containing lists of tasks that are searched according to the
-     * input Search object and sorted in order of their due dates whenever possible.
+     *          ViewState to be sorted.
      */
-    private ViewState searchAndUpdate(ViewState vs, Search search) {
-        //search
-        ArrayList<Task> normal = search.searchData(model_.getNormalTasks());
-        ArrayList<Task> floating = search.searchData(model_.getFloatingTasks());
-        ArrayList<Task> event = search.searchData(model_.getEventTasks());
+    private void sortViewStateByDate(ViewState vs) {
+        ArrayList<Task> normal = vs.getNormalTasks();
+        ArrayList<Task> event = vs.getEventTasks();
         
-        //update
         vs.setNormalTasks(sortByDueDate(normal));
-        vs.setFloatingTasks(floating);
         vs.setEventTasks(sortByStartDate(event));
+    }
+      
+    /**
+     * Filters out the completed tasks in the input ViewState object
+     * @param vs    The ViewState object to be filtered.
+     */
+    private void filterIncompleted(ViewState vs) {
+        assert(vs != null);
         
-        return vs;
+        vs.setNormalTasks(getIncompleteTasks(vs.getNormalTasks()));
+        vs.setFloatingTasks(getIncompleteTasks(vs.getFloatingTasks()));
+        vs.setEventTasks(getIncompleteTasks(vs.getEventTasks()));      
     }
     
-    
     /**
-     * Updates input ViewState with the processed data from Model - sorted 
-     * according to due dates and filtered out completed tasks.
-     * @param vs
-     *          ViewState to be updated
+     * Filters the input ViewState object such that only the tasks within 
+     * the first week from today is left.
+     * @param vs    The ViewState object to be filtered.
      */
-    private void updateViewState(ViewState vs) { 
-        vs.setNormalTasks(processNormalTaskList(model_.getNormalTasks()));
-        vs.setFloatingTasks(getIncomplete(model_.getFloatingTasks()));
-        vs.setEventTasks(processEventTaskList(model_.getEventTasks()));
+    private void filterFirstWeek(ViewState vs) {
+        assert(vs != null);
+        
+        vs.setNormalTasks(filterFirstWeekByDueDate(vs.getNormalTasks()));
+        vs.setEventTasks(filterFirstWeekByStartDate(vs.getEventTasks()));
     }
     
     /**
-     * Processes the input Normal task list by filtering out the completed tasks and sorting them in accordance
-     * to their due dates (earlier tasks come first).
-     * @param taskList
-     *              The ArrayList of Task to be filtered and processed. Task type == NORMAL
-     * @return Returns a filtered list of incomplete tasks that are sorted in accordance of their due dates
-     */
-    private ArrayList<Task> processNormalTaskList(ArrayList<Task> taskList) {
-        ArrayList<Task> newList = new ArrayList<Task>(taskList);
-        newList = getIncomplete(newList);
-        newList = sortByDueDate(newList);
-        newList = filterFirstWeekByDueDate(newList);
-        return newList;
-    }
-    
-    /**
-     * Processes the input Event task list by filtering out the completed tasks and sorting them in accordance
-     * to their start dates (earlier tasks come first).
-     * @param taskList
-     *              The ArrayList of Task to be filtered and processed. Task type == EVENT
-     * @return Returns a filtered list of incomplete tasks that are sorted in accordance of their start dates
-     */
-    private ArrayList<Task> processEventTaskList(ArrayList<Task> taskList) {
-        ArrayList<Task> newList = new ArrayList<Task>(taskList);
-        newList = getIncomplete(newList);
-        newList = sortByStartDate(newList);
-        newList = filterFirstWeekByStartDate(newList);
-        return newList;
-    }
-    
-    /**
-     * Sorts the input task list according to their due dates (earliest will come first)
+     * Returns the sorted input task list according to their due dates. 
+     * Earliest will come first. Time comparison precision is up till Seconds
      * @param taskList List of tasks to be sorted. Task types should be != FLOATING
      */
     private ArrayList<Task> sortByDueDate(ArrayList<Task> taskList) {
+        assert(taskList != null);
+        
         ArrayList<Task> newList = new ArrayList<Task>(taskList);
         Collections.sort(newList, new TaskDueDateComparator());
         return newList;
     }
     
     /**
-     * Sorts the input task list according to their start dates. 
+     * Returns the sorted input task list according to their start dates. 
      * Earliest will come first. Time comparison precision is up till Seconds
      * @param taskList List of tasks to be sorted. Task types should be == EVENT
      */
     private ArrayList<Task> sortByStartDate(ArrayList<Task> taskList) {
+        assert(taskList != null);
+        
         ArrayList<Task> newList = new ArrayList<Task>(taskList);
         Collections.sort(newList, new TaskStartDateComparator());
         return newList;
     }
     
     /**
-     * Removes all completed tasks from input list
+     * Returns the input list with all completed tasks removed.
      * @param list ArrayList of Task that is to be filtered
      * @return the ArrayList of uncompleted Task
      */
-    private ArrayList<Task> getIncomplete(ArrayList<Task> list) {
+    private ArrayList<Task> getIncompleteTasks(ArrayList<Task> list) {
+        assert(list != null);
+        
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
         for (int i = 0; i < list.size(); i++) {
@@ -436,11 +451,15 @@ public class Logic {
         }
         return tasksFound;
     }
-    
-    // Filter out tasks that do not end within the week with
-    // reference to current Date.
-    // TaskType == NORMAL
+     
+    /**
+     * Filters out tasks that do not end within the week with reference to current Date,
+     * and returns the list.
+     * @param list  ArrayList of Task that is to be filtered. TaskType == NORMAL
+     */
     private ArrayList<Task> filterFirstWeekByDueDate(ArrayList<Task> list) {
+        assert(list != null);
+        
         LocalDate duedate = LocalDate.now().plusWeeks(1);
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
@@ -454,17 +473,21 @@ public class Logic {
         return tasksFound;
     }
     
-    // Filter out tasks that do not start within the week with
-    // reference to current Date.
-    // TaskType == EVENT
+    /**
+     * Filters out tasks that do not start by the end of the week with reference 
+     * to current Date, and returns the list.
+     * @param list  ArrayList of Task that is to be filtered. TaskType == EVENT
+     */
     private ArrayList<Task> filterFirstWeekByStartDate(ArrayList<Task> list) {
+        assert(list != null);
+        
         LocalDate startDate = LocalDate.now().plusWeeks(1);
         ArrayList<Task> tasksFound = new ArrayList<Task>();
 
         for (int i = 0; i < list.size(); i++) {
             Task task = list.get(i);
-            LocalDate taskDue = task.getStartDate().toLocalDate();
-            if (!taskDue.isAfter(startDate)) {
+            LocalDate taskStart = task.getStartDate().toLocalDate();
+            if (!taskStart.isAfter(startDate)) {
                 tasksFound.add(task);
             }
         }
@@ -549,15 +572,14 @@ class Search {
         
         if (list.size() <= 0) {
             return searched;
-        }
-        
-        TaskType type = list.get(0).getTaskType();
+        }        
         
         if (keyword_ != null) {
             searched = new ArrayList<Task>(findByKeyword(searched));
         }
         
         if (due_ != null) {
+            //System.out.println("due_ isnt null");
             searched = new ArrayList<Task>(findDueBy(searched));
         }
 
@@ -630,15 +652,16 @@ class Search {
      *         input date. 
      */
     private ArrayList<Task> findDueBy(ArrayList<Task> data) {
+        //System.out.println("Starting findDueBy for " + data.get(0).getTitle());
         ArrayList<Task> tasksFound = new ArrayList<Task>();
         LocalDateTime duedate = due_;
         LocalDateTime taskDue;
-        
+                       
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
             TaskType type = task.getTaskType();
             
-            if (type == TaskType.FLOATING || task.getEndDate() == null) {
+            if (task.getEndDate() == null) {
                 break;
             }
             
