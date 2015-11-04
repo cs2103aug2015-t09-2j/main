@@ -100,13 +100,13 @@ public class GraphicalUserInterface extends Application {
         log.log(Level.INFO, "setUpTaskViewer");
         taskViewer = new TaskViewer();
         rootLayout.setCenter(taskViewer);
-        displayedTaskList = updateTaskViewer(logic.getInitialViewState());
+        displayedTaskList = updateTaskViewer(logic.getInitialViewState(), false);
         logic.setViewMapping(displayedTaskList);
     }
 
-    public ArrayList<Task> updateTaskViewer(ViewState viewState) {
+    public ArrayList<Task> updateTaskViewer(ViewState viewState, boolean isSearch) {
         log.log(Level.INFO, "updateTaskViewer");
-        TaskViewFormatter listFormat = new TaskViewFormatter(viewState);
+        TaskViewFormatter listFormat = new TaskViewFormatter(viewState, isSearch);
         taskViewer.loadTaskFormat(listFormat);
         return listFormat.getOrderedTaskList();
     }
@@ -122,7 +122,7 @@ public class GraphicalUserInterface extends Application {
             } else if (!feedback.isAnError()) {
                 ViewState viewState = feedback.getViewState();
                 if (viewState != null) {
-                    displayedTaskList = updateTaskViewer(viewState);
+                    displayedTaskList = updateTaskViewer(viewState, feedback.isASearch());
                     logic.setViewMapping(displayedTaskList);
                 }
             }
