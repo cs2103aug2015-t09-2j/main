@@ -3,9 +3,7 @@ package katnote;
 
 import java.io.*;
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -95,9 +93,8 @@ public class Model {
 	private static final String MSG_DEFINITION_REPLACED = "Definition for %s set to %s";
 	private static final String MSG_DEFINITION_ADDED = "New definition for %s set to %s";
 	
-	private static final String MSG_ERR_IO = "I/O Exception.";
+	private static final String MSG_ERR_IO = "Invalid input, input is either corrupted, missing or inaccessible.";
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
-	private static final String MSG_ERR_INVALID_TYPE = "Invalid task type: ";
 	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
@@ -110,7 +107,6 @@ public class Model {
 	private static final String MSG_ERR_REVERSE_DELETE = "Unable to perform reverse for deleting of task : ";
 	private static final String MSG_ERR_REVERSE_COMPLETE = "Unable to perform reverse for completion of task : ";
 	private static final String MSG_ERR_REVERSE_REPLACE = "Unable to perform reverse for replacing of task : ";
-	private static final String MSG_ERR_REVERSE_CLEAR = "Unable to perform reverse for clear tasks.";
 	private static final String MSG_ERR_REVERSE_POSTPONE = "Unable to perform reverse for postponed task.";
 	private static final String MSG_ERR_START_AFTER_END = "Invalid start date. Start date is after end date.";
 	private static final String MSG_ERR_INVALID_TASK_TYPE = "Invalid Task Type. Expecting Event task type.";
@@ -146,7 +142,6 @@ public class Model {
 	private static final String EDIT_DELETE = "Delete Task:";
 	private static final String EDIT_COMPLETE = "Mark Task:";
 	private static final String EDIT_REPLACE = "Replaced Task:";
-	private static final String EDIT_CLEAR = "Clear Tasks:";
 	private static final String EDIT_POSTPONE = "Postponed Task:";
 	
 	// Standard Default Definitions
@@ -453,6 +448,9 @@ public class Model {
 	    
 	   createDataOld(); 
 	    _response = _data.importData(importLocation);
+	    
+	    _dataLog = _decoder.decode();
+	    splitTaskType(_dataLog);
 	    
 	    return _response;
 	}
@@ -999,7 +997,6 @@ public class Model {
 	    _redoTaskObjLog.push(taskObj);
 	}
 	
-	@SuppressWarnings("unused")
 	/**
 	 * Reserved for Unit Testing only. Runs the decoder.
 	 * @throws Exception
@@ -1233,7 +1230,7 @@ public class Model {
 		@SuppressWarnings("unchecked")
         private String getJSONTaskString(Task t) {
 		    
-		    Map taskMap = new LinkedHashMap();
+            Map taskMap = new LinkedHashMap();
             taskMap.put(KEY_ID, _id.toString());
             taskMap.put(KEY_TITLE, t.getTitle());
             taskMap.put(KEY_TASK_TYPE, typeToString(t.getTaskType()));
@@ -1298,6 +1295,8 @@ public class Model {
 	 *
 	 */
 	class StorageData {
+	    
+	    private static final int CHARCODE_BACKSLASH = 92;
 	
 		// Private Variables
 		private String _sourcePath;
@@ -1326,6 +1325,8 @@ public class Model {
 		// Set
 		public String setPath(String newPath) throws Exception {
 			
+		    newPath = validateLocation(newPath);
+		    
 			_response = migrateData(_sourcePath + DATA_FILENAME, newPath + DATA_FILENAME);
 			_sourcePath = newPath;
 			_dataFilePath = newPath + DATA_FILENAME;
@@ -1334,6 +1335,8 @@ public class Model {
 		
 		// Import
 		public String importData(String importLocation) throws Exception {
+		    
+		    importLocation = validateLocation(importLocation);
 		    
 		    // Look for data.txt in importLocation
 		    String importFilePath = importLocation + DATA_FILENAME;
@@ -1368,7 +1371,7 @@ public class Model {
 		    }
 		    backupData.createNewFile();
 		    
-		    copyData(_dataFilePath, backupData.getPath());
+		    copyData(currentData.getPath(), backupData.getPath());
 		}
 		
 		// Helper Methods
@@ -1445,6 +1448,16 @@ public class Model {
 		   } catch (IOException e) {
 		        handleException(e, MSG_ERR_IO);
 		   }
+		}
+		
+		private String validateLocation(String input) {
+		    
+		    char lastChar = input.charAt(input.length() - 1);
+		    if (lastChar != CHARCODE_BACKSLASH) {
+		        input = input + '\\';
+		    }
+		    
+		    return input;
 		}
 	}
 }

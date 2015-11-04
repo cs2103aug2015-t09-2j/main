@@ -1,10 +1,6 @@
 package katnote.task;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.json.simple.JSONArray;
 
 import katnote.command.CommandDetail;
 import katnote.utils.DateTimeUtils;
@@ -30,23 +26,6 @@ public class Task {
     private String _description;
     private String _category;
     private Boolean _completed = false;
-
-    // Constants
-    private static final int MAX_ARG_SIZE = 10;
-    private static final String NULL_DATE = "null";
-    private static final String STR_TRUE = "true";
-    private static final String STR_FALSE = "false";
-
-    private static final int INDEX_ID = 0;
-    private static final int INDEX_TITLE = 1;
-    private static final int INDEX_TASK_TYPE = 2;
-    private static final int INDEX_START_DATE = 3;
-    private static final int INDEX_END_DATE = 4;
-    private static final int INDEX_REPEAT_OPTION = 5;
-    private static final int INDEX_TERMINATE_DATE = 6;
-    private static final int INDEX_DESCRIPTION = 7;
-    private static final int INDEX_CATEGORY = 8;
-    private static final int INDEX_COMPLETED = 9;
 
     // Messages
     private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";

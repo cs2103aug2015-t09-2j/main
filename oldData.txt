@@ -3,6 +3,13 @@ afternoon 12.00pm
 morning 9.00am
 evening 7.00pm
 <start>
-{"id":"0","title":"myEvents","task_type":"EVENT","start_date":"2015-11-05T00:00:00","end_date":"2015-11-08T18:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
-{"id":"1","title":"ghost!","task_type":"FLOATING","start_date":"null","end_date":"null","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
-{"id":"2","title":"help me help","task_type":"NORMAL","start_date":"null","end_date":"2015-11-08T14:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"0","title":"do homework","task_type":"NORMAL","start_date":"null","end_date":"2015-10-30T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"1","title":"do homework4","task_type":"FLOATING","start_date":"null","end_date":"null","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"true"}
+{"id":"2","title":"download and watch movie","task_type":"EVENT","start_date":"2015-10-31T00:00:00","end_date":"2015-10-31T23:59:00","repeat_option":null,"terminate_date":"2015-11-07T23:59:00","description":null,"category":null,"completed":"false"}
+{"id":"3","title":"book meeting room","task_type":"NORMAL","start_date":"null","end_date":"2015-11-01T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"4","title":"draw more kats","task_type":"EVENT","start_date":"2015-10-30T00:00:00","end_date":"2015-10-30T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"5","title":"do homework5","task_type":"NORMAL","start_date":"null","end_date":"2015-10-31T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"6","title":"draw kat event","task_type":"EVENT","start_date":"2015-11-07T00:00:00","end_date":"2015-11-08T23:59:00","repeat_option":null,"terminate_date":"2015-11-07T23:59:00","description":null,"category":null,"completed":"false"}
+{"id":"7","title":"bring Kat on Holiday","task_type":"NORMAL","start_date":"null","end_date":"2015-10-30T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"8","title":"buy Kat a scratching post for her birthday","task_type":"NORMAL","start_date":"null","end_date":"2016-10-31T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"9","title":"play with Kat","task_type":"FLOATING","start_date":"null","end_date":"null","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
