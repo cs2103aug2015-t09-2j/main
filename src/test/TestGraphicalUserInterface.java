@@ -84,6 +84,7 @@ public class TestGraphicalUserInterface extends GuiTest {
             ViewDataPackage data = outputs.get(i);
             //type(input).push(KeyCode.ENTER);
             commandInput.setText(input);
+            System.out.println(String.format("Testing: \"%s\"", input));
             sleep(1, TimeUnit.SECONDS);
             push(KeyCode.ENTER);
             
