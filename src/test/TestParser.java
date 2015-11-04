@@ -121,15 +121,30 @@ public class TestParser {
     }
 
     @Test
-    public void testViewCommand1() { // View multiple task
-        CommandDetail commandDetail = Parser.parseCommand("view tasks on monday");
+    public void testViewMultipleTasksCommand1() { // View multiple task
+        CommandDetail commandDetail = Parser.parseCommand("view on monday");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
     }
+    
+    @Test
+    public void testViewMultipleTasksCommand2() { // View multiple task
+        CommandDetail commandDetail = Parser.parseCommand("view completed from tuesday 2pm to 5pm");
+        assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertNotNull(commandDetail.getStartDate());
+        assertNotNull(commandDetail.getEndDate());
+    }
+    
+    @Test
+    public void testViewMultipleTasksCommand3() { // View multiple task
+        CommandDetail commandDetail = Parser.parseCommand("-v completed by tuesday 2pm");
+        assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertNotNull(commandDetail.getDueDate());
+    }
 
     @Test
-    public void testViewCommand2() { // View single task
+    public void testViewSingleTaskCommand1() { // View single task
         CommandDetail commandDetail = Parser.parseCommand("view task 3");
         assertEquals(CommandType.VIEW_TASK_WITH_ID, commandDetail.getCommandType());
         assertEquals(3, commandDetail.getTaskIndex());

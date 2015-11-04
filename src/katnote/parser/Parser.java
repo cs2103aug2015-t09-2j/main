@@ -30,10 +30,6 @@ public class Parser {
     private static final int TOKENS_TASK_NAME_POS = 0;
     private static final int TOKENS_OPTION_POS = 0;
 
-    private static final int TASK_OPTION_VIEW_TYPE_POS = 0;
-    private static final int TASK_OPTION_VIEW_DETAIL_POS = 1;
-        
-
     // Class logger
     private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());    
 
@@ -63,7 +59,11 @@ public class Parser {
                 case CommandKeywords.KW_ADD:
                 case CommandKeywords.KW_ADD_SHORT:
                     return parseAddCommand(tokens);
+                case CommandKeywords.KW_VIEW_SINGLE_TASK:
+                    return parseViewSingleTaskCommand(tokens);
                 case CommandKeywords.KW_VIEW:
+                case CommandKeywords.KW_VIEW_MULTIPLE_TASK:
+                case CommandKeywords.KW_VIEW_MULTIPLE_TASK_SHORT:
                     return parseViewCommand(tokens);
                 case CommandKeywords.KW_FIND:
                     return parseFindCommand(tokens);
@@ -184,35 +184,53 @@ public class Parser {
         }
         return command;
     }
+    
+    /*
+     * Parses view command (single task). Command format:
+     *   - view task TASK_ID
+     * 
+     */
+    private static CommandDetail parseViewSingleTaskCommand(List<String> tokens) throws Exception {
+        CommandDetail command = new CommandDetail(CommandType.VIEW_TASK_WITH_ID);
+        // read command option
+        String commandOption = tokens.get(TOKENS_OPTION_POS);
+        Integer taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
+        // set properties
+        command.setProperty(CommandProperties.TASK_ID, taskId);
+        return command;
+    }
 
     /*
-     * Parses view command. Command format:
-     *   - view tasks [completed] [on TIME_ON] [from TIME_FROM to TIME_TO]
-     *   - view task TASK_ID
+     * Parses view command (multiple tasks). Command format:
+     *   - view [completed/incompleted/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
      * 
      */
     private static CommandDetail parseViewCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.VIEW_TASK);
-        // Parse view options ("tasks", "tasks completed" or "task TASK_ID")
-        String[] viewOptions = tokens.get(TOKENS_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
-        switch (viewOptions[TASK_OPTION_VIEW_TYPE_POS].toLowerCase()) {
-            case CommandKeywords.KW_SINGLE_TASK :
-                command.setCommandType(CommandType.VIEW_TASK_WITH_ID);
-                Integer taskId = Integer.valueOf(viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);
-                command.setProperty(CommandProperties.TASK_ID, taskId);
-                break;
-            case CommandKeywords.KW_TASKS :                
-                Boolean viewCompletedTask = false;
-                if (TASK_OPTION_VIEW_DETAIL_POS < viewOptions.length) {
-                    viewCompletedTask = (Boolean) PropertyParser.parseOptionValue(CommandProperties.TASKS_COMPLETED_OPTION, viewOptions[TASK_OPTION_VIEW_DETAIL_POS]);              
-                }
-                command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, viewCompletedTask);
-                break;
-            default :
-                return new CommandDetail(CommandType.UNKNOWN);
+        // completed option               
+        int tokenStartPos = TOKENS_PROPERTIES_START_POS;
+        Boolean completedOption = false;
+        if (TOKENS_OPTION_POS < tokens.size()){
+            String commandOption = tokens.get(TOKENS_OPTION_POS);
+            switch (commandOption){
+                case CommandKeywords.KW_COMPLETED :
+                    completedOption = true;
+                    break;
+                case CommandKeywords.KW_INCOMPLETED :
+                    completedOption = false;
+                    break;
+                case CommandKeywords.KW_ALL :
+                    completedOption = null;
+                    break;
+                default:
+                    completedOption = false;
+                    tokenStartPos--; // when completed option is omitted
+                    break;
+            }
         }
+        command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, completedOption);
         // add time properties
-        addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
+        addCommandProperties(tokens, tokenStartPos, command);
         // view task option
         ViewTaskOption viewOption = ViewTaskOption.ALL;
         if (command.hasProperty(CommandProperties.TIME_FROM)){
@@ -251,8 +269,7 @@ public class Parser {
         CommandDetail command = new CommandDetail(CommandType.EDIT_MODIFY);
         // read command option
         String commandOption = tokens.get(TOKENS_OPTION_POS);
-        Integer taskId;        
-        taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
+        Integer taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
         String editOption = StringUtils.removeFirstWord(commandOption);
         // set properties
         command.setProperty(CommandProperties.TASK_ID, taskId);
