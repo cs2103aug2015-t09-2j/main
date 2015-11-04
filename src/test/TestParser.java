@@ -130,7 +130,7 @@ public class TestParser {
     
     @Test
     public void testViewMultipleTasksCommand2() { // View multiple task
-        CommandDetail commandDetail = Parser.parseCommand("view completed from tuesday 2pm to 5pm");
+        CommandDetail commandDetail = Parser.parseCommand("view tasks completed from tuesday 2pm to 5pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
