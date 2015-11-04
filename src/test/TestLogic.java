@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import katnote.Logic;
-import katnote.UIFeedback;
-import katnote.ViewState;
+import katnote.logic.Logic;
+import katnote.logic.UIFeedback;
+import katnote.logic.ViewState;
 import katnote.task.Task;
 import katnote.task.TaskType;
 

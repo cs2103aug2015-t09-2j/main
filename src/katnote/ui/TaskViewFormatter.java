@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Queue;
 
-import katnote.ViewState;
+import katnote.logic.ViewState;
 import katnote.task.Task;
 
 public class TaskViewFormatter {

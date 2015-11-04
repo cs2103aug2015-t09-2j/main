@@ -1,10 +1,11 @@
-package katnote;
+//@@author A0131003J
+
+/* This program contains the service class ViewState and its methods */
+
+package katnote.logic;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
 import katnote.task.Task;
-import katnote.task.TaskDueDateComparator;
 
 public class ViewState {
     private ArrayList<Task> normalTasks_;

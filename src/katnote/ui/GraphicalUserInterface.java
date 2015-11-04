@@ -2,9 +2,9 @@
 package katnote.ui;
 
 import katnote.KatNoteLogger;
-import katnote.Logic;
-import katnote.UIFeedback;
-import katnote.ViewState;
+import katnote.logic.Logic;
+import katnote.logic.UIFeedback;
+import katnote.logic.ViewState;
 import katnote.task.Task;
 
 import java.util.ArrayList;

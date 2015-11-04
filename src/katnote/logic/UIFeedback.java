@@ -1,6 +1,8 @@
+//@@author A0131003J
+
 /* This program contains the service class UIFeedback and its methods */
 
-package katnote;
+package katnote.logic;
 
 public class UIFeedback {
     private boolean isError_; // true if UIFeedback contains an error reponseMessage
