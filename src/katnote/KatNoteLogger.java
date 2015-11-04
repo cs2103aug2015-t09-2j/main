@@ -16,9 +16,11 @@ public class KatNoteLogger {
     private static final String LOGGING_PROPERTIES_FILENAME = "./logging.properties";
     private static final String KATNOTE_LOG_FILENAME = "katnote.log";
     private static final LogManager logManager = LogManager.getLogManager();
-    public static KatNoteLogger instance = null;
-    private static FileHandler fh = null;
     private static final Logger log = Logger.getLogger("katnote");
+    
+    private static FileHandler fh = null;
+    
+    public static KatNoteLogger instance = null;
 
     private KatNoteLogger() {        
         try {
