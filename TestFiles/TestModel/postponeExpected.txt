@@ -1,0 +1,11 @@
+night 9.00pm
+afternoon 12.00pm
+morning 9.00am
+evening 7.00pm
+<start>
+{"id":"0","title":"feed cat","task_type":"NORMAL","start_date":"null","end_date":"2016-10-23T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"1","title":"something","task_type":"FLOATING","start_date":"null","end_date":"null","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"2","title":"testEvent1","task_type":"EVENT","start_date":"2017-11-28T23:59:00","end_date":"2017-11-30T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"3","title":"testEvent2","task_type":"EVENT","start_date":"2016-10-29T23:59:00","end_date":"2016-10-31T23:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"4","title":"testEvent3","task_type":"EVENT","start_date":"2016-10-28T22:59:00","end_date":"2016-10-30T22:59:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"5","title":"testEvent4","task_type":"EVENT","start_date":"2016-10-28T21:00:00","end_date":"2016-11-05T21:00:00","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}

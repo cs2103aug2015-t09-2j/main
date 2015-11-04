@@ -51,46 +51,9 @@ public class Task {
     // Messages
     private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";
 
-    // Constructor using JSONArray
-    public Task(JSONArray array) throws Exception {
-
-        assert (array.size() == MAX_ARG_SIZE);
-
-        // ideally this segment should be moved to the loading part and not
-        // within
-        // the tasks
-        String[] args = new String[MAX_ARG_SIZE];
-        for (int i = 0; i < MAX_ARG_SIZE; i++) {
-            args[i] = (String) array.get(i);
-        }
-        // Currently choosing DATE_FORMAT_LONG for all dates.
-        try {
-            setID(Integer.parseInt(args[INDEX_ID]));
-            setTitle(args[INDEX_TITLE]);
-            // impomptu code to allow the code to still work
-            if (args[INDEX_TASK_TYPE] != null) {
-                switch (args[INDEX_TASK_TYPE]) {
-                    case "EVENT" :
-                        setTaskType(TaskType.EVENT);
-                        break;
-                    case "FLOATING" :
-                        setTaskType(TaskType.FLOATING);
-                        break;
-                    case "NORMAL" :
-                    default :
-                        setTaskType(TaskType.NORMAL);
-                }
-            }
-            setStartDate(stringToDate(args[INDEX_START_DATE]));
-            setEndDate(stringToDate(args[INDEX_END_DATE]));
-            setRepeatOption(args[INDEX_REPEAT_OPTION]);
-            setTerminateDate(stringToDate(args[INDEX_TERMINATE_DATE]));
-            setDescription(args[INDEX_DESCRIPTION]);
-            setCategory(args[INDEX_CATEGORY]);
-            setCompleted(stringToBool(args[INDEX_COMPLETED]));
-        } catch (Exception e) {
-            throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
-        }
+    // Constructor of empty Task object
+    public Task() {
+        
     }
 
     /*
@@ -126,7 +89,6 @@ public class Task {
         }
     }
 
-    
     public Task(String taskTitle, TaskType type) {
         setTitle(taskTitle);
         setTaskType(type);
@@ -144,28 +106,6 @@ public class Task {
         setDescription(task.getDescription());
         setCategory(task.getCategory());
         setCompleted(task.isCompleted());
-    }
-    
-    //Empty  Constructor for testing
-    public Task() { }
-    
-    // Helper Methods
-
-    private LocalDateTime stringToDate(String dateStr) throws ParseException {
-        if (dateStr.equals(NULL_DATE)) {
-            return null;
-        } else {
-            LocalDateTime date = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
-            return date;
-        }
-    }
-
-    private Boolean stringToBool(String bool) {
-        if (bool.equals(STR_TRUE)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     // Getter and Setter

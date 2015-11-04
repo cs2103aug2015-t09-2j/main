@@ -26,11 +26,13 @@ public class TestModel {
     
     // Constants
     private static final String DATA_FILENAME = "data.txt";
+    private static final String DATA_BACKUP_FILENAME = "dataOld.txt";
     private static final int MAX_BUFFER_SIZE = 1024;
     private static final String TEST_PATH = "TestFiles/TestModel/";
     private static final String TEST_PATH_ADDTASK = "TestFiles/TestModel/addTaskExpected.txt";
     private static final String TEST_PATH_SETDEFINITION = "TestFiles/TestModel/setDefinitionExpected.txt";
     private static final String TEST_PATH_SETLOCATION = "TestFiles/TestModel/setLocationExpected.txt";
+    private static final String TEST_PATH_POSTPONE = "TestFiles/TestModel/postponeExpected.txt";
     
     // Messages
     private static final String MSG_ERR_IO = "I/O Exception.";
@@ -143,6 +145,11 @@ public class TestModel {
         if (clearData.exists()) {
             clearData.delete();
         }
+        
+        File clearDataOld = new File(path + DATA_BACKUP_FILENAME);
+        if (clearData.exists()) {
+            clearData.delete();
+        }
     }
     
     // ACTUAL TESTS
@@ -200,21 +207,25 @@ public class TestModel {
             
             System.out.println("=== Add Task ===");
             Model testModel = new Model(TEST_PATH);
-            CommandDetail addTaskCmd;
+            CommandDetail addTaskCmd1;
+            CommandDetail addTaskCmd2;
             
             KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 10, 23, 23, 59));
             //System.out.println("Date Field: " + date1.format(DATE_FORMATTER));
             
-            addTaskCmd = createTask("feed cat", TaskType.NORMAL, null, null, date1);
-            Task task1 = new Task(addTaskCmd);
+            addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
+            Task task1 = new Task(addTaskCmd1);
+            addTaskCmd2 = createTask("  ", TaskType.FLOATING, null, null, null);
+            Task task2 = new Task(addTaskCmd2);
             
             testModel.addTask(task1);
+            testModel.addTask(task2);
             
             boolean result = compareFile(testModel.getDataFilePath(), TEST_PATH_ADDTASK);
             
             // Clean Up
             clearExistingData(TEST_PATH);
-            System.out.println("Result 1 - Task Added Correctly: " + result + " Expected: true");
+            System.out.println("Result 1 - Tasks Added Correctly: " + result + " Expected: true");
             System.out.println("=== End Test ===\n");
             
             assertTrue(result);
@@ -522,5 +533,82 @@ public class TestModel {
             fail("Exception!");
         }
 
+    }
+    
+    @Test
+    public void testPostpone() {
+        try {
+            clearExistingData(TEST_PATH);
+            
+            System.out.println("=== Postpone ===");
+            Model testModel = new Model(TEST_PATH);
+            CommandDetail addTaskCmd1;
+            CommandDetail addTaskCmd2;
+            CommandDetail addTaskCmd3;
+            CommandDetail addTaskCmd4;
+            CommandDetail addTaskCmd5;
+            CommandDetail addTaskCmd6;
+            
+            String response1;
+            String response2;
+            
+            String expected1 = "Encountered Error: Invalid Task Type. Expecting Event task type.";
+            
+            KatDateTime date1 = new KatDateTime(LocalDateTime.of(2016, 10, 23, 23, 59));
+            KatDateTime date2 = new KatDateTime(LocalDateTime.of(2016, 10, 25, 23, 59));
+            KatDateTime date3 = new KatDateTime(LocalDateTime.of(2016, 10, 26, 23, 59));
+            KatDateTime date4 = new KatDateTime(LocalDateTime.of(2017, 11, 28, 23, 59));
+            KatDateTime date5 = new KatDateTime(LocalDateTime.of(2016, 10, 29, 23, 59));
+            KatDateTime date6 = new KatDateTime(LocalDateTime.of(2016, 10, 28, 22, 59));
+            KatDateTime date7 = new KatDateTime(LocalDateTime.of(2016, 10, 28, 21, 00));
+            
+            addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
+            Task task1 = new Task(addTaskCmd1);
+            addTaskCmd2 = createTask("something", TaskType.FLOATING, null, null, null);
+            Task task2 = new Task(addTaskCmd2);
+            addTaskCmd3 = createTask("testEvent1", TaskType.EVENT, date2, date3, null);
+            Task task3 = new Task(addTaskCmd3);
+            addTaskCmd4 = createTask("testEvent2", TaskType.EVENT, date2, date3, null);
+            Task task4 = new Task(addTaskCmd4);
+            addTaskCmd5 = createTask("testEvent3", TaskType.EVENT, date2, date3, null);
+            Task task5 = new Task(addTaskCmd5);
+            addTaskCmd6 = createTask("testEvent4", TaskType.EVENT, date2, date5, null);
+            Task task6 = new Task(addTaskCmd6);
+            
+            testModel.addTask(task1);
+            testModel.addTask(task2);
+            testModel.addTask(task3);
+            testModel.addTask(task4);
+            testModel.addTask(task5);
+            testModel.addTask(task6);
+            
+            response1 = testModel.postpone(0, date6);
+            boolean result1 = response1.equals(expected1);
+            
+            response2 = testModel.postpone(1, date6);
+            boolean result2 = response2.equals(expected1);
+
+            testModel.postpone(2, date4);
+            testModel.postpone(3, date5);
+            testModel.postpone(4, date6);
+            testModel.postpone(5, date7);
+
+            boolean result3 = compareFile(testModel.getDataFilePath(), TEST_PATH_POSTPONE);
+            
+            // Clean Up
+            clearExistingData(TEST_PATH);
+            System.out.println("Result 1 - Normal tasks not postponed: " + result1 + " Expected: true");
+            System.out.println("Result 2 - Floating tasks not postponed: " + result2 + " Expected: true");
+            System.out.println("Result 3 - Multiple tasks postponed to correct dates: " + result3 + " Expected: true");
+            System.out.println("=== End Test ===\n");
+            
+            assertTrue(result1);
+            assertTrue(result2);
+            assertTrue(result3);
+            
+        } catch (Exception e) {
+            System.out.println(e);           
+            fail("Exception!");
+        }
     }
 }

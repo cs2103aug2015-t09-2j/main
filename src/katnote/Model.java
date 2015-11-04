@@ -1,6 +1,7 @@
 package katnote;
 
 import java.io.*;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -56,11 +57,24 @@ public class Model {
 		
 	// Constants
 	private static final String DATA_FILENAME = "data.txt";
+	private static final String DATA_BACKUP_FILENAME = "oldData.txt";
 	private static final int MAX_BUFFER_SIZE = 1024;
+	private static final int TASK_ARG_SIZE = 10;
 	
 	private static final String NULL_DATE = "null";
 	private static final String STR_TRUE = "true";
 	private static final String STR_FALSE = "false";
+	
+	private static final int INDEX_ID = 0;
+    private static final int INDEX_TITLE = 1;
+    private static final int INDEX_TASK_TYPE = 2;
+    private static final int INDEX_START_DATE = 3;
+    private static final int INDEX_END_DATE = 4;
+    private static final int INDEX_REPEAT_OPTION = 5;
+    private static final int INDEX_TERMINATE_DATE = 6;
+    private static final int INDEX_DESCRIPTION = 7;
+    private static final int INDEX_CATEGORY = 8;
+    private static final int INDEX_COMPLETED = 9;
 	
 	// Messages
 	private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
@@ -99,7 +113,8 @@ public class Model {
 	private static final String MSG_ERR_REVERSE_POSTPONE = "Unable to perform reverse for postponed task.";
 	private static final String MSG_ERR_START_AFTER_END = "Invalid start date. Start date is after end date.";
 	private static final String MSG_ERR_INVALID_TASK_TYPE = "Invalid Task Type. Expecting Event task type.";
-	
+	private static final String MSG_ERR_PARSE_EXCEPTION = "Error: Unable to parse inputs to Task object. ";
+
 	private static final String MSG_LOG_START = "<start>";
 	
 	// Task Property Keys
@@ -176,10 +191,7 @@ public class Model {
 	    
 		_encoder.encode();
 		
-		// Update UndoLog
-		_undoLog.push(ADD_TASK);
-		_undoTaskObjLog.push(task);
-		resetRedoLog();
+		updateUndoLog(ADD_TASK, task);
 		
 		_response = String.format(MSG_TASK_ADDED, task.getTitle());
 		return _response;
@@ -198,10 +210,7 @@ public class Model {
 	    
 	    _encoder.encode();
 	    
-	    // Update UndoLog
-        _undoLog.push(EDIT_COMPLETE);
-        _undoTaskObjLog.push(editedTask);
-        resetRedoLog();
+	    updateUndoLog(EDIT_COMPLETE, editedTask);
 	    
 		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getTitle());
 		return _response;
@@ -220,59 +229,16 @@ public class Model {
 	    Task oldTask = new Task(editedTask);
 	    String optionName = editOption.getOptionName();
 	    
-	    switch (optionName) {
-	        // I don't think we should allow modification of task id*
-	        case CommandProperties.TASK_ID :
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-//	            editedTask.setID(Integer.parseInt(editOption.getOptionValue()));
-//	            break;
-	        case CommandProperties.TASK_TITLE :
-	            editedTask.setTitle(editOption.getOptionValue());
-	            break;
-	        case CommandProperties.TIME_FROM :
-	            if (!editedTask.getTaskType().equals(TaskType.EVENT)) {
-	                return handleError(MSG_ERR_INVALID_ARGUMENTS);
-	            }
-	            LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
-	            if (editedTask.getEndDate().isBefore(newStartDate)) {
-	                return handleError(MSG_ERR_START_AFTER_END);
-	            }
-	            editedTask.setStartDate(editOption.getOptionValueDate());
-	            break;
-	        case CommandProperties.TIME_BY :
-	        case CommandProperties.TIME_TO :
-	            editedTask.setEndDate(editOption.getOptionValueDate());
-	            break;
-	        case CommandProperties.TIME_REPEAT :
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-//	            editedTask.setRepeatOption(editOption.getOptionValue());
-//	            break;
-	        case CommandProperties.TIME_UNTIL :
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-//	            editedTask.setTerminateDate(editOption.getOptionValueDate());
-//	            break;
-	        case CommandProperties.TASK_DESCRIPTION :
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-//	            editedTask.setDescription(editOption.getOptionValue());
-//	            break;
-	        case CommandProperties.TASK_CATEGORY :
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-//	            editedTask.setCategory(editOption.getOptionValue());
-//	            break;
-	        default:
-	            handleException(new Exception(), MSG_ERR_TASK_NOT_MODIFIED);
-	    }
-	    
+	    _response = modifyTask(optionName, editedTask, editOption);
 	    splitTaskType(_dataLog);
 	    
 	    _encoder.encode();
 	    
-	    // Update UndoLog
-        _undoLog.push(EDIT_MODIFY);
-        _undoTaskObjLog.push(oldTask);
-        resetRedoLog();
+	    updateUndoLog(EDIT_MODIFY, oldTask);
 	    
-	    _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
+	    if (_response == null) {
+	        _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
+	    }
 	    return _response;
 	}
 	
@@ -293,10 +259,7 @@ public class Model {
 		
 		_encoder.encode();
 		
-		// Update UndoLog
-        _undoLog.push(EDIT_DELETE);
-        _undoTaskObjLog.push(oldTask);
-        resetRedoLog();
+		updateUndoLog(EDIT_DELETE, oldTask);
 		
 		_response = String.format(MSG_EDIT_TASK_DELETED, title);
 		return _response;
@@ -305,13 +268,13 @@ public class Model {
 	/**
 	 * Clears all tasks of the specified type.
 	 * Available types : CLEAR ALL, CLEAR COMPLETED, CLEAR INCOMPLETE.
-	 * This function is not undo-able.
+	 * This function is not undo-able. However it will create a copy of the old data.
 	 * @param type
 	 * @return the response message of the success of clearing all of the specified tasks.
 	 * @throws Exception
 	 */
 	public String editClear(String type) throws Exception {
-	    // TODO: Undo-functionality?
+	    
 	    switch (type) {
 	        case CLEAR_ALL :
 	            _response = clearAll();
@@ -323,33 +286,28 @@ public class Model {
 	            _response = clearIncomplete();
 	            break;
 	        default :
-	            return handleError(MSG_ERR_INVALID_ARGUMENTS);
+	            return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
 	    }
 	    return _response;
 	}
 	
+	/**
+	 * Replace an existing task of the specified taskID in the dataLog with a
+	 * new task.
+	 * @param taskID of the old task to be replaced.
+	 * @param newTask which will replace the specified task.
+	 * @return the response message of the success of replacing.
+	 */
 	public String replace(int taskID, Task newTask) {
 	    
 	    Task editedTask = _dataLog.get(taskID);
 	    Task oldTask = new Task(editedTask);
 	    
-	    // Replace with new data.
-	    editedTask.setTitle(newTask.getTitle());
-	    editedTask.setTaskType(newTask.getTaskType());
-	    editedTask.setStartDate(newTask.getStartDate());
-	    editedTask.setEndDate(newTask.getEndDate());
-	    editedTask.setRepeatOption(newTask.getRepeatOption());
-	    editedTask.setTerminateDate(newTask.getTerminateDate());
-	    editedTask.setDescription(newTask.getDescription());
-	    editedTask.setCategory(newTask.getCategory());
-	    editedTask.setCompleted(newTask.isCompleted());
+	    replaceTaskData(editedTask, newTask);
 	    
 	    splitTaskType(_dataLog);
 	    
-	    // Update UndoLog
-	    _undoLog.push(EDIT_REPLACE);
-	    _undoTaskObjLog.push(oldTask);
-	    resetRedoLog();
+	    updateUndoLog(EDIT_REPLACE, oldTask);
 	    
 	    _response = String.format(MSG_EDIT_TASK_REPLACED, oldTask.getTitle() ,newTask.getTitle());
 	    return _response;
@@ -357,38 +315,42 @@ public class Model {
 	
 	/**
 	 * Reverses the last action under the _undoLog.
-	 * Undo-able actions : addTask, editModify, editDelete, editComplete
-	 * @return the response message of a the success of undoing.
+	 * Undo-able actions : addTask, editModify, editDelete, editComplete, replace postpone
+	 * @return the response message of the success of undoing.
 	 * @throws Exception 
 	 */
 	public String undo() throws Exception {
 		
 	    if (_undoLog.isEmpty()) {
-	        _response = handleError(MSG_ERR_UNDO);
+	        _response = handleException(null, MSG_ERR_UNDO);
 	        return _response;
 	    }
+	    
 	    String undoAction = _undoLog.pop();
 	    Task taskObj = _undoTaskObjLog.pop();
 	    reverseUndo(undoAction, taskObj);
+	    
 		_response = String.format(MSG_UNDO_CONFIRM, undoAction, taskObj.getTitle());
 		return _response;
 	}
 	
 	/**
 	 * Reverses the last action under the _redoLog.
-	 * Redo-able actions : addTask, editModify, editDelete, editComplete
-	 * @return the response message of a the success of redoing.
+	 * Redo-able actions : addTask, editModify, editDelete, editComplete, replace, postpone
+	 * @return the response message of the success of redoing.
 	 * @throws Exception 
 	 */
 	public String redo() throws Exception {
 		
 	    if (_redoLog.isEmpty()) {
-            _response = handleError(MSG_ERR_REDO);
+            _response = handleException(null, MSG_ERR_REDO);
             return _response;
         }
+	    
 	    String redoAction = _redoLog.pop();
 	    Task taskObj = _redoTaskObjLog.pop();
 	    reverseRedo(redoAction, taskObj);
+	    
 		_response = String.format(MSG_REDO_CONFIRM, redoAction, taskObj.getTitle());
 		return _response;
 	}
@@ -433,44 +395,42 @@ public class Model {
 		return _response;
 	}
 	
+	/**
+	 * Postpones an event task forward or backward with reference to the new input date.
+	 * This edit function will preserve the duration of the event.
+	 * @param taskID
+	 * @param newDate which can be an incomplete date with either the time and/or date only.
+	 * @return the response message of a successful postpone of task.
+	 * @throws Exception
+	 */
 	public String postpone(int taskID, KatDateTime newDate) throws Exception {
 
 	    Task editedTask = _dataLog.get(taskID);
 	    
 	    if (!editedTask.getTaskType().equals(TaskType.EVENT)) {
-	        return handleError(String.format(MSG_ERR_INVALID_TASK_TYPE));
+	        return handleException(null, String.format(MSG_ERR_INVALID_TASK_TYPE));
 	    }
 	    
+	    // Get existing dates
 	    Task oldTask = new Task(editedTask);
 	    LocalDateTime start = editedTask.getStartDate();
 	    LocalDateTime end = editedTask.getEndDate();
 	    
-	    // Construct newStartDate
-	    if (!newDate.hasDate() && !newDate.hasTime()) {
-	        return handleError(MSG_ERR_INVALID_ARGUMENTS);
-	    }
-	    System.out.println(!newDate.hasDate() && !newDate.hasTime());
-	    if (!newDate.hasDate()) {
-	        newDate.changeDate(start.toLocalDate());
-	    } else if (!newDate.hasTime()) {
-	        newDate.changeTime(start.toLocalTime());
-	    } else {
-	        return handleError(MSG_ERR_INVALID_ARGUMENTS);
-	    }
-	    
 	    // Make new dates
-	    LocalDateTime newStartDate = newDate.toLocalDateTime();
+	    LocalDateTime newStartDate = autoFillDate(newDate, start);
 	    LocalDateTime newEndDate = addTimeDiff(start, end, newStartDate);
+	    
+	    if (newStartDate == null) {
+	        return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
+	    }
 
+	    // Set new dates
 	    editedTask.setStartDate(newStartDate);
 	    editedTask.setEndDate(newEndDate);
 	    
 	    _encoder.encode();
 	    
-	    // Update UndoLog
-	    _undoLog.push(EDIT_POSTPONE);
-        _undoTaskObjLog.push(oldTask);
-        resetRedoLog();
+	    updateUndoLog(EDIT_POSTPONE, oldTask);
         
         _response = String.format(MSG_EDIT_TASK_POSTPONE, editedTask.getTitle(), editedTask.getStartDate());
         return _response;
@@ -478,6 +438,7 @@ public class Model {
 	
 	/**
 	 * Imports the data.txt file from the specified location and saves it to the local version.
+	 * This function is not undo-able. However it will create a backup of the old data.
 	 * @param commandDetail with the IMPORT_LOCATION property.
 	 * @return the response message of a successful import of data.
 	 * @throws Exception 
@@ -489,7 +450,9 @@ public class Model {
         }
 	    String importLocation = (String) commandDetail.getProperty(CommandProperties.FILE_PATH);
 	    
+	   createDataOld(); 
 	    _response = _data.importData(importLocation);
+	    
 	    return _response;
 	}
 	
@@ -543,9 +506,6 @@ public class Model {
 	        case EDIT_REPLACE :
 	            undoReplace(taskObj);
 	            break;
-	        case EDIT_CLEAR :
-	            undoClear();
-	            break;
 	        case EDIT_POSTPONE :
 	            undoPostpone(taskObj);
 	            break;
@@ -565,8 +525,7 @@ public class Model {
             splitTaskType(_dataLog);
             _encoder.encode();
 
-            _redoLog.push(ADD_TASK);
-            _redoTaskObjLog.push(oldTask);
+            updateRedoLog(ADD_TASK, oldTask);
             
         } catch (Exception e) {
             handleException(e, MSG_ERR_REVERSE_ADD + taskObj.getTitle());
@@ -586,8 +545,7 @@ public class Model {
             splitTaskType(_dataLog);
             _encoder.encode();
             
-            _redoLog.push(EDIT_MODIFY);
-            _redoTaskObjLog.push(oldTask);
+            updateRedoLog(EDIT_MODIFY, oldTask);
             
         } catch (Exception e) {
             handleException(e, MSG_ERR_REVERSE_MODIFY + taskObj.getTitle());
@@ -603,8 +561,7 @@ public class Model {
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
 	        
-	        _redoLog.push(EDIT_DELETE);
-            _redoTaskObjLog.push(taskObj);
+	        updateRedoLog(EDIT_DELETE, taskObj);
             
 	    } catch (Exception e) {
 	        handleException(e, MSG_ERR_REVERSE_DELETE + taskObj.getTitle());
@@ -618,8 +575,7 @@ public class Model {
             
             _encoder.encode();
             
-            _redoLog.push(EDIT_COMPLETE);
-            _redoTaskObjLog.push(taskObj);
+            updateRedoLog(EDIT_COMPLETE, taskObj);
             
         } catch (Exception e) {
             handleException(e, MSG_ERR_REVERSE_COMPLETE + taskObj.getTitle());
@@ -631,30 +587,17 @@ public class Model {
 	    try {
 	        Task newTask = _dataLog.get(taskObj.getID());
 	        Task redoTask = new Task(newTask);
-	        
-	        // Replace with new data.
-	        newTask.setTitle(taskObj.getTitle());
-	        newTask.setTaskType(taskObj.getTaskType());
-	        newTask.setStartDate(taskObj.getStartDate());
-	        newTask.setEndDate(taskObj.getEndDate());
-	        newTask.setRepeatOption(taskObj.getRepeatOption());
-	        newTask.setTerminateDate(taskObj.getTerminateDate());
-	        newTask.setDescription(taskObj.getDescription());
-	        newTask.setCategory(taskObj.getCategory());
-	        newTask.setCompleted(taskObj.isCompleted());
+
+	        replaceTaskData(newTask, taskObj);
 	        
 	        splitTaskType(_dataLog);
 	        _encoder.encode();
 	        
-	        _redoLog.push(EDIT_REPLACE);
-            _redoTaskObjLog.push(redoTask);
+	        updateRedoLog(EDIT_REPLACE, redoTask);
+
 	    } catch (Exception e) {
 	        handleException(e, MSG_ERR_REVERSE_REPLACE + taskObj.getTitle());
 	    }
-	}
-	
-	private void undoClear() {
-	    //TODO: Awaiting implementation of clear() function.
 	}
     
 	private void undoPostpone(Task taskObj) throws Exception {
@@ -669,8 +612,8 @@ public class Model {
 	        
 	        _encoder.encode();
 	        
-	        _redoLog.push(EDIT_POSTPONE);
-	        _redoTaskObjLog.push(redoTask);
+	        updateRedoLog(EDIT_POSTPONE, redoTask);
+
 	    } catch (Exception e) {
             handleException(e, MSG_ERR_REVERSE_POSTPONE + taskObj.getTitle());
         }
@@ -693,9 +636,6 @@ public class Model {
                 break;
             case EDIT_REPLACE :
                 redoReplace(taskObj);
-                break;
-            case EDIT_CLEAR :
-                redoClear();
                 break;
             case EDIT_POSTPONE :
                 redoPostpone(taskObj);
@@ -782,17 +722,8 @@ public class Model {
             Task oldTask = _dataLog.get(taskObj.getID());
             Task undoTask = new Task(oldTask);
             
-            // Replace with new data.
-            oldTask.setTitle(taskObj.getTitle());
-            oldTask.setTaskType(taskObj.getTaskType());
-            oldTask.setStartDate(taskObj.getStartDate());
-            oldTask.setEndDate(taskObj.getEndDate());
-            oldTask.setRepeatOption(taskObj.getRepeatOption());
-            oldTask.setTerminateDate(taskObj.getTerminateDate());
-            oldTask.setDescription(taskObj.getDescription());
-            oldTask.setCategory(taskObj.getCategory());
-            oldTask.setCompleted(taskObj.isCompleted());
-            
+            replaceTaskData(oldTask, taskObj);
+
             splitTaskType(_dataLog);
             _encoder.encode();
             
@@ -802,10 +733,6 @@ public class Model {
         } catch (Exception e) {
             handleException(e, MSG_ERR_REVERSE_REPLACE + taskObj.getTitle());
         }
-	}
-	
-	private void redoClear() {
-	    // TODO: Awaiting implementation of clear() function.
 	}
 	
 	private void redoPostpone(Task taskObj) throws Exception {
@@ -828,7 +755,6 @@ public class Model {
         }
 	}
 	
-	
 	/**
 	 * Add new definitions here. Initialises the definitions table with default keywords. Runs before decoding.
 	 */
@@ -841,6 +767,20 @@ public class Model {
 	    _definitions.put("night", NIGHT);
 	}
 	
+	private LocalDateTime autoFillDate(KatDateTime incompleteDate, LocalDateTime referenceDate) {
+
+	    if (!incompleteDate.hasDate() && !incompleteDate.hasTime()) {
+	        return null;
+	    }
+	    if (!incompleteDate.hasDate()) {
+	        incompleteDate.changeDate(referenceDate.toLocalDate());
+	    } else if (!incompleteDate.hasTime()) {
+	        incompleteDate.changeTime(referenceDate.toLocalTime());
+	    }
+
+	    return incompleteDate.toLocalDateTime();
+	}
+
 	private LocalDateTime addTimeDiff(LocalDateTime start, LocalDateTime end, LocalDateTime newStart) {
 	    
 	    LocalDateTime newEnd = newStart;
@@ -908,6 +848,95 @@ public class Model {
 	    }
 	}
 	
+	private String modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
+	    
+	    String response;
+	    
+	    switch (optionName) {
+            case CommandProperties.TASK_ID :
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+            case CommandProperties.TASK_TITLE :
+                editedTask.setTitle(editOption.getOptionValue());
+                break;
+            case CommandProperties.TIME_FROM :
+                response = startDateEdit(editedTask, editOption);
+                if (response != null) {
+                    return response;
+                }
+                break;
+            case CommandProperties.TIME_BY :
+            case CommandProperties.TIME_TO :
+                dueDateEdit(editedTask, editOption);
+                break;
+            case CommandProperties.TIME_REPEAT :
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//              editedTask.setRepeatOption(editOption.getOptionValue());
+//              break;
+            case CommandProperties.TIME_UNTIL :
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//              editedTask.setTerminateDate(editOption.getOptionValueDate());
+//              break;
+            case CommandProperties.TASK_DESCRIPTION :
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//              editedTask.setDescription(editOption.getOptionValue());
+//              break;
+            case CommandProperties.TASK_CATEGORY :
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//              editedTask.setCategory(editOption.getOptionValue());
+//              break;
+            default:
+                return handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+        }
+	    
+	    return null;
+	}
+	
+	private String startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
+	    
+	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
+            return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
+        } else if (editedTask.getTaskType().equals(TaskType.NORMAL)) {
+            editedTask.setTaskType(TaskType.EVENT);
+        }
+	    
+        LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
+        
+        if (editedTask.getEndDate().isBefore(newStartDate)) {
+            return handleException(null, MSG_ERR_START_AFTER_END);
+        }
+        
+        editedTask.setStartDate(editOption.getOptionValueDate());
+        
+        return null;
+	}
+	
+	private void dueDateEdit(Task editedTask, EditTaskOption editOption) {
+	    
+	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
+	        editedTask.setTaskType(TaskType.NORMAL); 
+	    } 
+	    editedTask.setEndDate(editOption.getOptionValueDate());
+	}
+	
+	private void replaceTaskData(Task dest, Task src) {
+	    
+	    dest.setTitle(src.getTitle());
+        dest.setTaskType(src.getTaskType());
+        dest.setStartDate(src.getStartDate());
+        dest.setEndDate(src.getEndDate());
+        dest.setRepeatOption(src.getRepeatOption());
+        dest.setTerminateDate(src.getTerminateDate());
+        dest.setDescription(src.getDescription());
+        dest.setCategory(src.getCategory());
+        dest.setCompleted(src.isCompleted());
+	}
+
+	
+	private void createDataOld() throws Exception {
+	    
+	    _data.createBackup();
+	}
+	
 	private int getNextID() {
 	    return _dataLog.size();
 	}
@@ -921,13 +950,18 @@ public class Model {
 	}
 	
 	private String clearAll() throws Exception {
+	    
+	    createDataOld();
 	    _dataLog.clear();
 	    splitTaskType(_dataLog);
 	    _encoder.encode();
+	    
 	    return MSG_EDIT_TASK_CLEAR_ALL;
 	}
 	
 	private String clearCompleted() throws Exception {
+	    
+	    createDataOld();
 	    for (Task t : _dataLog) {
             if (t.isCompleted()) {
                 _dataLog.remove(t);
@@ -935,10 +969,13 @@ public class Model {
         }
         splitTaskType(_dataLog);
         _encoder.encode();
+        
         return MSG_EDIT_TASK_CLEAR_COMPLETED;
 	}
 	
 	private String clearIncomplete() throws Exception {
+	    
+	    createDataOld();
 	    for (Task t : _dataLog) {
             if (!t.isCompleted()) {
                 _dataLog.remove(t);
@@ -946,7 +983,19 @@ public class Model {
         }
         splitTaskType(_dataLog);
         _encoder.encode();
+        
         return MSG_EDIT_TASK_CLEAR_INCOMPLETE;
+	}
+	
+	private void updateUndoLog(String type, Task taskObj) {
+	    _undoLog.push(type);
+	    _undoTaskObjLog.push(taskObj);
+	    resetRedoLog();
+	}
+	
+	private void updateRedoLog(String type, Task taskObj) {
+	    _redoLog.push(type);
+	    _redoTaskObjLog.push(taskObj);
 	}
 	
 	@SuppressWarnings("unused")
@@ -957,15 +1006,17 @@ public class Model {
     public ArrayList<Task> testDecode() throws Exception {
 	    return _decoder.decode();
 	}
+
 	
 	private String handleException(Exception e, String msg) throws Exception {
-	    throw new Exception(e + " - " + msg);
+	    
+	    if (e == null) {
+	        throw new Exception(msg);
+	    } else {
+	        throw new Exception(e.getMessage() + " - " + msg);
+	    }
 	}
-	
-	private String handleError(String msg) {
-		return ("Encountered Error: " + msg);
-	}
-	
+
 	// Sub Classes
 	
 	/**
@@ -1060,7 +1111,8 @@ public class Model {
 		        array.add(jsonMap.get(KEY_COMPLETED));
 		        
 		        // Create new Task and return
-		        newTask = new Task(array);
+		        newTask = new Task();
+		        setupTaskData(newTask, array);
 		        return newTask;
 		        
 		    } catch(Exception e){
@@ -1068,7 +1120,57 @@ public class Model {
 		    }
 		     
 		    return newTask;
-		}		
+		}
+		
+		private void setupTaskData(Task task, JSONArray array) throws Exception {
+		    String[] args = new String[TASK_ARG_SIZE];
+		    for (int i = 0; i < TASK_ARG_SIZE; i++) {
+		        args[i] = (String) array.get(i);
+		    }
+		    try{
+		        task.setID(Integer.parseInt(args[INDEX_ID]));
+		        task.setTitle(args[INDEX_TITLE]);
+		        if (args[INDEX_TASK_TYPE] != null) {
+		            switch (args[INDEX_TASK_TYPE]) {
+		                case "EVENT" :
+		                    task.setTaskType(TaskType.EVENT);
+		                    break;
+		                case "FLOATING" :
+		                    task.setTaskType(TaskType.FLOATING);
+		                    break;
+		                case "NORMAL" :
+		                default :
+		                    task.setTaskType(TaskType.NORMAL);
+		            }
+		        }
+		        task.setStartDate(stringToDate(args[INDEX_START_DATE]));
+		        task.setEndDate(stringToDate(args[INDEX_END_DATE]));
+		        task.setRepeatOption(args[INDEX_REPEAT_OPTION]);
+		        task.setTerminateDate(stringToDate(args[INDEX_TERMINATE_DATE]));
+		        task.setDescription(args[INDEX_DESCRIPTION]);
+		        task.setCategory(args[INDEX_CATEGORY]);
+		        task.setCompleted(stringToBool(args[INDEX_COMPLETED]));
+		    } catch (Exception e) {
+		        throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
+		    }
+		}
+		
+	    private LocalDateTime stringToDate(String dateStr) throws ParseException {
+	        if (dateStr.equals(NULL_DATE)) {
+	            return null;
+	        } else {
+	            LocalDateTime date = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME);
+	            return date;
+	        }
+	    }
+
+	    private Boolean stringToBool(String bool) {
+	        if (bool.equals(STR_TRUE)) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    }
 	}
 	
 	/**
@@ -1236,7 +1338,7 @@ public class Model {
 		    String importFilePath = importLocation + DATA_FILENAME;
 		    File importFile = new File(importFilePath);
 		    if (!importFile.exists()) {
-		        return handleError(MSG_ERR_IMPORT_LOCATION_MISSING);
+		        return handleException(null, MSG_ERR_IMPORT_LOCATION_MISSING);
 		    }
 		    
 		    // Import data over. (Overwrite onto existing)
@@ -1248,6 +1350,24 @@ public class Model {
 		    
 		    _response = String.format(MSG_IMPORT_CONFIRM, importFilePath, _dataFilePath);
 		    return _response;
+		}
+		
+		// Create Backup data
+		public void createBackup() throws Exception {
+		    
+		    File currentData = new File(_sourcePath + DATA_FILENAME);
+		    File backupData = new File(_sourcePath + DATA_BACKUP_FILENAME);
+		    
+		    if (!currentData.exists()) {
+		        return;
+		    }
+		    
+		    if (backupData.exists()) {
+		        backupData.delete();
+		    }
+		    backupData.createNewFile();
+		    
+		    copyData(_dataFilePath, backupData.getPath());
 		}
 		
 		// Helper Methods
@@ -1273,7 +1393,7 @@ public class Model {
 	    	    File newFile = new File(newLoc);
 	    	    
 	    	    if (!oldFile.exists()) {
-	    	    	return handleError(MSG_ERR_MISSING_DATA);
+	    	    	return handleException(null, MSG_ERR_MISSING_DATA);
 	    	    }
 	    		
 	    	    newFile.createNewFile();
