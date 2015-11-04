@@ -1,3 +1,4 @@
+//@@author A0124552
 package test;
 
 import static org.junit.Assert.*;
@@ -296,9 +297,11 @@ public class TestModel {
             String importPath2 = "TestFiles/ImportLocBlank/";
             importCmd.setProperty(CommandProperties.FILE_PATH, importPath2);
             
-            String response = testModel.importData(importCmd);
-            String expected = "Encountered Error: Unable to find data.txt in specified import location.";
-            result2 = response.equals(expected);
+            try {
+                testModel.importData(importCmd);
+            } catch (Exception e) {
+                result2 = true;
+            }
 
             System.out.println("Result 1 - File imported correctly: " + result1 + " Expected: true");
             System.out.println("Result 2 - Blank File not imported: " + result2 + " Expected: true");
@@ -447,52 +450,54 @@ public class TestModel {
             testModel.addTask(task2);
             testModel.addTask(task3);
             
-            boolean result1 = true;
-            boolean result2 = true;
-            boolean result3 = true;
-            boolean result4 = true;
+            boolean result1 = false;
+            boolean result2 = false;
+            boolean result3 = false;
+            boolean result4 = false;
             boolean result5 = true;
             
             // Procedure
             testModel.undo();
+
             testModel.undo();
-            if (testModel.getData().size() != 1) {
+
+            if (!testModel.getData().get(0).getTitle().equals(task1.getTitle())) {
                 System.out.println("Undo procedure is incorrect. Incorrect task undone.");
                 result1 = false;
-            } else if (!testModel.getData().get(0).getTitle().equals(task1.getTitle())) {
-                System.out.println("Undo procedure is incorrect. Incorrect task undone.");
-                result1 = false;
+            } else {
+                result1 = true;
             }
             
             testModel.undo();
-            String response1 = testModel.undo();
-            if (!response1.equals("Encountered Error: No actions left to undo.")) {
-                System.out.println("Undo not logged correctly. Out of bounds not detected.");
-                result2 = false;
+            try {
+                testModel.undo();
+            } catch (Exception e) {
+                result2 = true;
             }
-            
+
             testModel.redo();
-            if (testModel.getData().size() != 1) {
+            if ((testModel.getData().size() != 1) || (!testModel.getData().get(0).getTitle().equals(task1.getTitle()))) {
                 System.out.println("Redo procedure is incorrect. Incorrect task redone.");
                 result3 = false;
-            } else if (!testModel.getData().get(0).getTitle().equals(task1.getTitle())) {
-                System.out.println("Redo procedure is incorrect. Incorrect task redone.");
-                result3 = false;
+            } else {
+                result3 = true;
             }
+
+            testModel.redo();
+            testModel.redo();
             
-            testModel.redo();
-            testModel.redo();
-            String response2 = testModel.redo();
-            if (!response2.equals("Encountered Error: No actions left to redo.")) {
-                System.out.println("Redo not logged correctly. Out of bounds not detected.");
-                result4 = false;
-            }
-            testModel.undo();
-            testModel.addTask(task3);
-            String response3 = testModel.redo();
-            if (!response3.equals("Encountered Error: No actions left to redo.")) {
-                System.out.println("Redo not cleared upon new user command.");
-                result4 = false;
+            try {
+                testModel.redo();
+            } catch (Exception e1) {
+
+                testModel.undo();
+                testModel.addTask(task3);
+                
+                try {
+                    testModel.redo();
+                } catch (Exception e2) {
+                    result4 = true;
+                }
             }
             
             testModel.editDelete(1);
@@ -582,11 +587,19 @@ public class TestModel {
             testModel.addTask(task5);
             testModel.addTask(task6);
             
-            response1 = testModel.postpone(0, date6);
-            boolean result1 = response1.equals(expected1);
+            boolean result1 = false;
+            try {
+                response1 = testModel.postpone(0, date6);
+            } catch (Exception e) {
+                result1 = true;
+            }
             
-            response2 = testModel.postpone(1, date6);
-            boolean result2 = response2.equals(expected1);
+            boolean result2 = false;
+            try {
+                response2 = testModel.postpone(1, date6);
+            } catch (Exception e) {
+                result2 = true;
+            }
 
             testModel.postpone(2, date4);
             testModel.postpone(3, date5);
