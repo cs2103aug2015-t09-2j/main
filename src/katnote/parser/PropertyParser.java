@@ -121,13 +121,15 @@ public class PropertyParser {
         }
         // for command view tasks, if there is no end date, considered it as a very far time,
         if (command.getCommandType() == CommandType.VIEW_TASK){
-            if (endDate == null){
-                endDate = new KatDateTime(LocalDateTime.MAX);
-                command.setProperty(CommandProperties.TIME_TO, endDate);
+            if (startDate != null){
+                if (endDate == null){
+                    endDate = new KatDateTime(LocalDateTime.MAX);
+                    command.setProperty(CommandProperties.TIME_TO, endDate);
+                }
+                // also considered the due date as the end date
+                command.setProperty(CommandProperties.TIME_BY, endDate);
+                dueDate = endDate;
             }
-            // also considered the due date as the end date
-            command.setProperty(CommandProperties.TIME_BY, endDate);
-            dueDate = endDate;
         }
         // If command has startDate and endDate
         if (startDate != null && endDate != null){                       

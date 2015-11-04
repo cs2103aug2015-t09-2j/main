@@ -8,6 +8,7 @@ import org.junit.Test;
 import katnote.command.CommandDetail;
 import katnote.command.CommandType;
 import katnote.parser.Parser;
+import katnote.parser.ViewTaskOption;
 
 public class TestParser {
 
@@ -124,6 +125,7 @@ public class TestParser {
     public void testViewMultipleTasksCommand1() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view on monday");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
     }
@@ -132,6 +134,7 @@ public class TestParser {
     public void testViewMultipleTasksCommand2() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view tasks completed from tuesday 2pm to 5pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
     }
@@ -140,7 +143,18 @@ public class TestParser {
     public void testViewMultipleTasksCommand3() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("-v completed by tuesday 2pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertEquals(ViewTaskOption.DUE_BY, commandDetail.getViewTaskOption());
+        assertNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getDueDate());
+    }
+    
+    @Test
+    public void testViewMultipleTasksCommand4() { // View multiple task
+        CommandDetail commandDetail = Parser.parseCommand("view all");
+        assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
+        assertEquals(ViewTaskOption.ALL, commandDetail.getViewTaskOption());
+        assertNull(commandDetail.getStartDate());
+        assertNull(commandDetail.getEndDate());
     }
 
     @Test
