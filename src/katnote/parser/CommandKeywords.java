@@ -7,13 +7,16 @@ import java.util.HashSet;
 public class CommandKeywords {
     // keywords for command types
     public static final String KW_ADD = "add";
+    public static final String KW_ADD_SHORT = "-a";
     public static final String KW_EDIT = "edit";
-    public static final String KW_EDIT_TASK = "edit task";
+    public static final String KW_EDIT_SHORT = "-e";
     public static final String KW_CHANGE = "change";
     public static final String KW_MARK = "mark";
+    public static final String KW_MARK_SHORT = "-m";
     public static final String KW_POSTPONE = "postpone";
+    public static final String KW_POSTPONE_SHORT = "-p";
     public static final String KW_DELETE = "delete";
-    public static final String KW_DELETE_TASK = "delete task";
+    public static final String KW_DELETE_SHORT = "-d";
     public static final String KW_VIEW = "view";
     public static final String KW_VIEW_SINGLE_TASK = "view task";
     public static final String KW_VIEW_MULTIPLE_TASK = "view tasks";
@@ -45,9 +48,10 @@ public class CommandKeywords {
     
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
-            KW_ADD, KW_MARK, KW_POSTPONE,
-            KW_EDIT_TASK, KW_EDIT, KW_CHANGE,
-            KW_DELETE_TASK, KW_DELETE,
+            KW_ADD, KW_ADD_SHORT,
+            KW_MARK, KW_MARK_SHORT, KW_POSTPONE, KW_POSTPONE_SHORT,
+            KW_EDIT, KW_EDIT_SHORT, KW_CHANGE,
+            KW_DELETE, KW_DELETE_SHORT,
             // KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK,
             KW_VIEW, KW_FIND,
             KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT

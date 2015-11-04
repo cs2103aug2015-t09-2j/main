@@ -61,20 +61,23 @@ public class Parser {
         try {
             switch (startKeyword) {
                 case CommandKeywords.KW_ADD:
+                case CommandKeywords.KW_ADD_SHORT:
                     return parseAddCommand(tokens);
                 case CommandKeywords.KW_VIEW:
                     return parseViewCommand(tokens);
                 case CommandKeywords.KW_FIND:
                     return parseFindCommand(tokens);
                 case CommandKeywords.KW_DELETE:
-                case CommandKeywords.KW_DELETE_TASK:
+                case CommandKeywords.KW_DELETE_SHORT:
                     return parseDeleteCommand(tokens);
                 case CommandKeywords.KW_MARK:
+                case CommandKeywords.KW_MARK_SHORT:
                     return parseMarkCommand(tokens);
                 case CommandKeywords.KW_POSTPONE:
+                case CommandKeywords.KW_POSTPONE_SHORT:
                     return parsePostponeCommand(tokens);
                 case CommandKeywords.KW_EDIT:
-                case CommandKeywords.KW_EDIT_TASK:
+                case CommandKeywords.KW_EDIT_SHORT:
                 case CommandKeywords.KW_CHANGE:
                     return parseEditCommand(tokens);
                 case CommandKeywords.KW_IMPORT:

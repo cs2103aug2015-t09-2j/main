@@ -1,3 +1,4 @@
+//@@author A0126517H
 package test;
 
 import static org.junit.Assert.*;
@@ -28,6 +29,15 @@ public class TestParser {
     
     @Test
     public void testAddCommand2() {
+        CommandDetail commandDetail = Parser.parseCommand("-a hello on 29/11 8pm");
+        assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
+        assertEquals("hello", commandDetail.getTitle());
+        assertEquals("2015-11-29T20:00", commandDetail.getStartDate().toString());
+        assertEquals("2015-11-29T20:00", commandDetail.getEndDate().toString());
+    }
+    
+    @Test
+    public void testAddCommand3() {
         CommandDetail commandDetail = Parser.parseCommand("hello by today");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -36,7 +46,7 @@ public class TestParser {
     }
     
     @Test
-    public void testAddCommand3() {
+    public void testAddCommand4() {
         CommandDetail commandDetail = Parser.parseCommand("hello from tomorrow 2pm to 5pm");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -48,7 +58,7 @@ public class TestParser {
 
     @Test
     public void testEditCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("EDit task 4 task_title hello");
+        CommandDetail commandDetail = Parser.parseCommand("EDit 4 task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
@@ -57,7 +67,7 @@ public class TestParser {
 
     @Test
     public void testEditCommand2() {
-        CommandDetail commandDetail = Parser.parseCommand("edit 4 task_title hello");
+        CommandDetail commandDetail = Parser.parseCommand("-e 4 task_title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
@@ -73,8 +83,24 @@ public class TestParser {
     }
     
     @Test
+    public void testMarkCommand2() {
+        CommandDetail commandDetail = Parser.parseCommand("-m 4 completed");
+        assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
+        assertEquals(4, commandDetail.getTaskIndex());
+        //assertEquals("completed", commandDetail.getMarkOption());
+    }
+    
+    @Test
     public void testPostponeCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("postpone 4 5/11");
+        assertEquals(CommandType.POSTPONE, commandDetail.getCommandType());
+        assertEquals(4, commandDetail.getTaskIndex());
+        assertEquals("2015-11-05", commandDetail.getStartDate().toString());
+    }
+    
+    @Test
+    public void testPostponeCommand2() {
+        CommandDetail commandDetail = Parser.parseCommand("-p 4 to 5/11");
         assertEquals(CommandType.POSTPONE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("2015-11-05", commandDetail.getStartDate().toString());
@@ -89,7 +115,7 @@ public class TestParser {
 
     @Test
     public void testDeleteCommand2() {
-        CommandDetail commandDetail = Parser.parseCommand("delete task 4");
+        CommandDetail commandDetail = Parser.parseCommand("-d 4");
         assertEquals(CommandType.DELETE_TASK, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
     }
@@ -128,6 +154,14 @@ public class TestParser {
         CommandDetail importCommand = Parser.parseCommand("import D:\blabla");
         assertEquals(CommandType.IMPORT, importCommand.getCommandType());
         assertEquals("D:\blabla", importCommand.getFilePath());
+        // export
+        CommandDetail exportCommand = Parser.parseCommand("export D:\blabla");
+        assertEquals(CommandType.EXPORT, exportCommand.getCommandType());
+        assertEquals("D:\blabla", exportCommand.getFilePath());
+        // set location
+        CommandDetail setLocationCommand = Parser.parseCommand("set location D:\blabla");
+        assertEquals(CommandType.SET_LOCATION, setLocationCommand.getCommandType());
+        assertEquals("D:\blabla", setLocationCommand.getFilePath());
     }
 
 }
