@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class CommandBarController {
     private static final String NORMAL_STYLE = "-fx-text-fill: black;";
@@ -23,6 +24,16 @@ public class CommandBarController {
     @FXML
     void onKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
+            if (!commandBar.getText().isEmpty()) {
+                mainUI.handleCommandInput(commandBar.getText());
+                commandBar.clear();
+            }
+        }
+    }
+
+    @FXML
+    void onInputClicked(MouseEvent event) {
+        if (!commandBar.getText().isEmpty()) {
             mainUI.handleCommandInput(commandBar.getText());
             commandBar.clear();
         }
@@ -35,7 +46,7 @@ public class CommandBarController {
     public void setResponseText(String response) {
         setResponseText(response, IS_NOT_ERROR);
     }
-    
+
     public void setErrorText(String response) {
         setResponseText(response, IS_ERROR);
     }

@@ -6,6 +6,18 @@
     -fx-text-fill: #FF9933;
     -fx-font-size: 16pt;	
 }
+.catButton {
+	-fx-background-image: url('./CLI_button.png');
+	-fx-background-color: transparent; 
+}
+.catButton:hover {
+	-fx-background-image: url('./CLI_button_hover.png');
+	-fx-background-color: transparent; 
+}
+.catButton:pressed {
+	-fx-background-image: url('./CLI_button_click.png');
+	-fx-background-color: transparent; 
+}
 .check {
 	-fx-background-image: url('./checkmark.png');
 }
