@@ -3,15 +3,12 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import katnote.Model;
@@ -28,7 +25,6 @@ public class TestModel {
     // Constants
     private static final String DATA_FILENAME = "data.txt";
     private static final String DATA_BACKUP_FILENAME = "dataOld.txt";
-    private static final int MAX_BUFFER_SIZE = 1024;
     private static final String TEST_PATH = "TestFiles/TestModel/";
     private static final String TEST_PATH_ADDTASK = "TestFiles/TestModel/addTaskExpected.txt";
     private static final String TEST_PATH_SETDEFINITION = "TestFiles/TestModel/setDefinitionExpected.txt";
@@ -41,12 +37,6 @@ public class TestModel {
     
     // Dates
     private static final LocalDateTime TODAY = LocalDateTime.now();
-    private static final LocalDateTime TOMORROW = TODAY.plusDays(1);
-    private static final LocalDateTime NEXTWEEK = TODAY.plusWeeks(1);
-    
-    // Format
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-
     
     /**
      * Compare the contents of both text files.
