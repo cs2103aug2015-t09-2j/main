@@ -13,8 +13,8 @@ Adding tasks
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
 | **add** `<task_name>` | Add new floating task | add "go to school" |
-| **add** `<task_name>` **by** `<due_date>` | Add new task with deadline | add "submit math assignment" by monday |
-| **add** `<task_name>` **from** `<start_date>` **to** `<end_date>` | Add new task with start and end date | add "buy birthday cake" from 22/10 to 23/10 |
+| **add** `<task_name>` **by** `<due_date>` | Add new task with deadline | add submit math assignment by monday |
+| **add** `<task_name>` **from** `<start_date>` **to** `<end_date>` | Add new task with start and end date | add "buy birthday cake" from 22/10 4pm to 23/10 |
 
 
 Editing tasks
@@ -22,12 +22,12 @@ Editing tasks
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **edit [task]** `<task_id>` **due** `<due_time_value>` | Edit due time of the task | edit task 1 set due 20/11/2015 10:20am |
-| **edit [task]** `<task_id>` **start** `<start_time_value>` | Edit start time of the task | edit task 1 set start 20/11/2015 10:00am |
-| **edit [task]** `<task_id>` **end** `<end_time_value>` | Edit end time of the task | edit task 1 set end 20/11/2015 8:00pm |
-| **edit [task]** `<task_id>` **title** `<task_title_value>` | Edit task title | edit task 1 set title "buy milks" |
-| **edit [task]** `<task_id>` **description** `<task_description_value>` | Edit task title | edit task 1 set description "zzz" |
-| **edit [task]** `<task_id>` **category** `<category_name>` | Edit category name of the task | edit task 1 set category shopping |
+| **edit** `<task_id>` **due** `<due_time_value>` | Edit due time of the task | edit 1 due 20/11/2015 10:20am |
+| **edit** `<task_id>` **start** `<start_time_value>` | Edit start time of the task | edit 1 start 20/11/2015 10:00am |
+| **edit** `<task_id>` **end** `<end_time_value>` | Edit end time of the task | edit 1 end 20/11/2015 8:00pm |
+| **edit** `<task_id>` **title** `<task_title_value>` | Edit task title | edit 1 title "buy milks" |
+| **edit** `<task_id>` **description** `<task_description_value>` | Edit task title | edit 1 description "zzz" |
+| **edit** `<task_id>` **category** `<category_name>` | Edit category name of the task | edit 1 category shopping |
 
 
 Marking tasks as completed/incompleted
@@ -35,8 +35,15 @@ Marking tasks as completed/incompleted
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **mark** `<task_id>` **completed** | Mark task as completed | mark task 1 completed |
+| **mark** `<task_id>` **completed** | Mark task as completed | mark 1 completed |
 | **mark** `<task_id>` **incompleted** | Mark task as incompleted | mark 1 incompleted |
+
+Postponing tasks to other day
+---------------------
+
+| Syntax | Description | Example |
+|------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
+| **postpone** `<task_id>` [**to**] `<new_start_date>` | Postpone task | postpone 1 23/11 3pm |
 
 
 Deleting tasks
@@ -44,7 +51,7 @@ Deleting tasks
 
 | Syntax | Description | Example |
 |------------------------------------------------------------|--------------------------------------------|-----------------------------------------------------|
-| **delete [task]** `<task_id>` | Delete task with specific id | delete task 1 |
+| **delete** `<task_id>` | Delete task with specific id | delete 1 |
 
 
 Viewing and searching tasks
