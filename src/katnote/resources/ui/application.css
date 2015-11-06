@@ -1,10 +1,12 @@
 .TaskRowIcon {
 	-fx-background-image: url('./catbulletblack.png');
+	-fx-background-color: transparent; 
 }
 .TaskRowText {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 16pt;	
+	-fx-background-color: transparent; 
 }
 .catButton {
 	-fx-background-image: url('./CLI_button.png');
@@ -20,25 +22,36 @@
 }
 .check {
 	-fx-background-image: url('./checkmark.png');
+	-fx-background-color: transparent; 
 }
 .katImage {
 	-fx-background-image: url('./Kat.png');
+	-fx-background-color: transparent; 
+}
+.katBG {
+	-fx-background-image: url('./KatNoteBG.png');
+	-fx-background-color: transparent; 
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 600 441;
 }
 .TaskRowDateText {
     -fx-font-family: "Sen Bold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 12pt;	
+	-fx-background-color: transparent; 
 }
 .TaskGroupHeaderText {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #EE7833;
     -fx-font-size: 18pt;	
+	-fx-background-color: transparent; 
 }
 .title {
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 24pt;
+	-fx-background-color: transparent; 
 }
-.scroll-pane {
+.scroll-pane > .viewport  {
     -fx-background-color:transparent;
 }
