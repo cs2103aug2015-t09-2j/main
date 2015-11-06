@@ -10,7 +10,7 @@
    <children>
       <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
-            <VBox id="TaskList" fx:id="taskViewGroupList" maxWidth="560.0" prefWidth="560.0" style="-fx-background-color: transperant;" />
+            <VBox id="TaskList" fx:id="taskViewGroupList" maxWidth="560.0" prefWidth="560.0" style="-fx-background-color: transparent;" />
          </content>
       </ScrollPane>
    </children>
