@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -103,13 +104,14 @@ public class GraphicalUserInterface extends Application {
             loader.setLocation(getClass().getResource(SPLASH_LAYOUT_FXML));
             splashLayout = (BorderPane) loader.load();
 
-            splashLayout.addEventFilter(KeyEvent.KEY_RELEASED, event -> hideSplash(event));
+            splashLayout.addEventFilter(KeyEvent.KEY_RELEASED, event -> hideSplash());
+            splashLayout.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> hideSplash());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void hideSplash(KeyEvent event) {
+    public void hideSplash() {
         rootLayout.getChildren().remove(splashLayout);
         splashLayout = null;
     }
