@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: rgba(0, 0, 0, 0.7);" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="65.0" layoutY="375.0" styleClass="splashHeader" text="Welcome to katnote!" />
+            <Pane layoutX="171.0" layoutY="106.0" prefHeight="250.0" prefWidth="258.0" styleClass="katImage" />
+            <Label layoutX="171.0" layoutY="479.0" styleClass="splashText" text="Press any button to continue" />
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

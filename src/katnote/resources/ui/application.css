@@ -24,9 +24,15 @@
 	-fx-background-image: url('./greentick.png');
 	-fx-background-color: transparent; 
 }
-.katImage {
+.katHeaderImage {
 	-fx-background-image: url('./Kat.png');
 	-fx-background-color: transparent; 
+}
+.katImage {
+	-fx-background-image: url('./bigKat.png');
+	-fx-background-color: transparent; 
+	-fx-background-size: cover;
+    -fx-background-repeat: stretch;   
 }
 .katBG {
 	-fx-background-image: url('./KatNoteBG.png');
@@ -50,6 +56,18 @@
     -fx-font-family: "Sen ExtraBold";
     -fx-text-fill: #FF9933;
     -fx-font-size: 24pt;
+	-fx-background-color: transparent; 
+}
+.splashHeader {
+    -fx-font-family: "Sen ExtraBold";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 36pt;
+	-fx-background-color: transparent; 
+}
+.splashText {
+    -fx-font-family: "Sen ExtraBold";
+    -fx-text-fill: #FF9933;
+    -fx-font-size: 14pt;
 	-fx-background-color: transparent; 
 }
 .scroll-pane > .viewport  {

@@ -16,15 +16,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
     private static GraphicalUserInterface instance;
     private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
-    private static final String ROOT_LAYOUT_FXML = "/katnote/resources/ui/RootLayout.fxml";
+    private static final String CORE_LAYOUT_FXML = "/katnote/resources/ui/CoreLayout.fxml";
+    private static final String SPLASH_LAYOUT_FXML = "/katnote/resources/ui/SplashLayout.fxml";
 
-    private BorderPane rootLayout;
+    private StackPane rootLayout;
+    private BorderPane coreLayout;
+    private BorderPane splashLayout;
     private Stage primaryStage;
     private Logic logic;
     private TaskViewer taskViewer;
@@ -37,10 +42,10 @@ public class GraphicalUserInterface extends Application {
 
     public void start(String[] args) {
         launch(args);
-    }    
-    
-    public static GraphicalUserInterface getInstance(){
-        if(instance == null){
+    }
+
+    public static GraphicalUserInterface getInstance() {
+        if (instance == null) {
             throw new NullPointerException("App not initialized");
         }
         return instance;
@@ -60,6 +65,12 @@ public class GraphicalUserInterface extends Application {
         setUpTaskViewer();
     }
 
+    private void loadResources() {
+        log.log(Level.INFO, "loading resources");
+        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
+        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
+    }
+
     private void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("KatNote");
@@ -72,36 +83,73 @@ public class GraphicalUserInterface extends Application {
         }
     }
 
-    private void loadResources() {
-        log.log(Level.INFO, "loading resources");
-        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
-        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
+    public void initRootLayout() {
+        log.log(Level.FINE, "initilizing rootLayout");
+
+        loadSplash();
+        loadCoreLayout();
+        Scene scene = setUpScene();
+        setUpStage(scene);
+
+        // to prevent focus on the commandBar
+        splashLayout.requestFocus();
     }
 
-    public void initRootLayout() {
+    public void loadSplash() {
         log.log(Level.FINE, "initilizing rootLayout");
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(ROOT_LAYOUT_FXML));
-            rootLayout = (BorderPane) loader.load();
-            commandBarController = loader.getController();
-            commandBarController.setMainUI(this);
+            loader.setLocation(getClass().getResource(SPLASH_LAYOUT_FXML));
+            splashLayout = (BorderPane) loader.load();
 
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
-            primaryStage.show();
+            splashLayout.addEventFilter(KeyEvent.KEY_RELEASED, event -> hideSplash(event));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void hideSplash(KeyEvent event) {
+        rootLayout.getChildren().remove(splashLayout);
+        splashLayout = null;
+    }
+
+    private void loadCoreLayout() {
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(CORE_LAYOUT_FXML));
+            coreLayout = (BorderPane) loader.load();
+            commandBarController = loader.getController();
+            commandBarController.setMainUI(this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Scene setUpScene() {
+        assert(coreLayout != null);
+        assert(splashLayout != null);
+
+        rootLayout = new StackPane();
+        rootLayout.getChildren().add(coreLayout);
+        rootLayout.getChildren().add(splashLayout);
+
+        Scene scene = new Scene(rootLayout);
+        return scene;
+    }
+
+    private void setUpStage(Scene scene) {
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.show();
+    }
+
     public void setUpTaskViewer() {
         log.log(Level.INFO, "setUpTaskViewer");
         taskViewer = new TaskViewer();
-        rootLayout.setCenter(taskViewer);
+        coreLayout.setCenter(taskViewer);
         displayedTaskList = updateTaskViewer(logic.getInitialViewState(), false);
         logic.setViewMapping(displayedTaskList);
     }
@@ -115,18 +163,14 @@ public class GraphicalUserInterface extends Application {
 
     public void handleCommandInput(String inputText) {
         log.log(Level.FINE, "input recieved: " + inputText);
-        UIFeedback feedback;
         try {
-            feedback = logic.execute(inputText);
-            commandBarController.setResponseText(feedback.getMessage(), feedback.isAnError());
+            UIFeedback feedback = logic.execute(inputText);
+            boolean isErrorResponse = feedback.isAnError();
+            commandBarController.setResponseText(feedback.getMessage(), isErrorResponse);
             if (feedback.isAnExit()) {
                 primaryStage.close();
-            } else if (!feedback.isAnError()) {
-                ViewState viewState = feedback.getViewState();
-                if (viewState != null) {
-                    displayedTaskList = updateTaskViewer(viewState, feedback.isASearch());
-                    logic.setViewMapping(displayedTaskList);
-                }
+            } else if (!isErrorResponse) {
+                processViewState(feedback);
             }
         } catch (Exception e) {
             log.log(Level.WARNING, "Exception: " + e.getMessage());
@@ -134,6 +178,14 @@ public class GraphicalUserInterface extends Application {
             e.printStackTrace();
         }
 
+    }
+
+    private void processViewState(UIFeedback feedback) {
+        ViewState viewState = feedback.getViewState();
+        if (viewState != null) {
+            displayedTaskList = updateTaskViewer(viewState, feedback.isASearch());
+            logic.setViewMapping(displayedTaskList);
+        }
     }
 
 }
