@@ -1,7 +1,6 @@
+#normal add with date only
 INPUT
-add
-do homework
-by
+add do homework by
 DATE_INPUT
 d/MM/yy
 7
@@ -16,9 +15,7 @@ do homework
 Due: 11:59 PM
 
 INPUT
-add
-do homework1
-by
+add do homework1 by
 DATE_DIRECT_INPUT
 today
 
@@ -38,9 +35,7 @@ do homework
 Due: 11:59 PM
 
 INPUT
-add
-do homework2
-by
+add do homework2 by
 DATE_DIRECT_INPUT
 tomorrow 5pm
 
@@ -66,9 +61,7 @@ do homework
 Due: 11:59 PM
 
 INPUT
-add
-do homework3
-by
+add do homework3 by
 DATE_INPUT_2
 d/MM/yy
 7
@@ -132,9 +125,7 @@ do homework
 Due: 11:59 PM
 
 EVENT_INPUT
-add
-Celebrate Kat's Birthday!
-from
+add Celebrate Kat's Birthday! from
 DATE_INPUT_2
 d/MM/yy
 4
@@ -186,9 +177,7 @@ do homework
 Due: 11:59 PM
 
 EVENT_INPUT
-add
-project meeting
-from
+add project meeting from
 DATE_INPUT
 d/MM/yy
 3
@@ -248,9 +237,7 @@ do homework
 Due: 11:59 PM
 
 EVENT_INPUT
-add
-live cat stream
-from
+add live cat stream from
 DATE_DIRECT_INPUT
 today 12am
 to
@@ -375,9 +362,7 @@ do homework
 Due: 11:59 PM
 
 INPUT
-edit
-7
-due
+edit 7 due
 DATE_INPUT
 d/MM/yy
 6

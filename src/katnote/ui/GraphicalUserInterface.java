@@ -5,9 +5,7 @@ import katnote.KatNoteLogger;
 import katnote.logic.Logic;
 import katnote.logic.UIFeedback;
 import katnote.logic.ViewState;
-import katnote.task.Task;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,11 +32,11 @@ public class GraphicalUserInterface extends Application {
     private Stage primaryStage;
     private Logic logic;
     private TaskViewer taskViewer;
-    private ArrayList<Task> displayedTaskList;
+    private TaskViewFormatter displayedTaskFormat;
     private CommandBarController commandBarController;
 
-    public ArrayList<Task> getDisplayedTaskList() {
-        return displayedTaskList;
+    public TaskViewFormatter getDisplayedTaskList() {
+        return displayedTaskFormat;
     }
 
     public void start(String[] args) {
@@ -84,7 +82,7 @@ public class GraphicalUserInterface extends Application {
         }
     }
 
-    public void initRootLayout() {
+    private void initRootLayout() {
         log.log(Level.FINE, "initilizing rootLayout");
 
         loadSplash();
@@ -96,7 +94,7 @@ public class GraphicalUserInterface extends Application {
         splashLayout.requestFocus();
     }
 
-    public void loadSplash() {
+    private void loadSplash() {
         log.log(Level.FINE, "initilizing rootLayout");
         try {
             // Load root layout from fxml file.
@@ -111,7 +109,7 @@ public class GraphicalUserInterface extends Application {
         }
     }
 
-    public void hideSplash() {
+    private void hideSplash() {
         rootLayout.getChildren().remove(splashLayout);
         splashLayout = null;
     }
@@ -130,7 +128,7 @@ public class GraphicalUserInterface extends Application {
         }
     }
 
-    public Scene setUpScene() {
+    private Scene setUpScene() {
         assert(coreLayout != null);
         assert(splashLayout != null);
 
@@ -148,19 +146,19 @@ public class GraphicalUserInterface extends Application {
         primaryStage.show();
     }
 
-    public void setUpTaskViewer() {
+    private void setUpTaskViewer() {
         log.log(Level.INFO, "setUpTaskViewer");
         taskViewer = new TaskViewer();
         coreLayout.setCenter(taskViewer);
-        displayedTaskList = updateTaskViewer(logic.getInitialViewState(), false);
-        logic.setViewMapping(displayedTaskList);
+        displayedTaskFormat = updateTaskViewer(logic.getInitialViewState(), false);
+        logic.setViewMapping(displayedTaskFormat.getOrderedTaskList());
     }
 
-    public ArrayList<Task> updateTaskViewer(ViewState viewState, boolean isSearch) {
+    private TaskViewFormatter updateTaskViewer(ViewState viewState, boolean isSearch) {
         log.log(Level.INFO, "updateTaskViewer");
-        TaskViewFormatter listFormat = new TaskViewFormatter(viewState, isSearch);
-        taskViewer.loadTaskFormat(listFormat);
-        return listFormat.getOrderedTaskList();
+        TaskViewFormatter viewFormat = new TaskViewFormatter(viewState, isSearch);
+        taskViewer.loadTaskFormat(viewFormat);
+        return viewFormat;
     }
 
     public void handleCommandInput(String inputText) {
@@ -185,8 +183,8 @@ public class GraphicalUserInterface extends Application {
     private void processViewState(UIFeedback feedback) {
         ViewState viewState = feedback.getViewState();
         if (viewState != null) {
-            displayedTaskList = updateTaskViewer(viewState, feedback.isASearch());
-            logic.setViewMapping(displayedTaskList);
+            displayedTaskFormat = updateTaskViewer(viewState, feedback.isASearch());
+            logic.setViewMapping(displayedTaskFormat.getOrderedTaskList());
         }
     }
 

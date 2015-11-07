@@ -45,15 +45,15 @@ public class SystemTestDataParser {
         try {
             reader = new BufferedReader(new FileReader(SYSTEM_TEST_FILE));
             String line = null;
-            line = reader.readLine();
+            line = readLine();
             while (line != null) {
                 String input = null;
                 if (line.equals(INPUT_KEYWORD)) {
-                    input = processInput(reader);
+                    input = processInput();
                     inputs.add(input);
                     // System.out.println(input);
                 } else if (line.equals(EVENT_INPUT_KEYWORD)) {
-                    input = processEventInput(reader);
+                    input = processEventInput();
                     inputs.add(input);
                     // System.out.println(input);
                 } else if (line.equals(OUTPUT_KEYWORD)) {
@@ -61,11 +61,11 @@ public class SystemTestDataParser {
                     outputs.add(list);
                     // System.out.println();
                 } else if (line.equals(DIRECT_INPUT_KEYWORD)) {
-                    input = reader.readLine();
+                    input = readLine();
                     inputs.add(input);
-                    reader.readLine();
+                    readLine();
                 }
-                line = reader.readLine();
+                line = readLine();
             }
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -75,43 +75,31 @@ public class SystemTestDataParser {
             e.printStackTrace();
         }
     }
+    private String readLine() throws IOException{
+        String line = null;
+        line = reader.readLine();
+        if(line == null){
+            return line;
+        }
+        //filter comment lines
+        while(!line.isEmpty() && line.charAt(0) == '#'){
+            line = reader.readLine();
+        }
+        return line;
+    }
 
-    public String processEventInput(BufferedReader reader) {
+    public String processEventInput() {
         String line = null;
         try {
             line = "";
             String input = "";
-            for (int i = 0; i < 3; i++) {
-                input += (reader.readLine() + SPACE_STRING);
-            }
-            line = reader.readLine();
-            if (line.equals(DATE_DIRECT_INPUT_KEYWORD)) {
-                input += reader.readLine();
-            } else if (line.equals(DATE_INPUT_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-            } else if (line.equals(DATE_INPUT_WITH_TIME_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-                input += SPACE_STRING + reader.readLine();
-            }
-            input += SPACE_STRING + reader.readLine() + SPACE_STRING;
-            line = reader.readLine();
-            if (line.equals(DATE_DIRECT_INPUT_KEYWORD)) {
-                input += reader.readLine();
-            } else if (line.equals(DATE_INPUT_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-            } else if (line.equals(DATE_INPUT_WITH_TIME_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-                input += SPACE_STRING + reader.readLine();
-            }
-            reader.readLine();
+            input += readLine() + SPACE_STRING; //first part of input      
+            line = readLine(); //date header
+            input += processDateInput(line);
+            input += SPACE_STRING + readLine() + SPACE_STRING; //event conntector string
+            line = readLine(); //date header
+            input += processDateInput(line);
+            readLine(); //newline
             return input;
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,33 +107,41 @@ public class SystemTestDataParser {
         return line;
     }
 
-    public String processInput(BufferedReader reader) {
+    private String processDateInput(String line) throws IOException {
+        String input = "";
+        if (line.equals(DATE_DIRECT_INPUT_KEYWORD)) {
+            input += readLine();
+        } else if (line.equals(DATE_INPUT_KEYWORD)) {
+            input += prcoessSingleDate();
+        } else if (line.equals(DATE_INPUT_WITH_TIME_KEYWORD)) {
+            input += prcoessSingleDate();
+            input += SPACE_STRING + readLine();
+        }
+        return input;
+    }
+
+    public String processInput() {
         String line = null;
         try {
             line = "";
             String input = "";
-            for (int i = 0; i < 3; i++) {
-                input += (reader.readLine() + SPACE_STRING);
-            }
-            line = reader.readLine();
-            if (line.equals(DATE_DIRECT_INPUT_KEYWORD)) {
-                input += reader.readLine();
-            } else if (line.equals(DATE_INPUT_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-            } else if (line.equals(DATE_INPUT_WITH_TIME_KEYWORD)) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(reader.readLine());
-                int days = Integer.parseInt(reader.readLine());
-                input += LocalDateTime.now().plusDays(days).format(formatter);
-                input += SPACE_STRING + reader.readLine();
-            }
-            reader.readLine();
+            input += readLine() + SPACE_STRING; //first part of input
+            line = readLine(); //date header
+            input += processDateInput(line);
+            readLine(); //newline
             return input;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return line;
+    }
+
+    private String prcoessSingleDate() throws IOException {  
+        String dateFormat = readLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        int days = Integer.parseInt(readLine());
+        String date = LocalDateTime.now().plusDays(days).format(formatter);
+        return date;
     }
 
     public ViewDataPackage processOutput(BufferedReader reader) {
@@ -155,13 +151,13 @@ public class SystemTestDataParser {
         ArrayList<TaskGroupPackage> array = new ArrayList<TaskGroupPackage>();
         try {
             // response is placed after output header
-            line = reader.readLine();
+            line = readLine();
             response = line;
-            line = reader.readLine();
+            line = readLine();
             while (line != null && !line.isEmpty()) {
                 if (line.equals(DATE_OUTPUT_KEYWORD)) {
                     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
-                    int days = Integer.parseInt(reader.readLine());
+                    int days = Integer.parseInt(readLine());
                     LocalDateTime date = LocalDateTime.now().plusDays(days);
                     String day = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
                     String dateString = date.format(dateFormat);
@@ -169,11 +165,11 @@ public class SystemTestDataParser {
                     dataPack = processGroupPackage(reader, dateString);
                     array.add(dataPack);
                 } else if (line.equals(DATE_DIRECT_OUTPUT_KEYWORD)) {
-                    String header = reader.readLine();
+                    String header = readLine();
                     dataPack = processGroupPackage(reader, header);
                     array.add(dataPack);
                 }
-                line = reader.readLine();
+                line = readLine();
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -183,34 +179,34 @@ public class SystemTestDataParser {
     }
 
     public TaskGroupPackage processGroupPackage(BufferedReader reader, String header) throws IOException {
-        String line = reader.readLine();
+        String line = readLine();
         int count = Integer.parseInt(line);
         ArrayList<String> description = new ArrayList<String>();
         ArrayList<String> indexString = new ArrayList<String>();
         ArrayList<String> dateString = new ArrayList<String>();
 
         for (int i = 0; i < count; i++) {
-            line = reader.readLine();
+            line = readLine();
             if(line.equals(EVENT_ROW_KEYWORD)){
-                indexString.add(reader.readLine());
-                description.add(reader.readLine());
+                indexString.add(readLine());
+                description.add(readLine());
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
-                int days = Integer.parseInt(reader.readLine());
+                int days = Integer.parseInt(readLine());
                 LocalDateTime dateStart = LocalDateTime.now().plusDays(days);
                 String dateStartString = dateStart.format(dateFormat);
-                String timeStartString = reader.readLine();
-                days = Integer.parseInt(reader.readLine());
+                String timeStartString = readLine();
+                days = Integer.parseInt(readLine());
                 LocalDateTime dateEnd = LocalDateTime.now().plusDays(days);
                 String dateEndString = dateEnd.format(dateFormat);
-                String timeEndString = reader.readLine();
+                String timeEndString = readLine();
                 String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString, timeStartString,
                         dateEndString, timeEndString);
                 dateString.add(eventDateString);   
                 
             } else {
                 indexString.add(line);
-                description.add(reader.readLine());
-                dateString.add(reader.readLine());                
+                description.add(readLine());
+                dateString.add(readLine());                
             }
         }
         String[] desString = new String[description.size()];
