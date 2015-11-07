@@ -80,9 +80,19 @@ public class TestGraphicalUserInterface extends GuiTest {
         ArrayList<ViewDataPackage> outputs = testData.getOutputs();
         
         assertEquals(inputs.size(), outputs.size());
-        for(int i = 0; i < inputs.size(); i++){
-            String input = inputs.get(i);
-            ViewDataPackage data = outputs.get(i);
+        
+        //mouse test
+        String input = inputs.get(0);
+        ViewDataPackage data = outputs.get(0);
+        commandInput.setText(input);
+        System.out.println(String.format("Testing: \"%s\"", input));
+        sleep(1, TimeUnit.SECONDS);     
+        click("#inputButton"); 
+        click("#commandInputBox");       
+        
+        for(int i = 1; i < inputs.size(); i++){
+            input = inputs.get(i);
+            data = outputs.get(i);
             //type(input).push(KeyCode.ENTER);
             commandInput.setText(input);
             System.out.println(String.format("Testing: \"%s\"", input));
@@ -105,7 +115,7 @@ public class TestGraphicalUserInterface extends GuiTest {
         File f = new File("data.txt");
         f.delete();
         new Thread(() -> {
-            GraphicalUserInterface.launch(GraphicalUserInterface.class);
+            GraphicalUserInterface.launch(GraphicalUserInterface.class);            
         }).start();
         // let the application load
         sleep(2, TimeUnit.SECONDS);        

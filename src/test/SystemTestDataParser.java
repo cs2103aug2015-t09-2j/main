@@ -16,7 +16,7 @@ import test.ViewDataPackage.TaskGroupPackage;
 public class SystemTestDataParser {
     private static final String DATE_HEADER = "%1s      %2s";
     private static final String EVENT_ROW_KEYWORD = "EVENT";
-    private static final String DATE_DIRECT_OUTPUT_KEYWORD = "DATE_DIRECT_OUTPUT";
+    private static final String DIRECT_OUTPUT_KEYWORD = "DIRECT_OUTPUT";
     private static final String DATE_OUTPUT_KEYWORD = "DATE_OUTPUT";
     private static final String SPACE_STRING = " ";
     private static final String DATE_INPUT_WITH_TIME_KEYWORD = "DATE_INPUT_2";
@@ -75,14 +75,15 @@ public class SystemTestDataParser {
             e.printStackTrace();
         }
     }
-    private String readLine() throws IOException{
+
+    private String readLine() throws IOException {
         String line = null;
         line = reader.readLine();
-        if(line == null){
+        if (line == null) {
             return line;
         }
-        //filter comment lines
-        while(!line.isEmpty() && line.charAt(0) == '#'){
+        // filter comment lines
+        while (!line.isEmpty() && line.charAt(0) == '#') {
             line = reader.readLine();
         }
         return line;
@@ -93,13 +94,15 @@ public class SystemTestDataParser {
         try {
             line = "";
             String input = "";
-            input += readLine() + SPACE_STRING; //first part of input      
-            line = readLine(); //date header
+            input += readLine() + SPACE_STRING; // first part of input
+            line = readLine(); // date header
             input += processDateInput(line);
-            input += SPACE_STRING + readLine() + SPACE_STRING; //event conntector string
-            line = readLine(); //date header
+            input += SPACE_STRING + readLine() + SPACE_STRING; // event
+                                                               // conntector
+                                                               // string
+            line = readLine(); // date header
             input += processDateInput(line);
-            readLine(); //newline
+            readLine(); // newline
             return input;
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,10 +128,10 @@ public class SystemTestDataParser {
         try {
             line = "";
             String input = "";
-            input += readLine() + SPACE_STRING; //first part of input
-            line = readLine(); //date header
+            input += readLine() + SPACE_STRING; // first part of input
+            line = readLine(); // date header
             input += processDateInput(line);
-            readLine(); //newline
+            readLine(); // newline
             return input;
         } catch (IOException e) {
             e.printStackTrace();
@@ -136,7 +139,7 @@ public class SystemTestDataParser {
         return line;
     }
 
-    private String prcoessSingleDate() throws IOException {  
+    private String prcoessSingleDate() throws IOException {
         String dateFormat = readLine();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
         int days = Integer.parseInt(readLine());
@@ -164,7 +167,7 @@ public class SystemTestDataParser {
                     dateString = String.format(DATE_HEADER, day, dateString);
                     dataPack = processGroupPackage(reader, dateString);
                     array.add(dataPack);
-                } else if (line.equals(DATE_DIRECT_OUTPUT_KEYWORD)) {
+                } else if (line.equals(DIRECT_OUTPUT_KEYWORD)) {
                     String header = readLine();
                     dataPack = processGroupPackage(reader, header);
                     array.add(dataPack);
@@ -183,11 +186,11 @@ public class SystemTestDataParser {
         int count = Integer.parseInt(line);
         ArrayList<String> description = new ArrayList<String>();
         ArrayList<String> indexString = new ArrayList<String>();
-        ArrayList<String> dateString = new ArrayList<String>();
+        ArrayList<String> dateStrings = new ArrayList<String>();
 
         for (int i = 0; i < count; i++) {
             line = readLine();
-            if(line.equals(EVENT_ROW_KEYWORD)){
+            if (line.equals(EVENT_ROW_KEYWORD)) {
                 indexString.add(readLine());
                 description.add(readLine());
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
@@ -201,21 +204,33 @@ public class SystemTestDataParser {
                 String timeEndString = readLine();
                 String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString, timeStartString,
                         dateEndString, timeEndString);
-                dateString.add(eventDateString);   
+                dateStrings.add(eventDateString);
+
+            } else if (line.equals("DATE_OUTPUT")) {
+                indexString.add(readLine());
+                description.add(readLine());
+                
+                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
+                String dueDateString = readLine() + SPACE_STRING; //"Due:"
+                int days = Integer.parseInt(readLine());
+                LocalDateTime date = LocalDateTime.now().plusDays(days);
+                dueDateString += date.format(dateFormat) + SPACE_STRING;
+                dueDateString += readLine();
+                dateStrings.add(dueDateString);
                 
             } else {
                 indexString.add(line);
                 description.add(readLine());
-                dateString.add(readLine());                
+                dateStrings.add(readLine());
             }
         }
         String[] desString = new String[description.size()];
         description.toArray(desString);
         String[] idString = new String[indexString.size()];
         indexString.toArray(idString);
-        String[] dates = new String[dateString.size()];
-        dateString.toArray(dates);
+        String[] dates = new String[dateStrings.size()];
+        dateStrings.toArray(dates);
 
-        return new TaskGroupPackage(header, desString, dates, idString);   
+        return new TaskGroupPackage(header, desString, dates, idString);
     }
 }

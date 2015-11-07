@@ -39,10 +39,7 @@ public class GraphicalUserInterface extends Application {
         return displayedTaskFormat;
     }
 
-    public void start(String[] args) {
-        launch(args);
-    }
-
+    //psuedo singleton method for test access
     public static GraphicalUserInterface getInstance() {
         if (instance == null) {
             throw new NullPointerException("App not initialized");
@@ -182,10 +179,9 @@ public class GraphicalUserInterface extends Application {
 
     private void processViewState(UIFeedback feedback) {
         ViewState viewState = feedback.getViewState();
-        if (viewState != null) {
-            displayedTaskFormat = updateTaskViewer(viewState, feedback.isASearch());
-            logic.setViewMapping(displayedTaskFormat.getOrderedTaskList());
-        }
+        displayedTaskFormat = updateTaskViewer(viewState, feedback.isASearch());
+        logic.setViewMapping(displayedTaskFormat.getOrderedTaskList());
+        
     }
 
 }

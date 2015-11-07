@@ -37,10 +37,6 @@ public class TaskDetailedRow extends AnchorPane {
     private int index;
     private boolean isDateHidden;
 
-    public TaskDetailedRow(Task task, int index) {
-        this(task, index, false);
-    }
-
     public TaskDetailedRow(Task task, int viewIndex, boolean isDateHidden) {
         loadFXML();
         this.task = task;

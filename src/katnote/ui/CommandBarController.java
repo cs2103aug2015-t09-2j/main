@@ -11,8 +11,6 @@ import javafx.scene.input.MouseEvent;
 public class CommandBarController {
     private static final String NORMAL_STYLE = "-fx-text-fill: black;";
     private static final String ERROR_STYLE = "-fx-text-fill: red;";
-    private static final boolean IS_ERROR = true;
-    private static final boolean IS_NOT_ERROR = false;
 
     private GraphicalUserInterface mainUI;
 
@@ -43,12 +41,8 @@ public class CommandBarController {
         this.mainUI = mainUI;
     }
 
-    public void setResponseText(String response) {
-        setResponseText(response, IS_NOT_ERROR);
-    }
-
     public void setErrorText(String response) {
-        setResponseText(response, IS_ERROR);
+        setResponseText(response, true);
     }
 
     public void setResponseText(String response, boolean isError) {

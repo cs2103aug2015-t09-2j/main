@@ -17,7 +17,7 @@
                </font>
             </TextField>
             <Label id="responseLabel" fx:id="responseLabel" layoutX="27.0" layoutY="6.0" prefHeight="25.0" prefWidth="543.0" text="Welcome!" />
-            <Pane layoutX="482.0" layoutY="35.0" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onInputClicked" prefHeight="50.0" prefWidth="104.0" styleClass="catButton" />
+            <Pane id="inputButton" layoutX="482.0" layoutY="35.0" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onInputClicked" prefHeight="50.0" prefWidth="104.0" styleClass="catButton" />
          </children>
       </AnchorPane>
    </bottom>
