@@ -28,7 +28,7 @@ public class SystemTestDataParser {
     private static final String INPUT_KEYWORD = "INPUT";
     public static final String SYSTEM_TEST_FILE = "TestFiles/SystemTestFiles/systemTestInputOutput.txt";
     private static final String DATE_PATTERN = "dd MMM yy";
-    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s %2s             End: %3s %4s";
+    private static final String EVENT_DATE_TIME_FORMAT = "Start: %1s %2s           End: %3s %4s";
     BufferedReader reader = null;
     ArrayList<String> inputs = new ArrayList<String>();
     ArrayList<ViewDataPackage> outputs = new ArrayList<ViewDataPackage>();

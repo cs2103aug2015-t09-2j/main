@@ -21,7 +21,7 @@
 	-fx-background-color: transparent; 
 }
 .check {
-	-fx-background-image: url('./checkmark.png');
+	-fx-background-image: url('./greentick.png');
 	-fx-background-color: transparent; 
 }
 .katImage {

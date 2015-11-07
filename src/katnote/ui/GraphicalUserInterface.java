@@ -15,6 +15,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 
@@ -62,6 +63,7 @@ public class GraphicalUserInterface extends Application {
     private void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("KatNote");
+        this.primaryStage.getIcons().add(new Image("/katnote/resources/ui/Kat.png"));
         try {
             logic = new Logic();
         } catch (Exception e) {

@@ -11,6 +11,10 @@
       <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <HBox styleClass="drawBroder">
          <children>
+            <Pane fx:id="checkmarkPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="20.0" prefWidth="20.0">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </HBox.margin></Pane>
             <Label fx:id="viewIndexLabel" styleClass="TaskRowText" text="100">
                <padding>
                   <Insets right="5.0" />
@@ -22,6 +26,5 @@
             <Insets />
          </opaqueInsets>
       </HBox>
-      <Pane fx:id="checkmarkPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="30.0" />
    </children>
 </fx:root>

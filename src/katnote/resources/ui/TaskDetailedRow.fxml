@@ -8,11 +8,14 @@
 
 <fx:root stylesheets="@application.css" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane fx:id="checkmarkPane" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="30.0" />
       <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <HBox>
                <children>
+                  <Pane fx:id="checkmarkPane" maxHeight="20.0" maxWidth="20.0" prefHeight="20.0" prefWidth="20.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin></Pane>
                   <Label fx:id="viewIndexLabel" styleClass="TaskRowText" text="100.">
                      <padding>
                         <Insets right="5.0" />
