@@ -205,8 +205,13 @@ public class Parser {
     }
 
     /*
+<<<<<<< HEAD
      * Parses view command (multiple tasks). Command format: - view
      * [completed/incompleted/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
+=======
+     * Parses view command (multiple tasks). Command format:
+     *   - view [completed/incomplete/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
+>>>>>>> 216d4fa... Changed imcompleted -> incomplete
      * 
      */
     private static CommandDetail parseViewCommand(List<String> tokens) throws Exception {
@@ -220,7 +225,7 @@ public class Parser {
                 case CommandKeywords.KW_COMPLETED :
                     completedOption = true;
                     break;
-                case CommandKeywords.KW_INCOMPLETED :
+                case CommandKeywords.KW_INCOMPLETE :
                     completedOption = false;
                     break;
                 case CommandKeywords.KW_ALL :
@@ -277,8 +282,14 @@ public class Parser {
     }
 
     /*
+<<<<<<< HEAD
      * Parses mark command. Command format: - mark TASK_ID completed/incompleted
      * - mark completed/incompleted TASK_ID
+=======
+     * Parses mark command. Command format:
+     *   - mark TASK_ID completed/incomplete
+     *   - mark completed/incomplete TASK_ID
+>>>>>>> 216d4fa... Changed imcompleted -> incomplete
      */
     private static CommandDetail parseMarkCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.EDIT_COMPLETE);

@@ -35,7 +35,8 @@ public class CommandKeywords {
     public static final String KW_TASKS = "tasks";
     public static final String KW_ALL = "all";
     public static final String KW_COMPLETED = "completed";
-    public static final String KW_INCOMPLETED = "incompleted";
+    public static final String KW_DONE = "done";
+    public static final String KW_INCOMPLETE = "incomplete";
 
     // keywords for time properties
     public static final String KW_BY = "by";
@@ -52,8 +53,9 @@ public class CommandKeywords {
             KW_DELETE_SHORT, KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK, KW_VIEW, KW_VIEW_MULTIPLE_TASK_SHORT,
             KW_FIND, KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT };
 
-    private static final String[] MAIN_KEYWORDS_LIST = new String[] { KW_BY, KW_FROM, KW_TO, KW_ON, KW_AT,
-            KW_SET, };
+    private static final String[] MAIN_KEYWORDS_LIST = new String[] {
+            KW_BY, KW_FROM, KW_TO, KW_ON, KW_AT,
+    };
 
     private static final HashSet<String> MAIN_KEYWORDS_SET = new HashSet<String>(
             Arrays.asList(MAIN_KEYWORDS_LIST));

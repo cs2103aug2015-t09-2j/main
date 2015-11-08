@@ -85,9 +85,10 @@ public class PropertyParser {
                 Boolean completedValue = false;
                 switch (optionValue) {
                     case CommandKeywords.KW_COMPLETED :
+                    case CommandKeywords.KW_DONE :
                         completedValue = true;
                         break;
-                    case CommandKeywords.KW_INCOMPLETED :
+                    case CommandKeywords.KW_INCOMPLETE :
                         completedValue = false;
                         break;
                     case CommandKeywords.KW_ALL :
