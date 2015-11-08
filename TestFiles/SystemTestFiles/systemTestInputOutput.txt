@@ -7,7 +7,7 @@ d/MM/yy
 
 OUTPUT
 Task: do homework added.
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 1.
@@ -22,7 +22,7 @@ DATE_DIRECT_INPUT
 
 OUTPUT
 Invalid command type: UNKNOWN
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 1.
@@ -35,7 +35,7 @@ DIRECT_INPUT
 
 OUTPUT
 Invalid command type: UNKNOWN
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 1.
@@ -50,13 +50,13 @@ today
 
 OUTPUT
 Task: do homework1 added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 1.
 do homework1
 Due: 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 2.
@@ -71,19 +71,19 @@ tomorrow 5pm
 
 OUTPUT
 Task: do homework2 added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 1.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 2.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 3.
@@ -100,19 +100,19 @@ d/MM/yy
 
 OUTPUT
 Task: do homework3 added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 1.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 2.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 3.
@@ -128,25 +128,25 @@ add do homework4
 
 OUTPUT
 Task: do homework4 added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 do homework4
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 2.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 4.
@@ -171,25 +171,25 @@ d/MM/yy
 
 OUTPUT
 Task: Celebrate Kat's Birthday! added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 do homework4
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 2.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -199,7 +199,7 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 5.
@@ -222,25 +222,25 @@ d/MM/yy
 
 OUTPUT
 Task: project meeting added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 do homework4
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 2.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -250,7 +250,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -260,7 +260,7 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 6.
@@ -281,13 +281,13 @@ today 12pm
 
 OUTPUT
 Task: live cat stream added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 do homework4
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -300,13 +300,13 @@ live cat stream
 3.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 4.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -316,7 +316,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -326,7 +326,7 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 7.
@@ -342,13 +342,13 @@ edit 1 title study notes
 
 OUTPUT
 Task: study notes is successfully modified.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -361,13 +361,13 @@ live cat stream
 3.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 4.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -377,7 +377,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -387,7 +387,7 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 2
 7.
@@ -405,13 +405,13 @@ d/MM/yy
 
 OUTPUT
 Task: do homework3 is successfully modified.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -424,13 +424,13 @@ live cat stream
 3.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 4.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -440,7 +440,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -450,13 +450,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 7.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 8.
@@ -464,17 +464,17 @@ do homework
 Due: 11:59 PM
 
 DIRECT_INPUT
-mark 3 done
+mark 3 completed
 
 OUTPUT
 Task: do homework1 is marked completed.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -484,13 +484,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -500,7 +500,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -510,13 +510,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 6.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 7.
@@ -528,7 +528,7 @@ view tasks completed
 
 OUTPUT
 Displaying 1 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 1.
@@ -540,7 +540,7 @@ find do
 
 OUTPUT
 Found 4 tasks with keyword do.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Search Result
 4
 DATE_OUTPUT
@@ -580,13 +580,13 @@ view all
 
 OUTPUT
 Displaying 8 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -599,13 +599,13 @@ live cat stream
 3.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 4.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -615,7 +615,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -625,13 +625,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 7.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 8.
@@ -643,7 +643,7 @@ mark 1 completed
 
 OUTPUT
 Task: study notes is marked completed.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -653,13 +653,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 2.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -669,7 +669,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -679,13 +679,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 5.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 6.
@@ -697,13 +697,13 @@ view tasks completed
 
 OUTPUT
 Displaying 2 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 2.
@@ -719,7 +719,7 @@ d/MM/yy
 
 OUTPUT
 Task: do late homework added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -728,7 +728,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -738,13 +738,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -754,7 +754,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -764,13 +764,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 6.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 7.
@@ -786,7 +786,7 @@ d/MM/yy
 
 OUTPUT
 Task: do future homework added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -795,7 +795,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -805,13 +805,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -821,7 +821,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -831,13 +831,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 6.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 7.
@@ -849,13 +849,13 @@ view all
 
 OUTPUT
 Displaying 10 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -864,7 +864,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -877,13 +877,13 @@ live cat stream
 4.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 5.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -893,7 +893,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -903,19 +903,19 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 8.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 9.
 do homework
 Due: 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 1000
 1
 10.
@@ -937,7 +937,7 @@ d/MM/yy
 
 OUTPUT
 Task: far future event added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -946,7 +946,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -956,13 +956,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -972,7 +972,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -982,13 +982,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 6.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 7.
@@ -1000,13 +1000,13 @@ view all
 
 OUTPUT
 Displaying 11 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -1015,7 +1015,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -1028,13 +1028,13 @@ live cat stream
 4.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 5.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -1044,7 +1044,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -1054,25 +1054,25 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 8.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 9.
 do homework
 Due: 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 1000
 1
 10.
 do future homework
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Events
 1
 EVENT
@@ -1098,7 +1098,7 @@ d/MM/yy
 
 OUTPUT
 Task: a little less far away future event added.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -1107,7 +1107,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 1
 EVENT
@@ -1117,13 +1117,13 @@ live cat stream
 12:00 AM
 0
 12:00 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 3.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -1133,7 +1133,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -1143,13 +1143,13 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 6.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 7.
@@ -1161,13 +1161,13 @@ view all
 
 OUTPUT
 Displaying 12 tasks.
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Task to do
 1
 1.
 study notes
 
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Overdue
 1
 DATE_OUTPUT
@@ -1176,7 +1176,7 @@ do late homework
 Due:
 -2
 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Today
 2
 EVENT
@@ -1189,13 +1189,13 @@ live cat stream
 4.
 do homework1
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
 Tomorrow
 1
 5.
 do homework2
 Due: 05:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 3
 1
 EVENT
@@ -1205,7 +1205,7 @@ project meeting
 12:00 AM
 3
 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 4
 1
 EVENT
@@ -1215,19 +1215,19 @@ Celebrate Kat's Birthday!
 10:00 AM
 4
 12:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 6
 1
 8.
 do homework3
 Due: 10:00 AM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 7
 1
 9.
 do homework
 Due: 11:59 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 999
 1
 EVENT
@@ -1237,13 +1237,111 @@ a little less far away future event
 02:00 AM
 1000
 09:00 PM
-DATE_OUTPUT
+DATE_OUTPUT_HEADER
 1000
 1
 11.
 do future homework
 Due: 11:59 PM
-DIRECT_OUTPUT
+DIRECT_OUTPUT_HEADER
+Events
+1
+EVENT
+12.
+far future event
+1001
+08:00 AM
+1002
+11:00 PM
+
+DIRECT_INPUT
+redo
+
+OUTPUT
+No actions left to redo.
+DIRECT_OUTPUT_HEADER
+Task to do
+1
+1.
+study notes
+
+DIRECT_OUTPUT_HEADER
+Overdue
+1
+DATE_OUTPUT
+2.
+do late homework
+Due:
+-2
+11:59 PM
+DIRECT_OUTPUT_HEADER
+Today
+2
+EVENT
+3.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+4.
+do homework1
+Due: 11:59 PM
+DIRECT_OUTPUT_HEADER
+Tomorrow
+1
+5.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT_HEADER
+3
+1
+EVENT
+6.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT_HEADER
+4
+1
+EVENT
+7.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT_HEADER
+6
+1
+8.
+do homework3
+Due: 10:00 AM
+DATE_OUTPUT_HEADER
+7
+1
+9.
+do homework
+Due: 11:59 PM
+DATE_OUTPUT_HEADER
+999
+1
+EVENT
+10.
+a little less far away future event
+999
+02:00 AM
+1000
+09:00 PM
+DATE_OUTPUT_HEADER
+1000
+1
+11.
+do future homework
+Due: 11:59 PM
+DIRECT_OUTPUT_HEADER
 Events
 1
 EVENT

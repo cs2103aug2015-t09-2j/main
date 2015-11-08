@@ -1,0 +1,8 @@
+night 9.00pm
+afternoon 12.00pm
+morning 9.00am
+evening 7.00pm
+<start>
+{"id":"0","title":"New Title","task_type":"NORMAL","start_date":"null","end_date":"2015-11-26T23:59:59","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"true"}
+{"id":"1","title":"feed fish","task_type":"NORMAL","start_date":"null","end_date":"2015-12-23T23:59:59","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}
+{"id":"2","title":"feed dog","task_type":"EVENT","start_date":"2015-11-26T23:59:59","end_date":"2015-12-23T23:59:59","repeat_option":null,"terminate_date":"null","description":null,"category":null,"completed":"false"}

@@ -96,7 +96,8 @@ public class Model {
 	
 	private static final String MSG_ERR_IO = "Invalid input, input is either corrupted, missing or inaccessible.";
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
-	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
+	private static final String MSG_ERR_INVALID_ARGUMENTS = "Error. Invalid arguments.";
+	private static final String MSG_ERR_INVALID_MODIFICATION = "Unable to execute this modification.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
 	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
@@ -251,16 +252,14 @@ public class Model {
 	    Task oldTask = new Task(editedTask);
 	    String optionName = editOption.getOptionName();
 	    
-	    _response = modifyTask(optionName, editedTask, editOption);
+	    modifyTask(optionName, editedTask, editOption);
 	    splitTaskType(_dataLog);
 	    
 	    _encoder.encode();
 	    
 	    updateUndoLog(EDIT_MODIFY, oldTask);
 	    
-	    if (_response == null) {
-	        _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
-	    }
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
 	    return _response;
 	}
 	
@@ -344,8 +343,7 @@ public class Model {
 	public String undo() throws Exception {
 		
 	    if (_undoLog.isEmpty()) {
-	        _response = handleException(null, MSG_ERR_UNDO);
-	        return _response;
+	        handleException(null, MSG_ERR_UNDO);
 	    }
 	    
 	    String undoAction = _undoLog.pop();
@@ -365,8 +363,7 @@ public class Model {
 	public String redo() throws Exception {
 		
 	    if (_redoLog.isEmpty()) {
-            _response = handleException(null, MSG_ERR_REDO);
-            return _response;
+            handleException(null, MSG_ERR_REDO);
         }
 	    
 	    String redoAction = _redoLog.pop();
@@ -587,7 +584,7 @@ public class Model {
 	        _encoder.encode();
 	        
 	        updateRedoLog(EDIT_DELETE, taskObj);
-            
+	        
 	    } catch (Exception e) {
 	        handleException(e, MSG_ERR_REVERSE_DELETE + taskObj.getTitle());
 	    }
@@ -597,9 +594,9 @@ public class Model {
         // Change task to incomplete.
         try {
             if (taskObj.isCompleted()) {
-                taskObj.setCompleted(false);
+                setTaskIncomplete(taskObj);
             } else {
-                taskObj.setCompleted(true);
+                setTaskComplete(taskObj);
             }
             
             _encoder.encode();
@@ -734,9 +731,9 @@ public class Model {
 	    // Change task to incomplete.
 	    try {
 	        if (taskObj.isCompleted()) {
-	            taskObj.setCompleted(false);
+	            setTaskIncomplete(taskObj);
 	        } else {
-	            taskObj.setCompleted(true);
+	            setTaskComplete(taskObj);
 	        }
 
 	        _encoder.encode();
@@ -881,9 +878,7 @@ public class Model {
 	    }
 	}
 	
-	private String modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
-	    
-	    String response;
+	private void modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    switch (optionName) {
 //            case CommandProperties.TASK_ID :
@@ -892,10 +887,7 @@ public class Model {
                 editedTask.setTitle(editOption.getOptionValue());
                 break;
             case CommandProperties.TIME_FROM :
-                response = startDateEdit(editedTask, editOption);
-                if (response != null) {
-                    return response;
-                }
+                startDateEdit(editedTask, editOption);
                 break;
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
@@ -918,35 +910,33 @@ public class Model {
 //                editedTask.setCategory(editOption.getOptionValue());
 //                break;
             default:
-                return handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
         }
-	    
-	    return null;
 	}
 	
-	private String startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
+	private void startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
-            return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
+            handleException(null, MSG_ERR_INVALID_MODIFICATION);
         } else if (editedTask.getTaskType().equals(TaskType.NORMAL)) {
             editedTask.setTaskType(TaskType.EVENT);
+            editedTask.setStartDate(LocalDateTime.now());
         }
 	    
         LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
         
         if (editedTask.getEndDate().isBefore(newStartDate)) {
-            return handleException(null, MSG_ERR_START_AFTER_END);
+            handleException(null, MSG_ERR_START_AFTER_END);
         }
         
-        editedTask.setStartDate(editOption.getOptionValueDate());
-        
-        return null;
+        editedTask.setStartDate(newStartDate);
 	}
 	
 	private void dueDateEdit(Task editedTask, EditTaskOption editOption) {
 	    
 	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
 	        editedTask.setTaskType(TaskType.NORMAL); 
+	        editedTask.setEndDate(LocalDateTime.now());
 	    } 
 	    editedTask.setEndDate(editOption.getOptionValueDate());
 	}
@@ -1029,6 +1019,14 @@ public class Model {
 	private void updateRedoLog(String type, Task taskObj) {
 	    _redoLog.push(type);
 	    _redoTaskObjLog.push(taskObj);
+	}
+	
+	private void setTaskComplete(Task taskObj) {
+	    taskObj.setCompleted(true);
+	}
+	
+	private void setTaskIncomplete(Task taskObj) {
+	    taskObj.setCompleted(false);
 	}
 	
 	/**
