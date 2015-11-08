@@ -344,8 +344,7 @@ public class Model {
 	public String undo() throws Exception {
 		
 	    if (_undoLog.isEmpty()) {
-	        _response = handleException(null, MSG_ERR_UNDO);
-	        return _response;
+	        handleException(null, MSG_ERR_UNDO);
 	    }
 	    
 	    String undoAction = _undoLog.pop();
@@ -365,8 +364,7 @@ public class Model {
 	public String redo() throws Exception {
 		
 	    if (_redoLog.isEmpty()) {
-            _response = handleException(null, MSG_ERR_REDO);
-            return _response;
+            handleException(null, MSG_ERR_REDO);
         }
 	    
 	    String redoAction = _redoLog.pop();
@@ -587,7 +585,7 @@ public class Model {
 	        _encoder.encode();
 	        
 	        updateRedoLog(EDIT_DELETE, taskObj);
-            
+	        
 	    } catch (Exception e) {
 	        handleException(e, MSG_ERR_REVERSE_DELETE + taskObj.getTitle());
 	    }
@@ -597,9 +595,9 @@ public class Model {
         // Change task to incomplete.
         try {
             if (taskObj.isCompleted()) {
-                taskObj.setCompleted(false);
+                setTaskIncomplete(taskObj);
             } else {
-                taskObj.setCompleted(true);
+                setTaskComplete(taskObj);
             }
             
             _encoder.encode();
@@ -734,9 +732,9 @@ public class Model {
 	    // Change task to incomplete.
 	    try {
 	        if (taskObj.isCompleted()) {
-	            taskObj.setCompleted(false);
+	            setTaskIncomplete(taskObj);
 	        } else {
-	            taskObj.setCompleted(true);
+	            setTaskComplete(taskObj);
 	        }
 
 	        _encoder.encode();
@@ -930,6 +928,7 @@ public class Model {
             return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
         } else if (editedTask.getTaskType().equals(TaskType.NORMAL)) {
             editedTask.setTaskType(TaskType.EVENT);
+            editedTask.setStartDate(LocalDateTime.now());
         }
 	    
         LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
@@ -1029,6 +1028,14 @@ public class Model {
 	private void updateRedoLog(String type, Task taskObj) {
 	    _redoLog.push(type);
 	    _redoTaskObjLog.push(taskObj);
+	}
+	
+	private void setTaskComplete(Task taskObj) {
+	    taskObj.setCompleted(true);
+	}
+	
+	private void setTaskIncomplete(Task taskObj) {
+	    taskObj.setCompleted(false);
 	}
 	
 	/**
