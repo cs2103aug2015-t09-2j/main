@@ -198,7 +198,7 @@ public class Logic {
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
                 feedback.setSearch(true);
-                
+
                 tasksFound = feedback.getViewState().getViewStateSize();            
                 String keyword = commandDetail.getFindKeywords();               
                 feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
@@ -207,8 +207,8 @@ public class Logic {
 
             case SET_LOCATION :
                 String newSaveLocation = (String) commandDetail.getFilePath();
-                setSourcePath(newSaveLocation);
                 feedback.setResponse(model_.setLocation(commandDetail));
+                setSourcePath(newSaveLocation);
                 feedback.setViewState(getDefaultViewState());
                 break;
                 
