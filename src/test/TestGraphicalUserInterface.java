@@ -86,7 +86,6 @@ public class TestGraphicalUserInterface extends GuiTest {
         ViewDataPackage data = outputs.get(0);
         commandInput.setText(input);
         System.out.println(String.format("Testing: \"%s\"", input));
-        sleep(1, TimeUnit.SECONDS);     
         click("#inputButton"); 
         click("#commandInputBox");       
         
@@ -96,8 +95,9 @@ public class TestGraphicalUserInterface extends GuiTest {
             //type(input).push(KeyCode.ENTER);
             commandInput.setText(input);
             System.out.println(String.format("Testing: \"%s\"", input));
-            sleep(1, TimeUnit.SECONDS);
+            sleep(250, TimeUnit.MILLISECONDS);
             push(KeyCode.ENTER);
+            sleep(250, TimeUnit.MILLISECONDS);
             
             verifyView(data);            
         }

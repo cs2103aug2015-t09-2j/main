@@ -921,3 +921,335 @@ DATE_OUTPUT
 10.
 do future homework
 Due: 11:59 PM
+
+#event add after normal task long date away
+EVENT_INPUT
+add far future event from
+DATE_INPUT_2
+d/MM/yy
+1001
+8am
+to
+DATE_INPUT_2
+d/MM/yy
+1002
+11pm
+
+OUTPUT
+Task: far future event added.
+DIRECT_OUTPUT
+Overdue
+1
+DATE_OUTPUT
+1.
+do late homework
+Due:
+-2
+11:59 PM
+DIRECT_OUTPUT
+Today
+1
+EVENT
+2.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+DIRECT_OUTPUT
+Tomorrow
+1
+3.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+3
+1
+EVENT
+4.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT
+4
+1
+EVENT
+5.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT
+6
+1
+6.
+do homework3
+Due: 10:00 AM
+DATE_OUTPUT
+7
+1
+7.
+do homework
+Due: 11:59 PM
+
+DIRECT_INPUT
+view all
+
+OUTPUT
+Displaying 11 tasks.
+DIRECT_OUTPUT
+Task to do
+1
+1.
+study notes
+
+DIRECT_OUTPUT
+Overdue
+1
+DATE_OUTPUT
+2.
+do late homework
+Due:
+-2
+11:59 PM
+DIRECT_OUTPUT
+Today
+2
+EVENT
+3.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+4.
+do homework1
+Due: 11:59 PM
+DIRECT_OUTPUT
+Tomorrow
+1
+5.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+3
+1
+EVENT
+6.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT
+4
+1
+EVENT
+7.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT
+6
+1
+8.
+do homework3
+Due: 10:00 AM
+DATE_OUTPUT
+7
+1
+9.
+do homework
+Due: 11:59 PM
+DATE_OUTPUT
+1000
+1
+10.
+do future homework
+Due: 11:59 PM
+DIRECT_OUTPUT
+Events
+1
+EVENT
+11.
+far future event
+1001
+08:00 AM
+1002
+11:00 PM
+
+#event add during normal task long date away
+EVENT_INPUT
+add a little less far away future event from
+DATE_INPUT_2
+d/MM/yy
+999
+2am
+to
+DATE_INPUT_2
+d/MM/yy
+1000
+9pm
+
+OUTPUT
+Task: a little less far away future event added.
+DIRECT_OUTPUT
+Overdue
+1
+DATE_OUTPUT
+1.
+do late homework
+Due:
+-2
+11:59 PM
+DIRECT_OUTPUT
+Today
+1
+EVENT
+2.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+DIRECT_OUTPUT
+Tomorrow
+1
+3.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+3
+1
+EVENT
+4.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT
+4
+1
+EVENT
+5.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT
+6
+1
+6.
+do homework3
+Due: 10:00 AM
+DATE_OUTPUT
+7
+1
+7.
+do homework
+Due: 11:59 PM
+
+DIRECT_INPUT
+view all
+
+OUTPUT
+Displaying 12 tasks.
+DIRECT_OUTPUT
+Task to do
+1
+1.
+study notes
+
+DIRECT_OUTPUT
+Overdue
+1
+DATE_OUTPUT
+2.
+do late homework
+Due:
+-2
+11:59 PM
+DIRECT_OUTPUT
+Today
+2
+EVENT
+3.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+4.
+do homework1
+Due: 11:59 PM
+DIRECT_OUTPUT
+Tomorrow
+1
+5.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT
+3
+1
+EVENT
+6.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT
+4
+1
+EVENT
+7.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT
+6
+1
+8.
+do homework3
+Due: 10:00 AM
+DATE_OUTPUT
+7
+1
+9.
+do homework
+Due: 11:59 PM
+DATE_OUTPUT
+999
+1
+EVENT
+10.
+a little less far away future event
+999
+02:00 AM
+1000
+09:00 PM
+DATE_OUTPUT
+1000
+1
+11.
+do future homework
+Due: 11:59 PM
+DIRECT_OUTPUT
+Events
+1
+EVENT
+12.
+far future event
+1001
+08:00 AM
+1002
+11:00 PM

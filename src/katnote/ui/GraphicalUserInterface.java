@@ -22,7 +22,7 @@ import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
     private static GraphicalUserInterface instance;
-    private static final Logger log = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
+    private static final Logger LOG = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
     private static final String CORE_LAYOUT_FXML = "/katnote/resources/ui/CoreLayout.fxml";
     private static final String SPLASH_LAYOUT_FXML = "/katnote/resources/ui/SplashLayout.fxml";
 
@@ -35,20 +35,12 @@ public class GraphicalUserInterface extends Application {
     private TaskViewFormatter displayedTaskFormat;
     private CommandBarController commandBarController;
 
-    public TaskViewFormatter getDisplayedTaskList() {
-        return displayedTaskFormat;
-    }
-
     //psuedo singleton method for test access
     public static GraphicalUserInterface getInstance() {
         if (instance == null) {
             throw new NullPointerException("App not initialized");
         }
         return instance;
-    }
-
-    public CommandBarController getCommandController() {
-        return commandBarController;
     }
 
     @Override
@@ -62,7 +54,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void loadResources() {
-        log.log(Level.INFO, "loading resources");
+        LOG.log(Level.INFO, "loading resources");
         Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
         Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
     }
@@ -80,7 +72,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void initRootLayout() {
-        log.log(Level.FINE, "initilizing rootLayout");
+        LOG.log(Level.FINE, "initilizing rootLayout");
 
         loadSplash();
         loadCoreLayout();
@@ -92,7 +84,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void loadSplash() {
-        log.log(Level.FINE, "initilizing rootLayout");
+        LOG.log(Level.FINE, "initilizing rootLayout");
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
@@ -144,7 +136,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void setUpTaskViewer() {
-        log.log(Level.INFO, "setUpTaskViewer");
+        LOG.log(Level.INFO, "setUpTaskViewer");
         taskViewer = new TaskViewer();
         coreLayout.setCenter(taskViewer);
         displayedTaskFormat = updateTaskViewer(logic.getInitialViewState(), false);
@@ -152,14 +144,14 @@ public class GraphicalUserInterface extends Application {
     }
 
     private TaskViewFormatter updateTaskViewer(ViewState viewState, boolean isSearch) {
-        log.log(Level.INFO, "updateTaskViewer");
+        LOG.log(Level.INFO, "updateTaskViewer");
         TaskViewFormatter viewFormat = new TaskViewFormatter(viewState, isSearch);
         taskViewer.loadTaskFormat(viewFormat);
         return viewFormat;
     }
 
     public void handleCommandInput(String inputText) {
-        log.log(Level.FINE, "input recieved: " + inputText);
+        LOG.log(Level.FINE, "input recieved: " + inputText);
         try {
             UIFeedback feedback = logic.execute(inputText);
             boolean isErrorResponse = feedback.isAnError();
@@ -170,7 +162,7 @@ public class GraphicalUserInterface extends Application {
                 processViewState(feedback);
             }
         } catch (Exception e) {
-            log.log(Level.WARNING, "Exception: " + e.getMessage());
+            LOG.log(Level.WARNING, "Exception: " + e.getMessage());
             commandBarController.setErrorText(e.getMessage());
             e.printStackTrace();
         }
