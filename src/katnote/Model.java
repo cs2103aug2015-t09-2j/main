@@ -890,10 +890,7 @@ public class Model {
                 editedTask.setTitle(editOption.getOptionValue());
                 break;
             case CommandProperties.TIME_FROM :
-                response = startDateEdit(editedTask, editOption);
-                if (response != null) {
-                    return response;
-                }
+                startDateEdit(editedTask, editOption);
                 break;
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
@@ -922,10 +919,10 @@ public class Model {
 	    return null;
 	}
 	
-	private String startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
+	private void startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
-            return handleException(null, MSG_ERR_INVALID_ARGUMENTS);
+            handleException(null, MSG_ERR_INVALID_ARGUMENTS);
         } else if (editedTask.getTaskType().equals(TaskType.NORMAL)) {
             editedTask.setTaskType(TaskType.EVENT);
             editedTask.setStartDate(LocalDateTime.now());
@@ -934,18 +931,17 @@ public class Model {
         LocalDateTime newStartDate = DateTimeUtils.updateDateTime(editedTask.getStartDate(), editOption.getOptionValueDate());
         
         if (editedTask.getEndDate().isBefore(newStartDate)) {
-            return handleException(null, MSG_ERR_START_AFTER_END);
+            handleException(null, MSG_ERR_START_AFTER_END);
         }
         
         editedTask.setStartDate(editOption.getOptionValueDate());
-        
-        return null;
 	}
 	
 	private void dueDateEdit(Task editedTask, EditTaskOption editOption) {
 	    
 	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
 	        editedTask.setTaskType(TaskType.NORMAL); 
+	        editedTask.setEndDate(LocalDateTime.now());
 	    } 
 	    editedTask.setEndDate(editOption.getOptionValueDate());
 	}
