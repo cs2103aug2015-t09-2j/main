@@ -26,6 +26,9 @@ public class GraphicalUserInterface extends Application {
     private static final String CORE_LAYOUT_FXML = "/katnote/resources/ui/CoreLayout.fxml";
     private static final String SPLASH_LAYOUT_FXML = "/katnote/resources/ui/SplashLayout.fxml";
 
+    private static boolean _isTestMode = false;
+    private static String _testFilePath = null;
+    
     private StackPane rootLayout;
     private BorderPane coreLayout;
     private BorderPane splashLayout;
@@ -41,6 +44,11 @@ public class GraphicalUserInterface extends Application {
             throw new NullPointerException("App not initialized");
         }
         return instance;
+    }    
+    
+    public static void configureTestMode(boolean isTestMode, String testFilePath){
+        _isTestMode = isTestMode;
+        _testFilePath = testFilePath;
     }
 
     @Override
@@ -64,7 +72,11 @@ public class GraphicalUserInterface extends Application {
         this.primaryStage.setTitle("KatNote");
         this.primaryStage.getIcons().add(new Image("/katnote/resources/ui/Kat.png"));
         try {
-            logic = new Logic();
+            if(_isTestMode){
+                logic = new Logic(_testFilePath);
+            } else {
+                logic = new Logic();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

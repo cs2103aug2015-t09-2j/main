@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
@@ -17,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
-import katnote.ui.CommandBarController;
 import katnote.ui.GraphicalUserInterface;
 import katnote.ui.TaskDetailedRow;
 import katnote.ui.TaskRow;
@@ -26,6 +26,7 @@ import test.ViewDataPackage.TaskGroupPackage;
 
 public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
+    private static final String TEST_FILE_PATH = "TestFiles/SystemTestFiles/";
     TextField commandInput;
     GraphicalUserInterface app;     
     
@@ -108,12 +109,19 @@ public class TestGraphicalUserInterface extends GuiTest {
     protected Parent getRootNode() {
         return null;
     }
+    
+    @After
+    public void cleanUp(){
+        File f = new File(TEST_FILE_PATH + "data.txt");
+        if(f.exists()){
+            f.delete();
+        }
+    }
 
     @Override
     public void setupStage() throws Throwable {
-        // reset data
-        File f = new File("data.txt");
-        f.delete();
+        GraphicalUserInterface.configureTestMode(true, TEST_FILE_PATH);        
+        
         new Thread(() -> {
             GraphicalUserInterface.launch(GraphicalUserInterface.class);            
         }).start();
