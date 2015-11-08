@@ -464,7 +464,7 @@ do homework
 Due: 11:59 PM
 
 DIRECT_INPUT
-mark 3 done
+mark 3 completed
 
 OUTPUT
 Task: do homework1 is marked completed.
