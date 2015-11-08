@@ -96,7 +96,8 @@ public class Model {
 	
 	private static final String MSG_ERR_IO = "Invalid input, input is either corrupted, missing or inaccessible.";
 	private static final String MSG_ERR_MISSING_DATA = "Cannot locate data.txt in source.";
-	private static final String MSG_ERR_INVALID_ARGUMENTS = "Invalid arguments.";
+	private static final String MSG_ERR_INVALID_ARGUMENTS = "Error. Invalid arguments.";
+	private static final String MSG_ERR_INVALID_MODIFICATION = "Unable to execute this modification.";
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
 	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
@@ -251,16 +252,14 @@ public class Model {
 	    Task oldTask = new Task(editedTask);
 	    String optionName = editOption.getOptionName();
 	    
-	    _response = modifyTask(optionName, editedTask, editOption);
+	    modifyTask(optionName, editedTask, editOption);
 	    splitTaskType(_dataLog);
 	    
 	    _encoder.encode();
 	    
 	    updateUndoLog(EDIT_MODIFY, oldTask);
 	    
-	    if (_response == null) {
-	        _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
-	    }
+	    _response = String.format(MSG_EDIT_TASK_MODIFIED, editedTask.getTitle());
 	    return _response;
 	}
 	
@@ -879,9 +878,7 @@ public class Model {
 	    }
 	}
 	
-	private String modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
-	    
-	    String response;
+	private void modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    switch (optionName) {
 //            case CommandProperties.TASK_ID :
@@ -913,16 +910,14 @@ public class Model {
 //                editedTask.setCategory(editOption.getOptionValue());
 //                break;
             default:
-                return handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
         }
-	    
-	    return null;
 	}
 	
 	private void startDateEdit(Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    if (editedTask.getTaskType().equals(TaskType.FLOATING)) {
-            handleException(null, MSG_ERR_INVALID_ARGUMENTS);
+            handleException(null, MSG_ERR_INVALID_MODIFICATION);
         } else if (editedTask.getTaskType().equals(TaskType.NORMAL)) {
             editedTask.setTaskType(TaskType.EVENT);
             editedTask.setStartDate(LocalDateTime.now());
