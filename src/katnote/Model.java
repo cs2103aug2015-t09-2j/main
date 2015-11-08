@@ -934,7 +934,7 @@ public class Model {
             handleException(null, MSG_ERR_START_AFTER_END);
         }
         
-        editedTask.setStartDate(editOption.getOptionValueDate());
+        editedTask.setStartDate(newStartDate);
 	}
 	
 	private void dueDateEdit(Task editedTask, EditTaskOption editOption) {
