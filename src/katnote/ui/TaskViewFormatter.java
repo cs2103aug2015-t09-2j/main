@@ -184,8 +184,8 @@ public class TaskViewFormatter {
     }
 
     private Task extractTheEarlierTasks(ArrayList<Task> normalList, ArrayList<Task> eventList) {
-        Task normalTask = normalList.get(0);
-        Task event = eventList.get(0);
+        Task normalTask = normalList.get(FRONT_INDEX);
+        Task event = eventList.get(FRONT_INDEX);
         LocalDate eventStartDate = event.getStartDate().toLocalDate();
         LocalTime eventStartTime = event.getStartDate().toLocalTime();
         LocalDate eventEndDate = event.getEndDate().toLocalDate();
