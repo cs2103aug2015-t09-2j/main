@@ -31,6 +31,7 @@ public class TestModel {
     private static final String TEST_PATH_SETDEFINITION = "TestFiles/TestModel/setDefinitionExpected.txt";
     private static final String TEST_PATH_SETLOCATION = "TestFiles/TestModel/setLocationExpected.txt";
     private static final String TEST_PATH_POSTPONE = "TestFiles/TestModel/postponeExpected.txt";
+    private static final String TEST_PATH_UNDOREDO = "TestFiles/TestModel/undoredoExpected.txt";
 
     // Messages
     private static final String MSG_ERR_IO = "I/O Exception.";
@@ -447,12 +448,15 @@ public class TestModel {
             Model testModel = new Model(TEST_PATH);
             KatDateTime date1 = new KatDateTime(LocalDateTime.of(2015, 11, 26, 23, 59, 59));
             KatDateTime date2 = new KatDateTime(LocalDateTime.of(2015, 12, 23, 23, 59, 59));
+            KatDateTime date3 = new KatDateTime(LocalDateTime.of(2015, 12, 10, 12, 00));
             CommandDetail addTaskCmd1 = createTask("feed cat", TaskType.NORMAL, null, null, date1);
             CommandDetail addTaskCmd2 = createTask("feed fish", TaskType.NORMAL, null, null, date2);
             CommandDetail addTaskCmd3 = createTask("feed dog", TaskType.FLOATING, null, null, null);
+            CommandDetail addTaskCmd4 = createTask("feed dog", TaskType.EVENT, date1, date2, null);
             Task task1 = new Task(addTaskCmd1);
             Task task2 = new Task(addTaskCmd2);
             Task task3 = new Task(addTaskCmd3);
+            Task task4 = new Task(addTaskCmd4);
 
             testModel.addTask(task1);
             testModel.addTask(task2);
@@ -463,6 +467,7 @@ public class TestModel {
             boolean result3 = false;
             boolean result4 = false;
             boolean result5 = true;
+            boolean result6;
 
             // Procedure
             testModel.undo();
@@ -527,12 +532,44 @@ public class TestModel {
                         + testModel.getData().get(2).getTitle() + " Expected task(2): " + task3.getTitle());
                 result5 = false;
             }
+            
+            EditTaskOption option1 = new EditTaskOption(CommandProperties.TASK_TITLE, "New Title");
+            EditTaskOption option2 = new EditTaskOption(CommandProperties.TIME_BY, "28/11 2am");
+            
+            testModel.editComplete(0);
+            
+            testModel.editModify(0, option1);
+
+            testModel.addTask(task4);
+            
+            testModel.editModify(3, option2);
+            
+            testModel.postpone(3, date3);
+            
+            testModel.editDelete(2);
+            
+            testModel.undo();
+            testModel.undo();
+            testModel.undo();
+            testModel.undo();
+            testModel.undo();
+            testModel.undo();
+            
+            testModel.redo();
+            testModel.redo();
+            testModel.redo();
+            testModel.redo();
+            testModel.redo();
+            testModel.redo();
+            
+            result6 = compareFile(testModel.getDataFilePath(), TEST_PATH_UNDOREDO);
 
             System.out.println("Result 1 - Undo Test 1: " + result1 + " Expected: true");
             System.out.println("Result 2 - Undo Test 2: " + result2 + " Expected: true");
             System.out.println("Result 3 - Redo Test 1: " + result3 + " Expected: true");
             System.out.println("Result 4 - Redo Test 2: " + result4 + " Expected: true");
             System.out.println("Result 5 - Undo + Redo Test 1: " + result5 + " Expected: true");
+            System.out.println("Result 6 - Undo + Redo Test 2: " + result6 + " Excepted: true");
             System.out.println("=== End Test ===\n");
 
             clearExistingData(TEST_PATH);
@@ -542,6 +579,7 @@ public class TestModel {
             assertTrue(result3);
             assertTrue(result4);
             assertTrue(result5);
+            assertTrue(result6);
 
         } catch (Exception e) {
             System.err.println(e);
