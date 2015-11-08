@@ -155,10 +155,14 @@ public class Logic {
                 break;
 
             case EDIT_COMPLETE :
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());               
-                feedback.setResponse(model_.editComplete(taskID));                
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
+                if (commandDetail.getTaskCompletedOption()) {
+                    feedback.setResponse(model_.editComplete(taskID));  
+                } else {
+                    feedback.setResponse(model_.editIncomplete(taskID));
+                }
                 feedback.setViewState(getDefaultViewState());
-                break;
+                break; 
             
             case POSTPONE:
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());               

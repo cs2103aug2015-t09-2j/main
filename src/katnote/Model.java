@@ -80,6 +80,7 @@ public class Model {
 	private static final String MSG_DATA_FILE_READY = "data.txt is ready for use in %s";
 	private static final String MSG_TASK_ADDED = "Task: %s added.";
 	private static final String MSG_EDIT_TASK_COMPLETED = "Task: %s is marked completed.";
+	private static final String MSG_EDIT_TASK_INCOMPLETE = "Task: %s is marked incomplete.";
 	private static final String MSG_EDIT_TASK_MODIFIED = "Task: %s is successfully modified.";
 	private static final String MSG_EDIT_TASK_DELETED = "Task: %s is successfully deleted.";
 	private static final String MSG_EDIT_TASK_REPLACED = "Task: %s is successfully replaced with %s";
@@ -99,6 +100,8 @@ public class Model {
 	private static final String MSG_ERR_JSON_PARSE_ERROR = "Unabled to parse String to JSONObject.";
 	private static final String MSG_ERR_TASK_NOT_MODIFIED = "Unable to process modify parameters.";
 	private static final String MSG_ERR_IMPORT_LOCATION_MISSING = "Unable to find data.txt in specified import location.";
+	private static final String MSG_ERR_ALREADY_COMPLETE = "Task: %s is already completed.";
+	private static final String MSG_ERR_ALREADY_INCOMPLETE = "Task: %s is already incomplete.";
 	private static final String MSG_ERR_UNDO = "No actions left to undo.";
 	private static final String MSG_ERR_REDO = "No actions left to redo.";
 	private static final String MSG_ERR_REVERSE_EXCEPTION = "Unable to perform a reverse for action : ";
@@ -202,6 +205,11 @@ public class Model {
 	public String editComplete(int taskID) throws Exception {
 		
 		Task editedTask = _dataLog.get(taskID);
+		if (editedTask.isCompleted()) {
+            _response = handleException(null, String.format(MSG_ERR_ALREADY_COMPLETE, editedTask.getTitle()));
+            return _response;
+        }
+		
 	    editedTask.setCompleted(true);
 	    
 	    _encoder.encode();
@@ -210,6 +218,24 @@ public class Model {
 	    
 		_response = String.format(MSG_EDIT_TASK_COMPLETED, editedTask.getTitle());
 		return _response;
+	}
+	
+	public String editIncomplete(int taskID) throws Exception {
+	    
+	    Task editedTask = _dataLog.get(taskID);
+	    if (!editedTask.isCompleted()) {
+	        _response = handleException(null, String.format(MSG_ERR_ALREADY_INCOMPLETE, editedTask.getTitle()));
+	        return _response;
+	    }
+	    
+	    editedTask.setCompleted(false);
+	    
+	    _encoder.encode();
+	    
+	    updateUndoLog(EDIT_COMPLETE, editedTask);
+	    
+	    _response = String.format(MSG_EDIT_TASK_INCOMPLETE, editedTask.getTitle());
+	    return _response;
 	}
 	
 	/**
@@ -570,7 +596,11 @@ public class Model {
 	private void undoComplete(Task taskObj) throws Exception {
         // Change task to incomplete.
         try {
-            taskObj.setCompleted(false);
+            if (taskObj.isCompleted()) {
+                taskObj.setCompleted(false);
+            } else {
+                taskObj.setCompleted(true);
+            }
             
             _encoder.encode();
             
@@ -703,7 +733,11 @@ public class Model {
 	private void redoComplete(Task taskObj) throws Exception {
 	    // Change task to incomplete.
 	    try {
-	        taskObj.setCompleted(true);
+	        if (taskObj.isCompleted()) {
+	            taskObj.setCompleted(false);
+	        } else {
+	            taskObj.setCompleted(true);
+	        }
 
 	        _encoder.encode();
 
@@ -852,8 +886,8 @@ public class Model {
 	    String response;
 	    
 	    switch (optionName) {
-            case CommandProperties.TASK_ID :
-                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//            case CommandProperties.TASK_ID :
+//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
             case CommandProperties.TASK_TITLE :
                 editedTask.setTitle(editOption.getOptionValue());
                 break;
@@ -867,22 +901,22 @@ public class Model {
             case CommandProperties.TIME_TO :
                 dueDateEdit(editedTask, editOption);
                 break;
-            case CommandProperties.TIME_REPEAT :
-                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//              editedTask.setRepeatOption(editOption.getOptionValue());
-//              break;
-            case CommandProperties.TIME_UNTIL :
-                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//              editedTask.setTerminateDate(editOption.getOptionValueDate());
-//              break;
-            case CommandProperties.TASK_DESCRIPTION :
-                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//              editedTask.setDescription(editOption.getOptionValue());
-//              break;
-            case CommandProperties.TASK_CATEGORY :
-                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//              editedTask.setCategory(editOption.getOptionValue());
-//              break;
+//            case CommandProperties.TIME_REPEAT :
+//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//                editedTask.setRepeatOption(editOption.getOptionValue());
+//                break;
+//            case CommandProperties.TIME_UNTIL :
+//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//                editedTask.setTerminateDate(editOption.getOptionValueDate());
+//                break;
+//            case CommandProperties.TASK_DESCRIPTION :
+//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//                editedTask.setDescription(editOption.getOptionValue());
+//                break;
+//            case CommandProperties.TASK_CATEGORY :
+//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
+//                editedTask.setCategory(editOption.getOptionValue());
+//                break;
             default:
                 return handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
         }
