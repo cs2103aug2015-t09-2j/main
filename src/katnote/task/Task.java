@@ -34,7 +34,15 @@ public class Task {
     public Task() {
         
     }
-
+    
+    // Constructor of Task object with only title, TaskType and completed status for testing
+    public Task(String taskTitle, TaskType type, Boolean completed) {
+        setTitle(taskTitle);
+        setTaskType(type);
+        setCompleted(completed);
+    }
+    
+    
     /*
      * Constructor using CommandDetail
      */
@@ -66,11 +74,6 @@ public class Task {
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
-    }
-
-    public Task(String taskTitle, TaskType type) {
-        setTitle(taskTitle);
-        setTaskType(type);
     }
     
     // Constructor for duplicating task object without reference.

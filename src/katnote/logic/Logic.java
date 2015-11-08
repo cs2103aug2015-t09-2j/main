@@ -49,8 +49,9 @@ public class Logic {
     private static final String MSG_SOURCE_PATH = "sourcepath.txt";
     private static final String MSG_DEFAULT_SOURCE_PATH = "";
 
-    // Constructor
-    public Logic() throws Exception {
+    /* Constructors */
+    public Logic() throws Exception {        
+        tracker_ = new Tracker();
         
         // Create Model object
         File sourcePath = new File(MSG_SOURCE_PATH);
@@ -69,10 +70,7 @@ public class Logic {
         br.close();
 
         assert (sourcePathStr != null);
-        model_ = new Model(sourcePathStr);
-        
-        // Create Tracker object
-        tracker_ = new Tracker();
+        model_ = new Model(sourcePathStr);        
     }
     
     public Logic(String path) throws Exception {
@@ -113,6 +111,14 @@ public class Logic {
      */
     public ArrayList<Integer> getTrackerIDList() {
         return tracker_.getIDList();
+    }
+    
+    public ArrayList<Task> getModelData() {
+        return model_.getData();
+    }
+    
+    public ArrayList<Task> getModelEventData() {
+        return model_.getEventTasks();
     }
     
     /**
@@ -178,7 +184,6 @@ public class Logic {
 
             case VIEW_TASK :             
                 feedback.setViewState(find(commandDetail));
-                //feedback.setSearch(true);
                 
                 tasksFound = feedback.getViewState().getViewStateSize();               
                 feedback.setResponse(String.format(MSG_RESPONSE_VIEW, tasksFound));
@@ -206,9 +211,9 @@ public class Logic {
                 break;
 
             case SET_LOCATION :
-                String newSaveLocation = (String) commandDetail.getFilePath();
-                setSourcePath(newSaveLocation);
+                String newSaveLocation = (String) commandDetail.getFilePath();               
                 feedback.setResponse(model_.setLocation(commandDetail));
+                setSourcePath(newSaveLocation);
                 feedback.setViewState(getDefaultViewState());
                 break;
                 
@@ -352,7 +357,6 @@ public class Logic {
         if (commandDetail.getDueDate() == null) {          
             dueDate = null;
         } else {  
-            //System.out.println("dueDate from command detail not null.");
             KatDateTime katDate = commandDetail.getDueDate();
             
             // if time isn't specified, set a default time 23:59
@@ -372,7 +376,13 @@ public class Logic {
         }
         return dueDate;
     }
-
+    
+    //TODO:
+    /**
+     * 
+     * @param newPath
+     * @throws FileNotFoundException
+     */
     private void setSourcePath(String newPath) throws FileNotFoundException {
 
         File sourcePath = new File(MSG_SOURCE_PATH);
@@ -647,7 +657,10 @@ class Search {
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
             if (task.isCompleted() == isCompleted_) {
+                //System.out.println(task.getTitle() + " is " + isCompleted_);
                 tasksFound.add(task);
+            } else {
+                //System.out.println(task.getTitle() + " is NOT " + isCompleted_);
             }
         }
         return tasksFound;

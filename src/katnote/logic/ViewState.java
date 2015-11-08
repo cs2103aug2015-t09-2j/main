@@ -10,8 +10,7 @@ import katnote.task.Task;
 public class ViewState {
     private ArrayList<Task> normalTasks_;
     private ArrayList<Task> floatingTasks_;
-    private ArrayList<Task> eventTasks_; // not needed for now
-    private ArrayList<Task> allTasks_; // not needed for now
+    private ArrayList<Task> eventTasks_;
     
     //Constructor
     public ViewState() {
@@ -35,9 +34,6 @@ public class ViewState {
         eventTasks_ = new ArrayList<Task>(eventTasks);
     }
     
-    public ViewState(ArrayList<Task> all) {
-        allTasks_ = new ArrayList<Task> (all);
-    }
     
     // Accessors/Getters 
     public ArrayList<Task> getNormalTasks() {
@@ -51,11 +47,12 @@ public class ViewState {
     public ArrayList<Task> getEventTasks() {
         return eventTasks_;
     }
+       
     
-    public ArrayList<Task> getAllTasks() {
-        return allTasks_;
-    }
-    
+    /**
+     * 
+     * @return Returns the total number of tasks found in all 3 task lists.
+     */
     public int getViewStateSize() {
         int size = 0;
         
@@ -86,11 +83,7 @@ public class ViewState {
     
     public void setEventTasks(ArrayList<Task> list) {
         eventTasks_ = new ArrayList<Task>(list);
-    }
-    
-    public void setAllTasks(ArrayList<Task> all) {
-        allTasks_ = new ArrayList<Task>(all);
-    }
+    }   
             
 }
 
