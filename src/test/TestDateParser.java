@@ -10,17 +10,26 @@ import katnote.utils.KatDateTime;
 
 public class TestDateParser {
 
+    /*
+     * Test DateParser.parseDateTime method with relative date. 
+     */
     @Test
-    public void testRelativeParser1() throws CommandParseException {
+    public void testRelativeParse() throws CommandParseException {
         KatDateTime date;
+        
         date = DateParser.parseDateTime("7pm tomorrow");
         assertNotNull(date);
-        System.out.println(date.toString());
+        //System.out.println(date.toString());
+        
+        date = DateParser.parseDateTime("next week 9am");
+        assertNotNull(date);
     }
 
-    // *
+    /*
+     * Test DateParser.parseDateTime method with absolute date or no date
+     */
     @Test
-    public void testAbsoluteDateParser() throws CommandParseException {
+    public void testAbsoluteDateParse() throws CommandParseException {
         KatDateTime date;
 
         // Test "7pm" (only time)
@@ -37,11 +46,6 @@ public class TestDateParser {
         date = DateParser.parseDateTime("19/11/2015 12:00pm");
         assertNotNull(date);
         assertEquals("2015-11-19T12:00", date.toString());
-
-        // Test "19/Aug 19:00"
-        date = DateParser.parseDateTime("19/Aug 19:00");
-        assertNotNull(date);
-        assertEquals("2015-08-19T19:00", date.toString());
 
         // Test "19/Aug 19:00"
         date = DateParser.parseDateTime("19/Aug 19:00");
