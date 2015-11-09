@@ -21,7 +21,7 @@ DATE_DIRECT_INPUT
 30/2/2016
 
 OUTPUT
-Invalid command type: UNKNOWN
+Invalid format for add command
 DATE_OUTPUT_HEADER
 7
 1
@@ -34,7 +34,7 @@ DIRECT_INPUT
 
 
 OUTPUT
-Invalid command type: UNKNOWN
+Invalid format for add command
 DATE_OUTPUT_HEADER
 7
 1
@@ -397,6 +397,68 @@ Due: 10:00 AM
 do homework
 Due: 11:59 PM
 
+#edit title invalid index
+DIRECT_INPUT
+edit 9 title invalid index
+
+OUTPUT
+Invalid index!
+DIRECT_OUTPUT_HEADER
+Task to do
+1
+1.
+study notes
+
+DIRECT_OUTPUT_HEADER
+Today
+2
+EVENT
+2.
+live cat stream
+0
+12:00 AM
+0
+12:00 PM
+3.
+do homework1
+Due: 11:59 PM
+DIRECT_OUTPUT_HEADER
+Tomorrow
+1
+4.
+do homework2
+Due: 05:00 PM
+DATE_OUTPUT_HEADER
+3
+1
+EVENT
+5.
+project meeting
+3
+12:00 AM
+3
+11:59 PM
+DATE_OUTPUT_HEADER
+4
+1
+EVENT
+6.
+Celebrate Kat's Birthday!
+4
+10:00 AM
+4
+12:00 PM
+DATE_OUTPUT_HEADER
+7
+2
+7.
+do homework3
+Due: 10:00 AM
+8.
+do homework
+Due: 11:59 PM
+
+#edit date of normal task
 INPUT
 edit 7 due
 DATE_INPUT
@@ -463,6 +525,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#marking 1 task as done
 DIRECT_INPUT
 mark 3 completed
 
@@ -523,6 +586,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#testing view completed command
 DIRECT_INPUT
 view tasks completed
 
@@ -535,6 +599,7 @@ Today
 do homework1
 Due: 11:59 PM
 
+#testing find command (things found)
 DIRECT_INPUT
 find do
 
@@ -568,13 +633,14 @@ Due:
 7
 11:59 PM
 
-
+#testing find command (things not found)
 DIRECT_INPUT
 find 45671354
 
 OUTPUT
 Found 0 tasks with keyword 45671354.
 
+#testing view all
 DIRECT_INPUT
 view all
 
@@ -638,6 +704,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#marking 1 nornal task done
 DIRECT_INPUT
 mark 1 completed
 
@@ -692,6 +759,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#testing view completed after marking normal task done
 DIRECT_INPUT
 view tasks completed
 
@@ -844,6 +912,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#view all to observe input of farway date
 DIRECT_INPUT
 view all
 
@@ -995,6 +1064,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#view all to observe input of farway date
 DIRECT_INPUT
 view all
 
@@ -1156,6 +1226,7 @@ DATE_OUTPUT_HEADER
 do homework
 Due: 11:59 PM
 
+#view all to observe input of farway date
 DIRECT_INPUT
 view all
 
