@@ -22,6 +22,10 @@ public class KatNoteLogger {
 
     public static KatNoteLogger instance = null;
 
+    /**
+     * Singleton class set up to load logging properties from file or within
+     * application
+     */
     private KatNoteLogger() {
         try {
             File logFile = new File(LOGGING_PROPERTIES_FILENAME);
@@ -47,6 +51,11 @@ public class KatNoteLogger {
         log.setLevel(Level.ALL);
     }
 
+    /**
+     * Gets the singleton object of the KatNoteLogger class
+     * 
+     * @return KatNoteLogger singleton object
+     */
     public static KatNoteLogger getInstance() {
         if (instance == null) {
             instance = new KatNoteLogger();
@@ -54,10 +63,22 @@ public class KatNoteLogger {
         return instance;
     }
 
+    /**
+     * Sets the KatNote undefined level
+     * 
+     * @param level default log level
+     */
     public void setLevel(Level level) {
         log.setLevel(level);
     }
 
+    /**
+     * Ensures the logging property has been loaded by loading the instance of
+     * the class
+     * 
+     * @param className class name of class to be logged
+     * @return Logger object
+     */
     public static Logger getLogger(String className) {
         getInstance();
         Logger log = Logger.getLogger(className);

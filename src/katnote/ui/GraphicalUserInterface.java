@@ -21,13 +21,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
-    private static GraphicalUserInterface instance;
+    private static final String MSG_LOG_INITILIZING_ROOT_LAYOUT = "initilizing rootLayout";
+    private static final String APP_TITLE = "KatNote";
+    private static final String RESOURCE_PATH_KAT_IMAGE = "/katnote/resources/ui/Kat.png";
+    private static final String RESOURCE_PATH_SEN_BOLD = "/katnote/resources/ui/font/sen/sen-bold.otf";
+    private static final String RESOURCE_PATH_SEN_EXTRABOLD = "/katnote/resources/ui/font/sen/sen-extrabold.otf";
+    private static final String MSG_LOG_LOADING_RESOURCES = "loading resources";
     private static final Logger LOG = KatNoteLogger.getLogger(GraphicalUserInterface.class.getName());
     private static final String CORE_LAYOUT_FXML = "/katnote/resources/ui/CoreLayout.fxml";
     private static final String SPLASH_LAYOUT_FXML = "/katnote/resources/ui/SplashLayout.fxml";
 
     private static boolean _isTestMode = false;
     private static String _testFilePath = null;
+    private static GraphicalUserInterface instance;
 
     private StackPane rootLayout;
     private BorderPane coreLayout;
@@ -38,14 +44,11 @@ public class GraphicalUserInterface extends Application {
     private TaskViewFormatter displayedTaskFormat;
     private CommandBarController commandBarController;
 
-    // psuedo singleton method for test access
-    public static GraphicalUserInterface getInstance() {
-        if (instance == null) {
-            throw new NullPointerException("App not initialized");
-        }
-        return instance;
-    }
-
+    /**
+     * Used to setup a custom file path for testing requirements.
+     * @param isTestMode boolean to mark if the app will be starting up in test mode
+     * @param testFilePath the test file path for the app to write data to
+     */
     public static void configureTestMode(boolean isTestMode, String testFilePath) {
         _isTestMode = isTestMode;
         _testFilePath = testFilePath;
@@ -62,18 +65,18 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void loadResources() {
-        LOG.log(Level.INFO, "loading resources");
+        LOG.log(Level.INFO, MSG_LOG_LOADING_RESOURCES);
         Font.loadFont(
-                getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(),
+                getClass().getResource(RESOURCE_PATH_SEN_EXTRABOLD).toExternalForm(),
                 10);
-        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(),
+        Font.loadFont(getClass().getResource(RESOURCE_PATH_SEN_BOLD).toExternalForm(),
                 10);
     }
 
     private void initialize(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("KatNote");
-        this.primaryStage.getIcons().add(new Image("/katnote/resources/ui/Kat.png"));
+        this.primaryStage.setTitle(APP_TITLE);
+        this.primaryStage.getIcons().add(new Image(RESOURCE_PATH_KAT_IMAGE));
         try {
             if (_isTestMode) {
                 logic = new Logic(_testFilePath);
@@ -87,7 +90,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void initRootLayout() {
-        LOG.log(Level.FINE, "initilizing rootLayout");
+        LOG.log(Level.FINE, MSG_LOG_INITILIZING_ROOT_LAYOUT);
 
         loadSplash();
         loadCoreLayout();
@@ -99,7 +102,6 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void loadSplash() {
-        LOG.log(Level.FINE, "initilizing rootLayout");
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();

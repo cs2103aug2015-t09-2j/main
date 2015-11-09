@@ -28,7 +28,6 @@ public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final String TEST_FILE_PATH = "TestFiles/SystemTestFiles/";
     TextField commandInput;
-    GraphicalUserInterface app;
 
     public void verifyTaskGroup(TaskGroupPackage expectedDataSet, TaskViewGroup taskGroup) {
         String groupHeader = taskGroup.getGroupHeaderText();
@@ -130,6 +129,5 @@ public class TestGraphicalUserInterface extends GuiTest {
         click("#commandInputBox");
         commandInput = (TextField) find("#commandInputBox");
 
-        app = GraphicalUserInterface.getInstance();
     }
 }
