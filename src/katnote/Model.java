@@ -1,4 +1,4 @@
-//@@author A0124552
+//@@author A0124552M
 package katnote;
 
 import java.io.*;
