@@ -92,7 +92,7 @@ public class TestParser {
         CommandDetail commandDetail = Parser.parseCommand("-m 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
-        // assertEquals("completed", commandDetail.getMarkOption());
+        assertEquals(true, commandDetail.getTaskCompletedOption());
     }
 
     @Test
