@@ -9,7 +9,8 @@ public class EditTaskOption {
     private String taskOptionValue;
 
     /**
-     * Creates new EditTaskOption with desired option name and option value 
+     * Creates new EditTaskOption with desired option name and option value
+     * 
      * @param taskOptionName
      * @param taskOptionValue
      */
@@ -21,6 +22,7 @@ public class EditTaskOption {
     /**
      * Creates new EditTaskOption with the first word is option name and the
      * rest is option value
+     * 
      * @param editTaskOption
      */
     public EditTaskOption(String editTaskOption) {
@@ -30,6 +32,7 @@ public class EditTaskOption {
 
     /**
      * Returns option name
+     * 
      * @return option name
      */
     public String getOptionName() {
@@ -38,6 +41,7 @@ public class EditTaskOption {
 
     /**
      * Returns option value
+     * 
      * @return option value
      */
     public String getOptionValue() {
@@ -46,6 +50,7 @@ public class EditTaskOption {
 
     /**
      * Returns option value as an object based on the option name
+     * 
      * @return New Object representing the option value
      */
     public Object getOptionValueObject() {
@@ -54,6 +59,7 @@ public class EditTaskOption {
 
     /**
      * Returns option value as an KatDateTime object based on the option name
+     * 
      * @return New KatDateTime object representing the option value
      */
     public KatDateTime getOptionValueDate() {

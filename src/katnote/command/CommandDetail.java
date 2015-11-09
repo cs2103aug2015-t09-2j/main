@@ -14,6 +14,7 @@ public class CommandDetail {
 
     /**
      * Creates new CommandDetail object of corresponding command type
+     * 
      * @param commandType
      */
     public CommandDetail(CommandType commandType) {
@@ -31,8 +32,10 @@ public class CommandDetail {
 
     /**
      * Sets the type of command
-     * @param commandType New command type
-     */    
+     * 
+     * @param commandType
+     *            New command type
+     */
     public void setCommandType(CommandType commandType) {
         this.commandType = commandType;
     }
@@ -48,6 +51,7 @@ public class CommandDetail {
      * Associates the specified value with the specified key in the properties
      * map. If the map previously contained a mapping for the key, the old value
      * is replaced.
+     * 
      * @param key
      * @param value
      */
@@ -59,10 +63,11 @@ public class CommandDetail {
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key.
      *
-     * @param key The key whose presence in this map is to be tested
+     * @param key
+     *            The key whose presence in this map is to be tested
      * 
      * @return <tt>true</tt> if this map contains a mapping for the specified
-     * key.
+     *         key.
      */
     public boolean hasProperty(String key) {
         return commandData.containsKey(key);
@@ -100,14 +105,16 @@ public class CommandDetail {
 
     /**
      * Returns the EditTaskOption value of command
+     * 
      * @return the EditTaskOption value of command
      */
     public EditTaskOption getEditTaskOption() {
         return (EditTaskOption) commandData.get(CommandProperties.EDIT_SET_PROPERTY);
-    }    
+    }
 
     /**
      * Returns the TASK_ID value of the task specified in commandDetail
+     * 
      * @return the TASK_ID value of the task specified in commandDetail
      */
     public int getTaskIndex() {
@@ -116,6 +123,7 @@ public class CommandDetail {
 
     /**
      * Returns type of tasks
+     * 
      * @return type of tasks
      */
     public TaskType getTaskType() {
@@ -124,6 +132,7 @@ public class CommandDetail {
 
     /**
      * Returns title of task
+     * 
      * @return title of task
      */
     public String getTitle() {
@@ -132,6 +141,7 @@ public class CommandDetail {
 
     /**
      * Returns start date
+     * 
      * @return start date
      */
     public KatDateTime getStartDate() {
@@ -140,6 +150,7 @@ public class CommandDetail {
 
     /**
      * Returns end date
+     * 
      * @return end date
      */
     public KatDateTime getEndDate() {
@@ -148,6 +159,7 @@ public class CommandDetail {
 
     /**
      * Returns due date
+     * 
      * @return due date
      */
     public KatDateTime getDueDate() {
@@ -156,6 +168,7 @@ public class CommandDetail {
 
     /**
      * Returns keywords for command type FIND
+     * 
      * @return keywords
      */
     public String getFindKeywords() {
@@ -164,6 +177,7 @@ public class CommandDetail {
 
     /**
      * Returns main content of command for command type FIND, HELP
+     * 
      * @return main content of command
      */
     public String getMainContent() {
@@ -171,23 +185,27 @@ public class CommandDetail {
     }
 
     /**
-     * Returns the file path property for command type IMPORT, EXPORT, SET_LOCATION
+     * Returns the file path property for command type IMPORT, EXPORT,
+     * SET_LOCATION
+     * 
      * @return the file path property
      */
     public String getFilePath() {
         return getString(CommandProperties.FILE_PATH);
     }
-    
+
     /**
      * Returns task completed option for command type VIEW or EDIT_COMPLETE
+     * 
      * @return task completed option
      */
-    public Boolean getTaskCompletedOption(){
+    public Boolean getTaskCompletedOption() {
         return (Boolean) commandData.get(CommandProperties.TASKS_COMPLETED_OPTION);
     }
-    
+
     /**
      * Returns view task option for command type VIEW
+     * 
      * @return view task option
      */
     public ViewTaskOption getViewTaskOption() {

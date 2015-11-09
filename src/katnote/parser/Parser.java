@@ -15,12 +15,12 @@ import katnote.task.TaskType;
 import katnote.utils.StringUtils;
 
 public class Parser {
-    
+
     // command split pattern
     private static final String COMMAND_SPLIT_PATTERN = "(?:([^\"]\\S*)|\"(.+?)\")\\s*";
     private static final int COMMAND_SPLIT_PATTERN_NORMAL_POS = 1;
     private static final int COMMAND_SPLIT_PATTERN_QUOTED_POS = 2;
-    
+
     private static final String DEFAULT_SPLIT_PATTERN = "\\s+";
     private static final String IGNORE_CASES_PATTERN = "(?i)";
     private static final String STR_EMPTY = "";
@@ -31,16 +31,17 @@ public class Parser {
     private static final int TOKENS_OPTION_POS = 0;
 
     // Class logger
-    private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());    
+    private static final Logger log = KatNoteLogger.getLogger(Parser.class.getName());
 
     /**
      * Converts the input command string into CommandDetail format containing
      * command type as well as all data field related to that type of command.
      * 
-     * @param commandStr the command you want to parse
+     * @param commandStr
+     *            the command you want to parse
      * 
      * @return CommandDetail object containing the command type and all data
-     * fields related to that type of command
+     *         fields related to that type of command
      */
     public static CommandDetail parseCommand(String commandStr) {
         log.info(String.format("Parse command: %1$s", commandStr));
@@ -56,39 +57,39 @@ public class Parser {
         // parse command based on start keyword
         try {
             switch (startKeyword) {
-                case CommandKeywords.KW_ADD:
-                case CommandKeywords.KW_ADD_SHORT:
+                case CommandKeywords.KW_ADD :
+                case CommandKeywords.KW_ADD_SHORT :
                     return parseAddCommand(tokens);
-                case CommandKeywords.KW_VIEW_SINGLE_TASK:
+                case CommandKeywords.KW_VIEW_SINGLE_TASK :
                     return parseViewSingleTaskCommand(tokens);
-                case CommandKeywords.KW_VIEW:
-                case CommandKeywords.KW_VIEW_MULTIPLE_TASK:
-                case CommandKeywords.KW_VIEW_MULTIPLE_TASK_SHORT:
+                case CommandKeywords.KW_VIEW :
+                case CommandKeywords.KW_VIEW_MULTIPLE_TASK :
+                case CommandKeywords.KW_VIEW_MULTIPLE_TASK_SHORT :
                     return parseViewCommand(tokens);
-                case CommandKeywords.KW_FIND:
+                case CommandKeywords.KW_FIND :
                     return parseFindCommand(tokens);
-                case CommandKeywords.KW_DELETE:
-                case CommandKeywords.KW_DELETE_SHORT:
+                case CommandKeywords.KW_DELETE :
+                case CommandKeywords.KW_DELETE_SHORT :
                     return parseDeleteCommand(tokens);
-                case CommandKeywords.KW_MARK:
-                case CommandKeywords.KW_MARK_SHORT:
+                case CommandKeywords.KW_MARK :
+                case CommandKeywords.KW_MARK_SHORT :
                     return parseMarkCommand(tokens);
-                case CommandKeywords.KW_POSTPONE:
-                case CommandKeywords.KW_POSTPONE_SHORT:
+                case CommandKeywords.KW_POSTPONE :
+                case CommandKeywords.KW_POSTPONE_SHORT :
                     return parsePostponeCommand(tokens);
-                case CommandKeywords.KW_EDIT:
-                case CommandKeywords.KW_EDIT_SHORT:
-                case CommandKeywords.KW_CHANGE:
+                case CommandKeywords.KW_EDIT :
+                case CommandKeywords.KW_EDIT_SHORT :
+                case CommandKeywords.KW_CHANGE :
                     return parseEditCommand(tokens);
-                case CommandKeywords.KW_IMPORT:
+                case CommandKeywords.KW_IMPORT :
                     return parseImportCommand(tokens);
-                case CommandKeywords.KW_EXPORT:
+                case CommandKeywords.KW_EXPORT :
                     return parseExportCommand(tokens);
-                case CommandKeywords.KW_HELP:
+                case CommandKeywords.KW_HELP :
                     return parseHelpCommand(tokens);
-                case CommandKeywords.KW_SET_LOCATION:
+                case CommandKeywords.KW_SET_LOCATION :
                     return parseSetLocationCommand(tokens);
-                case CommandKeywords.KW_UNDO:
+                case CommandKeywords.KW_UNDO :
                     return new CommandDetail(CommandType.UNDO);
                 case CommandKeywords.KW_REDO :
                     return new CommandDetail(CommandType.REDO);
@@ -105,21 +106,23 @@ public class Parser {
     /**
      * Determines the start keyword of the command
      * 
-     * @param truncatedCommand This StringBuilder object used to store the
-     * command after truncated its start keyword
+     * @param truncatedCommand
+     *            This StringBuilder object used to store the command after
+     *            truncated its start keyword
      * 
      * @return The start keyword of the command
      * 
      */
     public static String determineStartKeyword(String commandStr, StringBuilder truncatedCommand) {
         // Trim command before processing
-        commandStr = commandStr.trim();        
+        commandStr = commandStr.trim();
         truncatedCommand.setLength(0);
         // check different starts of command
         String lowerCaseCommandStr = commandStr.trim().toLowerCase();
         for (String startKeyword : CommandKeywords.START_KEYWORDS_LIST) {
             if (lowerCaseCommandStr.startsWith(startKeyword)) {
-                truncatedCommand.append(commandStr.replaceFirst(IGNORE_CASES_PATTERN + startKeyword, STR_EMPTY).trim());
+                truncatedCommand.append(
+                        commandStr.replaceFirst(IGNORE_CASES_PATTERN + startKeyword, STR_EMPTY).trim());
                 return startKeyword;
             }
         }
@@ -129,10 +132,11 @@ public class Parser {
     }
 
     /**
-     * Splits the command string based on space but take quoted substrings as one
-     * word
+     * Splits the command string based on space but take quoted substrings as
+     * one word
      * 
-     * @param commandStr The command string passed from Logic
+     * @param commandStr
+     *            The command string passed from Logic
      * 
      * @return List of result tokens
      */
@@ -165,8 +169,8 @@ public class Parser {
     }
 
     /*
-     * Parses Add command. Command format:
-     *   - add TASK_TITLE [by TIME_BY] [from TIME_FROM to TIME_TO]
+     * Parses Add command. Command format: - add TASK_TITLE [by TIME_BY] [from
+     * TIME_FROM to TIME_TO]
      * 
      * 
      */
@@ -175,7 +179,8 @@ public class Parser {
         String taskTitle = tokens.get(TOKENS_TASK_NAME_POS);
         command.setProperty(CommandProperties.TASK_TITLE, taskTitle);
         addCommandProperties(tokens, TOKENS_PROPERTIES_START_POS, command);
-        if (command.hasProperty(CommandProperties.TIME_FROM) && command.hasProperty(CommandProperties.TIME_TO)) {
+        if (command.hasProperty(CommandProperties.TIME_FROM)
+                && command.hasProperty(CommandProperties.TIME_TO)) {
             command.setProperty(CommandProperties.TASK_TYPE, TaskType.EVENT);
         } else if (command.hasProperty(CommandProperties.TIME_BY)) {
             command.setProperty(CommandProperties.TASK_TYPE, TaskType.NORMAL);
@@ -184,10 +189,9 @@ public class Parser {
         }
         return command;
     }
-    
+
     /*
-     * Parses view command (single task). Command format:
-     *   - view task TASK_ID
+     * Parses view command (single task). Command format: - view task TASK_ID
      * 
      */
     private static CommandDetail parseViewSingleTaskCommand(List<String> tokens) throws Exception {
@@ -201,18 +205,18 @@ public class Parser {
     }
 
     /*
-     * Parses view command (multiple tasks). Command format:
-     *   - view [completed/incompleted/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
+     * Parses view command (multiple tasks). Command format: - view
+     * [completed/incompleted/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
      * 
      */
     private static CommandDetail parseViewCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.VIEW_TASK);
-        // completed option               
+        // completed option
         int tokenStartPos = TOKENS_PROPERTIES_START_POS;
         Boolean completedOption = false;
-        if (TOKENS_OPTION_POS < tokens.size()){
+        if (TOKENS_OPTION_POS < tokens.size()) {
             String commandOption = tokens.get(TOKENS_OPTION_POS);
-            switch (commandOption){
+            switch (commandOption) {
                 case CommandKeywords.KW_COMPLETED :
                     completedOption = true;
                     break;
@@ -222,7 +226,7 @@ public class Parser {
                 case CommandKeywords.KW_ALL :
                     completedOption = null;
                     break;
-                default:
+                default :
                     completedOption = false;
                     tokenStartPos--; // when completed option is omitted
                     break;
@@ -233,10 +237,9 @@ public class Parser {
         addCommandProperties(tokens, tokenStartPos, command);
         // view task option
         ViewTaskOption viewOption = ViewTaskOption.ALL;
-        if (command.hasProperty(CommandProperties.TIME_FROM)){
+        if (command.hasProperty(CommandProperties.TIME_FROM)) {
             viewOption = ViewTaskOption.START_FROM;
-        }
-        else if (command.hasProperty(CommandProperties.TIME_BY)){
+        } else if (command.hasProperty(CommandProperties.TIME_BY)) {
             viewOption = ViewTaskOption.DUE_BY;
         }
         command.setProperty(CommandProperties.TASKS_VIEW_OPTION, viewOption);
@@ -244,8 +247,7 @@ public class Parser {
     }
 
     /*
-     * Parses find command. Command format:
-     *   - find KEYWORDS [in CATEGORY]
+     * Parses find command. Command format: - find KEYWORDS [in CATEGORY]
      * 
      */
     private static CommandDetail parseFindCommand(List<String> tokens) throws Exception {
@@ -258,8 +260,8 @@ public class Parser {
     }
 
     /*
-     * Parses edit command. Command format:
-     *   - edit TASK_ID TASK_OPTION_NAME TASK_OPTION_VALUE
+     * Parses edit command. Command format: - edit TASK_ID TASK_OPTION_NAME
+     * TASK_OPTION_VALUE
      * 
      */
     private static CommandDetail parseEditCommand(List<String> tokens) throws Exception {
@@ -273,38 +275,36 @@ public class Parser {
         command.setProperty(CommandProperties.EDIT_SET_PROPERTY, new EditTaskOption(editOption));
         return command;
     }
-    
+
     /*
-     * Parses mark command. Command format:
-     *   - mark TASK_ID completed/incompleted
-     *   - mark completed/incompleted TASK_ID
+     * Parses mark command. Command format: - mark TASK_ID completed/incompleted
+     * - mark completed/incompleted TASK_ID
      */
     private static CommandDetail parseMarkCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.EDIT_COMPLETE);
         // read command option
         String commandOptions[] = tokens.get(TOKENS_OPTION_POS).split(DEFAULT_SPLIT_PATTERN);
         Integer taskId;
-        String markOption;        
-        if (StringUtils.isDigits(commandOptions[0])){ // mark TASK_ID completed
+        String markOption;
+        if (StringUtils.isDigits(commandOptions[0])) { // mark TASK_ID completed
             taskId = Integer.valueOf(commandOptions[0]);
             markOption = commandOptions[1];
-        }
-        else{  // mark completed TASK_ID
+        } else { // mark completed TASK_ID
             taskId = Integer.valueOf(commandOptions[1]);
             markOption = commandOptions[0];
         }
-        
+
         command.setProperty(CommandProperties.TASK_ID, taskId);
-        command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION, 
+        command.setProperty(CommandProperties.TASKS_COMPLETED_OPTION,
                 PropertyParser.parseOptionValue(CommandProperties.TASKS_COMPLETED_OPTION, markOption));
         command.setProperty(CommandProperties.EDIT_MARK, markOption);
         return command;
     }
-    
-    /*
-     * Parses postpone command. Command format:
-     *   - postpone TASK_ID NEW_START_DATE
 
+    /*
+     * Parses postpone command. Command format: - postpone TASK_ID
+     * NEW_START_DATE
+     * 
      */
     private static CommandDetail parsePostponeCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.POSTPONE);
@@ -313,8 +313,9 @@ public class Parser {
         Integer taskId = Integer.parseInt(StringUtils.getFirstWord(commandOption));
         String newStartDate = StringUtils.removeFirstWord(commandOption);
         // check if newStartDate starts with "to"
-        if (newStartDate.startsWith(CommandKeywords.KW_TO)){
-            newStartDate = newStartDate.replaceFirst(IGNORE_CASES_PATTERN + CommandKeywords.KW_TO, STR_EMPTY).trim();
+        if (newStartDate.startsWith(CommandKeywords.KW_TO)) {
+            newStartDate = newStartDate.replaceFirst(IGNORE_CASES_PATTERN + CommandKeywords.KW_TO, STR_EMPTY)
+                    .trim();
         }
         // set properties
         command.setProperty(CommandProperties.TASK_ID, taskId);
@@ -324,8 +325,7 @@ public class Parser {
     }
 
     /*
-     * Parses delete command. Command format:
-     *   - delete TASK_ID
+     * Parses delete command. Command format: - delete TASK_ID
      * 
      */
     private static CommandDetail parseDeleteCommand(List<String> tokens) throws Exception {
@@ -337,8 +337,7 @@ public class Parser {
     }
 
     /*
-     * Parses import command. Command format:
-     *   - import FILE_PATH
+     * Parses import command. Command format: - import FILE_PATH
      * 
      */
     private static CommandDetail parseImportCommand(List<String> tokens) {
@@ -349,8 +348,7 @@ public class Parser {
     }
 
     /*
-     * Parses export command. Command format:
-     *   - export FILE_PATH
+     * Parses export command. Command format: - export FILE_PATH
      * 
      */
     private static CommandDetail parseExportCommand(List<String> tokens) {
@@ -359,10 +357,10 @@ public class Parser {
         command.setProperty(CommandProperties.FILE_PATH, filePath);
         return command;
     }
-    
+
     /*
-     * Parses set save location command. Command format:
-     *   - set location FILE_PATH
+     * Parses set save location command. Command format: - set location
+     * FILE_PATH
      * 
      */
     private static CommandDetail parseSetLocationCommand(List<String> tokens) {
@@ -373,9 +371,7 @@ public class Parser {
     }
 
     /*
-     * Parses help command. Command format:
-     *   - help
-     *   - help COMMAND
+     * Parses help command. Command format: - help - help COMMAND
      * 
      */
     private static CommandDetail parseHelpCommand(List<String> tokens) {

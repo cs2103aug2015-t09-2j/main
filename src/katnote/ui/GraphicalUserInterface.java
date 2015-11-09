@@ -28,7 +28,7 @@ public class GraphicalUserInterface extends Application {
 
     private static boolean _isTestMode = false;
     private static String _testFilePath = null;
-    
+
     private StackPane rootLayout;
     private BorderPane coreLayout;
     private BorderPane splashLayout;
@@ -38,15 +38,15 @@ public class GraphicalUserInterface extends Application {
     private TaskViewFormatter displayedTaskFormat;
     private CommandBarController commandBarController;
 
-    //psuedo singleton method for test access
+    // psuedo singleton method for test access
     public static GraphicalUserInterface getInstance() {
         if (instance == null) {
             throw new NullPointerException("App not initialized");
         }
         return instance;
-    }    
-    
-    public static void configureTestMode(boolean isTestMode, String testFilePath){
+    }
+
+    public static void configureTestMode(boolean isTestMode, String testFilePath) {
         _isTestMode = isTestMode;
         _testFilePath = testFilePath;
     }
@@ -63,8 +63,11 @@ public class GraphicalUserInterface extends Application {
 
     private void loadResources() {
         LOG.log(Level.INFO, "loading resources");
-        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(), 10);
-        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(), 10);
+        Font.loadFont(
+                getClass().getResource("/katnote/resources/ui/font/sen/sen-extrabold.otf").toExternalForm(),
+                10);
+        Font.loadFont(getClass().getResource("/katnote/resources/ui/font/sen/sen-bold.otf").toExternalForm(),
+                10);
     }
 
     private void initialize(Stage primaryStage) {
@@ -72,7 +75,7 @@ public class GraphicalUserInterface extends Application {
         this.primaryStage.setTitle("KatNote");
         this.primaryStage.getIcons().add(new Image("/katnote/resources/ui/Kat.png"));
         try {
-            if(_isTestMode){
+            if (_isTestMode) {
                 logic = new Logic(_testFilePath);
             } else {
                 logic = new Logic();
@@ -185,7 +188,7 @@ public class GraphicalUserInterface extends Application {
         ViewState viewState = feedback.getViewState();
         displayedTaskFormat = updateTaskViewer(viewState, feedback.isASearch());
         logic.setViewMapping(displayedTaskFormat.getOrderedTaskList());
-        
+
     }
 
 }

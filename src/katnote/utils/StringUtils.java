@@ -28,7 +28,8 @@ public class StringUtils {
      * Removes the first word from input string For example: if input string is
      * "hello I am a programmer", the returned output is "I am a programmer"
      * 
-     * @param input the input string
+     * @param input
+     *            the input string
      * 
      * @return The resulting string
      */
@@ -40,7 +41,8 @@ public class StringUtils {
      * Returns the first word of input string For example: if input string is
      * "hello I am a programmer", the returned output is "hello"
      * 
-     * @param input the input string
+     * @param input
+     *            the input string
      * 
      * @return The resulting string
      */
@@ -57,23 +59,22 @@ public class StringUtils {
         boolean first = true;
         for (String s : parts) {
             if (!first) {
-                builder.append(delim);                
-            }
-            else{
+                builder.append(delim);
+            } else {
                 first = false;
             }
             builder.append(s);
         }
         return builder.toString();
     }
-    
+
     /**
      * Concatenates string list
      */
-    public static String concat(String ...strings){
+    public static String concat(String... strings) {
         StringBuilder result = new StringBuilder();
-        for (String str : strings){
-            if (str != null){
+        for (String str : strings) {
+            if (str != null) {
                 result.append(str);
             }
         }
@@ -82,11 +83,11 @@ public class StringUtils {
 
     /**
      * Determines if the specified string contains only digits
-     *  
+     * 
      */
     public static boolean isDigits(String str) {
-        for (int i = 0; i < str.length(); i++){
-            if (!Character.isDigit(str.charAt(i))){
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) {
                 return false;
             }
         }

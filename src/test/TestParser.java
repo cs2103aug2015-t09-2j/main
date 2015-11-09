@@ -27,7 +27,7 @@ public class TestParser {
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getDueDate());
     }
-    
+
     @Test
     public void testAddCommand2() {
         CommandDetail commandDetail = Parser.parseCommand("-a hello on 29/11 8pm");
@@ -36,16 +36,17 @@ public class TestParser {
         assertEquals("2015-11-29T20:00", commandDetail.getStartDate().toString());
         assertEquals("2015-11-29T20:00", commandDetail.getEndDate().toString());
     }
-    
+
     @Test
     public void testAddCommand3() {
         CommandDetail commandDetail = Parser.parseCommand("hello by today");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getDueDate());
-        //System.out.println("Due Date = " + commandDetail.getDueDate().toString());
+        // System.out.println("Due Date = " +
+        // commandDetail.getDueDate().toString());
     }
-    
+
     @Test
     public void testAddCommand4() {
         CommandDetail commandDetail = Parser.parseCommand("hello from tomorrow 2pm to 5pm");
@@ -53,8 +54,10 @@ public class TestParser {
         assertEquals("hello", commandDetail.getTitle());
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
-        //System.out.println("Start Date = " + commandDetail.getStartDate().toString());
-        //System.out.println("End Date = " + commandDetail.getEndDate().toString());
+        // System.out.println("Start Date = " +
+        // commandDetail.getStartDate().toString());
+        // System.out.println("End Date = " +
+        // commandDetail.getEndDate().toString());
     }
 
     @Test
@@ -74,23 +77,23 @@ public class TestParser {
         assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
         assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
-    
+
     @Test
     public void testMarkCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("mark 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
-        //assertEquals("completed", commandDetail.getMarkOption());
+        // assertEquals("completed", commandDetail.getMarkOption());
     }
-    
+
     @Test
     public void testMarkCommand2() {
         CommandDetail commandDetail = Parser.parseCommand("-m 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
-        //assertEquals("completed", commandDetail.getMarkOption());
+        // assertEquals("completed", commandDetail.getMarkOption());
     }
-    
+
     @Test
     public void testPostponeCommand1() {
         CommandDetail commandDetail = Parser.parseCommand("postpone 4 5/11");
@@ -98,7 +101,7 @@ public class TestParser {
         assertEquals(4, commandDetail.getTaskIndex());
         assertEquals("2015-11-05", commandDetail.getStartDate().toString());
     }
-    
+
     @Test
     public void testPostponeCommand2() {
         CommandDetail commandDetail = Parser.parseCommand("-p 4 to 5/11");
@@ -129,7 +132,7 @@ public class TestParser {
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
     }
-    
+
     @Test
     public void testViewMultipleTasksCommand2() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view tasks completed from tuesday 2pm to 5pm");
@@ -138,7 +141,7 @@ public class TestParser {
         assertNotNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getEndDate());
     }
-    
+
     @Test
     public void testViewMultipleTasksCommand3() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("-v completed by tuesday 2pm");
@@ -147,7 +150,7 @@ public class TestParser {
         assertNull(commandDetail.getStartDate());
         assertNotNull(commandDetail.getDueDate());
     }
-    
+
     @Test
     public void testViewMultipleTasksCommand4() { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view all");

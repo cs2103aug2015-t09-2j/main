@@ -354,7 +354,8 @@ public class TestModel {
             boolean result3 = false;
 
             response1 = testModel.editDelete(1);
-            result1 = response1.equals("Task: feed fish is successfully deleted.") && (testModel.getData().size() == 2);
+            result1 = response1.equals("Task: feed fish is successfully deleted.")
+                    && (testModel.getData().size() == 2);
 
             response2 = testModel.editDelete(1);
             try {
@@ -363,12 +364,14 @@ public class TestModel {
                 result3 = true;
             }
 
-            result2 = response2.equals("Task: feed dog is successfully deleted.") && (testModel.getData().size() == 1);
+            result2 = response2.equals("Task: feed dog is successfully deleted.")
+                    && (testModel.getData().size() == 1);
 
             System.out.println("Result 1 - Task deleted correctly: " + result1 + " Expected: true");
             System.out.println("Result 2 - Task updates after delete and delete works correctly: " + result2
                     + " Expected: true");
-            System.out.println("Result 3 - Delete recognises incorrect delete command: " + result3 + " Expected: true");
+            System.out.println(
+                    "Result 3 - Delete recognises incorrect delete command: " + result3 + " Expected: true");
             System.out.println("=== End Test ===\n");
 
             clearExistingData(TEST_PATH);
@@ -415,8 +418,8 @@ public class TestModel {
                     result1 = false;
                 }
                 for (int i = 0; i < decodedData.size(); i++) {
-                    System.out.println("Actual Item " + i + " : " + decodedData.get(i).getTitle() + " Expected Item "
-                            + i + " : " + testModel.getData().get(i).getTitle());
+                    System.out.println("Actual Item " + i + " : " + decodedData.get(i).getTitle()
+                            + " Expected Item " + i + " : " + testModel.getData().get(i).getTitle());
                     if (!decodedData.get(i).getTitle().equals(testModel.getData().get(i).getTitle())) {
                         result1 = false;
                     }
@@ -425,7 +428,8 @@ public class TestModel {
                 System.err.println("Unable to decode: " + e);
             }
 
-            System.out.println("Result 1 - KatNote encodes and decodes successfully: " + result1 + " Expected: true");
+            System.out.println(
+                    "Result 1 - KatNote encodes and decodes successfully: " + result1 + " Expected: true");
             System.out.println("=== End Test ===\n");
 
             clearExistingData(TEST_PATH);
@@ -489,7 +493,8 @@ public class TestModel {
             }
 
             testModel.redo();
-            if ((testModel.getData().size() != 1) || (!testModel.getData().get(0).getTitle().equals(task1.getTitle()))) {
+            if ((testModel.getData().size() != 1)
+                    || (!testModel.getData().get(0).getTitle().equals(task1.getTitle()))) {
                 System.err.println("Redo procedure is incorrect. Incorrect task redone.");
                 result3 = false;
             } else {
@@ -532,36 +537,36 @@ public class TestModel {
                         + testModel.getData().get(2).getTitle() + " Expected task(2): " + task3.getTitle());
                 result5 = false;
             }
-            
+
             EditTaskOption option1 = new EditTaskOption(CommandProperties.TASK_TITLE, "New Title");
             EditTaskOption option2 = new EditTaskOption(CommandProperties.TIME_BY, "28/11 2am");
-            
+
             testModel.editComplete(0);
-            
+
             testModel.editModify(0, option1);
 
             testModel.addTask(task4);
-            
+
             testModel.editModify(3, option2);
-            
+
             testModel.postpone(3, date3);
-            
+
             testModel.editDelete(2);
-            
+
             testModel.undo();
             testModel.undo();
             testModel.undo();
             testModel.undo();
             testModel.undo();
             testModel.undo();
-            
+
             testModel.redo();
             testModel.redo();
             testModel.redo();
             testModel.redo();
             testModel.redo();
             testModel.redo();
-            
+
             result6 = compareFile(testModel.getDataFilePath(), TEST_PATH_UNDOREDO);
 
             System.out.println("Result 1 - Undo Test 1: " + result1 + " Expected: true");
@@ -655,7 +660,8 @@ public class TestModel {
             clearExistingData(TEST_PATH);
             System.out.println("Result 1 - Normal tasks not postponed: " + result1 + " Expected: true");
             System.out.println("Result 2 - Floating tasks not postponed: " + result2 + " Expected: true");
-            System.out.println("Result 3 - Multiple tasks postponed to correct dates: " + result3 + " Expected: true");
+            System.out.println(
+                    "Result 3 - Multiple tasks postponed to correct dates: " + result3 + " Expected: true");
             System.out.println("=== End Test ===\n");
 
             assertTrue(result1);
@@ -714,7 +720,8 @@ public class TestModel {
                 if (testModel.getData().get(2).getTaskType().equals(TaskType.NORMAL)) {
                     result1 = true;
                 } else {
-                    System.err.println("Change in end date does not change task type from Floating to Normal.");
+                    System.err
+                            .println("Change in end date does not change task type from Floating to Normal.");
                 }
             } catch (Exception e) {
                 System.err.println("Unable to set end date for floating task.");
@@ -725,7 +732,8 @@ public class TestModel {
                 if (testModel.getData().get(2).getTaskType().equals(TaskType.EVENT)) {
                     result2 = true;
                 } else {
-                    System.err.println("Change in start date does not change task type from Normal to Event.");
+                    System.err
+                            .println("Change in start date does not change task type from Normal to Event.");
                 }
             } catch (Exception e) {
                 System.err.println("Unable to set start date for normal task.");
@@ -733,7 +741,8 @@ public class TestModel {
 
             try {
                 testModel.editModify(3, option2);
-                System.err.println("Warning! Change in Floating to Event task type with change in start date.");
+                System.err
+                        .println("Warning! Change in Floating to Event task type with change in start date.");
             } catch (Exception e) {
                 result3 = false;
             }
@@ -769,15 +778,17 @@ public class TestModel {
 
             // Clean Up
             clearExistingData(TEST_PATH);
-            System.out.println("Result 1 - Change from Floating to Normal task by editing end date: " + result1
-                    + " Expected: true");
+            System.out.println("Result 1 - Change from Floating to Normal task by editing end date: "
+                    + result1 + " Expected: true");
             System.out.println("Result 2 - Change from Normal to Event task by editing start date: " + result2
                     + " Expected: true");
             System.out.println("Result 3 - Change from Floating to Event: " + result3 + " Expected: false");
             System.out.println("Result 4 - Change in completed flag: " + result4 + " Expected: true");
-            System.out.println("Result 5 - Repeated change in completed flag: " + result5 + " Expected: false");
+            System.out
+                    .println("Result 5 - Repeated change in completed flag: " + result5 + " Expected: false");
             System.out.println("Result 6 - Change in task title: " + result6 + " Expected: true");
-            System.out.println("Result 7 - Change start date to beyond end date: " + result7 + " Expected: false");
+            System.out.println(
+                    "Result 7 - Change start date to beyond end date: " + result7 + " Expected: false");
             System.out.println("=== End Test ===\n");
 
             assertTrue(result1);
