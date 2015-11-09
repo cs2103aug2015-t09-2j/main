@@ -39,24 +39,7 @@ import katnote.utils.KatDateTime;
  */
 public class Model {
 
-    // Private Variables
-    private StorageDecoder _decoder;
-    private StorageEncoder _encoder;
-    private StorageData _data;
-
-    private Hashtable<String, String> _definitions;
-
-    private ArrayList<Task> _dataLog;
-    private ArrayList<Task> _dataNormalTasks;
-    private ArrayList<Task> _dataFloatingTasks;
-    private ArrayList<Task> _dataEventTasks;
-
-    private Stack<String> _undoLog;
-    private Stack<String> _redoLog;
-    private Stack<Task> _undoTaskObjLog;
-    private Stack<Task> _redoTaskObjLog;
-    private String _response;
-
+    private static final String MSG_DIVIDER = " - ";
     // Constants
     private static final String DATA_FILENAME = "data.txt";
     private static final String DATA_BACKUP_FILENAME = "oldData.txt";
@@ -79,6 +62,7 @@ public class Model {
     private static final int INDEX_COMPLETED = 9;
 
     // Messages
+    private static final String MSG_MODEL_INITIALIZED = "Constructed Model";
     private static final String MSG_MIGRATE_CONFIRM = "Save location has successfully moved from %s to %s.";
     private static final String MSG_DATA_FILE_READY = "data.txt is ready for use in %s";
     private static final String MSG_TASK_ADDED = "Task: %s added.";
@@ -161,7 +145,25 @@ public class Model {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
     // Logger
-    private static final Logger LOG = KatNoteLogger.getLogger(Model.class.getName());
+    private static final Logger LOG = KatNoteLogger.getLogger(Model.class.getName());   
+
+    // Private Variables
+    private StorageDecoder _decoder;
+    private StorageEncoder _encoder;
+    private StorageData _data;
+
+    private Hashtable<String, String> _definitions;
+
+    private ArrayList<Task> _dataLog;
+    private ArrayList<Task> _dataNormalTasks;
+    private ArrayList<Task> _dataFloatingTasks;
+    private ArrayList<Task> _dataEventTasks;
+
+    private Stack<String> _undoLog;
+    private Stack<String> _redoLog;
+    private Stack<Task> _undoTaskObjLog;
+    private Stack<Task> _redoTaskObjLog;
+    private String _response;
 
     // Constructor
     public Model(String path) throws Exception {
@@ -179,7 +181,7 @@ public class Model {
         initDefinitions();
         _dataLog = _decoder.decode();
         splitTaskType(_dataLog);
-        LOG.log(Level.INFO, "Constructed Model");
+        LOG.log(Level.INFO, MSG_MODEL_INITIALIZED);
 
     }
 
@@ -1058,8 +1060,8 @@ public class Model {
             LOG.log(Level.WARNING, msg);
             throw new Exception(msg);
         } else {
-            LOG.log(Level.WARNING, (e.getMessage() + " - " + msg));
-            throw new Exception(e.getMessage() + " - " + msg);
+            LOG.log(Level.WARNING, (e.getMessage() + MSG_DIVIDER + msg));
+            throw new Exception(e.getMessage() + MSG_DIVIDER + msg);
         }
     }
 
