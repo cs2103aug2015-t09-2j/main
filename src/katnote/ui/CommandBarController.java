@@ -8,6 +8,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * JavaFX controller for the FXML layout CoreLayout.fxml
+ * 
+ * @author Wz
+ *
+ */
 public class CommandBarController {
     private static final String NORMAL_STYLE = "-fx-text-fill: black;";
     private static final String ERROR_STYLE = "-fx-text-fill: red;";

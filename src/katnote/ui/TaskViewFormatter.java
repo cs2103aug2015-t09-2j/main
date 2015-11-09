@@ -14,6 +14,13 @@ import java.util.Queue;
 import katnote.logic.ViewState;
 import katnote.task.Task;
 
+/**
+ * A data object that processes a viewState object and generates a list of
+ * TaskViewGroup in correct order and with correct headings.
+ * 
+ * @author Wz
+ *
+ */
 public class TaskViewFormatter {
 
     private static final String DAY_OF_WEEK_SPACING = "      ";

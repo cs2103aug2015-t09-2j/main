@@ -13,6 +13,13 @@ import javafx.scene.layout.Pane;
 import katnote.task.Task;
 import katnote.task.TaskType;
 
+/**
+ * Custom UI component for events and normal tasks.
+ * Displays the task title and a tick that represents if the task is done
+ * Also displays the date elements.
+ * @author Wz
+ *
+ */
 public class TaskDetailedRow extends AnchorPane {
 
     private static final String CHECKMARK_CLASS_NAME = "check";

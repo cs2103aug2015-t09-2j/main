@@ -9,6 +9,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * TaskViewer is the UI class that houses a list of TaskViewGroup objects The
+ * TaskViewGroup objects are displayed vertically stacked on top of each other.
+ * 
+ * @author Wz
+ *
+ */
 public class TaskViewer extends AnchorPane {
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskViewer.fxml";
 

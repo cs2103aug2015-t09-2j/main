@@ -21,6 +21,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
 public class GraphicalUserInterface extends Application {
+    private static final String MSG_LOG_SET_UP_TASK_VIEWER = "setUpTaskViewer";
+    private static final String MSG_LOG_UPDATE_TASK_VIEWER = "updateTaskViewer";
+    private static final String MSG_LOG_INPUT_RECIEVED = "input recieved: ";
     private static final String MSG_LOG_INITILIZING_ROOT_LAYOUT = "initilizing rootLayout";
     private static final String APP_TITLE = "KatNote";
     private static final String RESOURCE_PATH_KAT_IMAGE = "/katnote/resources/ui/Kat.png";
@@ -150,7 +153,7 @@ public class GraphicalUserInterface extends Application {
     }
 
     private void setUpTaskViewer() {
-        LOG.log(Level.INFO, "setUpTaskViewer");
+        LOG.log(Level.INFO, MSG_LOG_SET_UP_TASK_VIEWER);
         taskViewer = new TaskViewer();
         coreLayout.setCenter(taskViewer);
         displayedTaskFormat = updateTaskViewer(logic.getInitialViewState(), false);
@@ -158,14 +161,14 @@ public class GraphicalUserInterface extends Application {
     }
 
     private TaskViewFormatter updateTaskViewer(ViewState viewState, boolean isSearch) {
-        LOG.log(Level.INFO, "updateTaskViewer");
+        LOG.log(Level.INFO, MSG_LOG_UPDATE_TASK_VIEWER);
         TaskViewFormatter viewFormat = new TaskViewFormatter(viewState, isSearch);
         taskViewer.loadTaskFormat(viewFormat);
         return viewFormat;
     }
 
     public void handleCommandInput(String inputText) {
-        LOG.log(Level.FINE, "input recieved: " + inputText);
+        LOG.log(Level.FINE, MSG_LOG_INPUT_RECIEVED + inputText);
         try {
             UIFeedback feedback = logic.execute(inputText);
             boolean isErrorResponse = feedback.isAnError();
@@ -176,7 +179,7 @@ public class GraphicalUserInterface extends Application {
                 processViewState(feedback);
             }
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Exception: " + e.getMessage());
+            LOG.log(Level.WARNING, e.getMessage());
             commandBarController.setErrorText(e.getMessage());
             e.printStackTrace();
         }

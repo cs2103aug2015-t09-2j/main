@@ -9,6 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+/**
+ * Custom UI component for floating tasks
+ * Displays the task title and a tick that represents if the task is done
+ * @author Wz
+ *
+ */
 public class TaskRow extends AnchorPane {
     private static final String CHECKMARK_CLASS_NAME = "check";
     private static final String LAYOUT_FXML = "/katnote/resources/ui/TaskRow.fxml";
