@@ -13,12 +13,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 
+import sun.rmi.runtime.Log;
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.parser.EditTaskOption;
@@ -156,6 +159,9 @@ public class Model {
 	
 	// Format
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+	
+	// Logger
+	private static final Logger LOG = KatNoteLogger.getLogger(Model.class.getName());
 
 	// Constructor
 	public Model(String path) throws Exception {
@@ -173,6 +179,8 @@ public class Model {
 		initDefinitions();
 		_dataLog = _decoder.decode();
 		splitTaskType(_dataLog);
+		LOG.log(Level.INFO, "Constructed Model");
+
 	}
 	
 
@@ -1027,8 +1035,10 @@ public class Model {
 	private String handleException(Exception e, String msg) throws Exception {
 	    
 	    if (e == null) {
+	        LOG.log(Level.WARNING, msg);
 	        throw new Exception(msg);
 	    } else {
+	        LOG.log(Level.WARNING, (e.getMessage() + " - " + msg));
 	        throw new Exception(e.getMessage() + " - " + msg);
 	    }
 	}
