@@ -28,9 +28,10 @@ public class PropertyParser {
      *            the CommandDetail object which is currently working on. The
      *            result object of this property will be added as an option to
      *            this CommandDetail object
+     * @throws CommandParseException 
      * 
      */
-    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command) {
+    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command) throws CommandParseException {
         switch (propertyName) {
             case CommandKeywords.KW_FROM :
                 command.setProperty(CommandProperties.TIME_FROM,
@@ -67,39 +68,44 @@ public class PropertyParser {
      * @param optionName
      * @param optionValue
      * @return
+     * @throws CommandParseException 
      * 
      */
-    public static Object parseOptionValue(String optionName, String optionValue) {
-        KatDateTime date;
+    public static Object parseOptionValue(String optionName, String optionValue) throws CommandParseException {
         switch (optionName) {
             case CommandProperties.TIME_FROM :
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
             case CommandProperties.TIME_UNTIL :
                 // Date time value
-                date = DateParser.parseDateTime(optionValue);
+                KatDateTime date = DateParser.parseDateTime(optionValue);
                 return date;
             case CommandProperties.TASKS_COMPLETED_OPTION :
                 // completed option: true, false and null (null is for both
-                // completed and incompleted)
-                Boolean completedValue = false;
-                switch (optionValue) {
-                    case CommandKeywords.KW_COMPLETED :
-                    case CommandKeywords.KW_DONE :
-                        completedValue = true;
-                        break;
-                    case CommandKeywords.KW_INCOMPLETE :
-                        completedValue = false;
-                        break;
-                    case CommandKeywords.KW_ALL :
-                        completedValue = null;
-                        break;
-                }
+                // completed and incomplete)
+                Boolean completedValue = parseCompletedOption(optionValue);
                 return completedValue;
             default :
                 // String value
                 return optionValue;
         }
+    }
+
+    private static Boolean parseCompletedOption(String optionValue) {
+        Boolean completedValue = false;
+        switch (optionValue) {
+            case CommandKeywords.KW_COMPLETED :
+            case CommandKeywords.KW_DONE :
+                completedValue = true;
+                break;
+            case CommandKeywords.KW_INCOMPLETE :
+                completedValue = false;
+                break;
+            case CommandKeywords.KW_ALL :
+                completedValue = null;
+                break;
+        }
+        return completedValue;
     }
 
     /**

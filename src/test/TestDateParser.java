@@ -4,13 +4,14 @@ package test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import katnote.parser.CommandParseException;
 import katnote.parser.DateParser;
 import katnote.utils.KatDateTime;
 
 public class TestDateParser {
 
     @Test
-    public void testRelativeParser1() {
+    public void testRelativeParser1() throws CommandParseException {
         KatDateTime date;
         date = DateParser.parseDateTime("7pm tomorrow");
         assertNotNull(date);
@@ -19,7 +20,7 @@ public class TestDateParser {
 
     // *
     @Test
-    public void testAbsoluteDateParser() {
+    public void testAbsoluteDateParser() throws CommandParseException {
         KatDateTime date;
 
         // Test "7pm" (only time)

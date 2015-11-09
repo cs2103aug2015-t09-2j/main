@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import katnote.command.CommandDetail;
 import katnote.command.CommandType;
+import katnote.parser.CommandParseException;
 import katnote.parser.Parser;
 import katnote.parser.ViewTaskOption;
 
@@ -21,7 +22,7 @@ public class TestParser {
     }
 
     @Test
-    public void testAddCommand1() {
+    public void testAddCommand1() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("ADD hello by tuesday");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -29,7 +30,7 @@ public class TestParser {
     }
 
     @Test
-    public void testAddCommand2() {
+    public void testAddCommand2() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("-a hello on 29/11 8pm");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -38,7 +39,7 @@ public class TestParser {
     }
 
     @Test
-    public void testAddCommand3() {
+    public void testAddCommand3() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("hello by today");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -48,7 +49,7 @@ public class TestParser {
     }
 
     @Test
-    public void testAddCommand4() {
+    public void testAddCommand4() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("hello from tomorrow 2pm to 5pm");
         assertEquals(CommandType.ADD_TASK, commandDetail.getCommandType());
         assertEquals("hello", commandDetail.getTitle());
@@ -61,25 +62,25 @@ public class TestParser {
     }
 
     @Test
-    public void testEditCommand1() {
-        CommandDetail commandDetail = Parser.parseCommand("EDit 4 task_title hello");
+    public void testEditCommand1() throws CommandParseException {
+        CommandDetail commandDetail = Parser.parseCommand("EDit 4 title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
-        assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
+        assertEquals("title", commandDetail.getEditTaskOption().getOptionName());
         assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
 
     @Test
-    public void testEditCommand2() {
-        CommandDetail commandDetail = Parser.parseCommand("-e 4 task_title hello");
+    public void testEditCommand2() throws CommandParseException {
+        CommandDetail commandDetail = Parser.parseCommand("-e 4 title hello");
         assertEquals(CommandType.EDIT_MODIFY, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
-        assertEquals("task_title", commandDetail.getEditTaskOption().getOptionName());
+        assertEquals("title", commandDetail.getEditTaskOption().getOptionName());
         assertEquals("hello", commandDetail.getEditTaskOption().getOptionValue());
     }
 
     @Test
-    public void testMarkCommand1() {
+    public void testMarkCommand1() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("mark 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
@@ -87,7 +88,7 @@ public class TestParser {
     }
 
     @Test
-    public void testMarkCommand2() {
+    public void testMarkCommand2() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("-m 4 completed");
         assertEquals(CommandType.EDIT_COMPLETE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
@@ -95,7 +96,7 @@ public class TestParser {
     }
 
     @Test
-    public void testPostponeCommand1() {
+    public void testPostponeCommand1() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("postpone 4 5/11");
         assertEquals(CommandType.POSTPONE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
@@ -103,7 +104,7 @@ public class TestParser {
     }
 
     @Test
-    public void testPostponeCommand2() {
+    public void testPostponeCommand2() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("-p 4 to 5/11");
         assertEquals(CommandType.POSTPONE, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
@@ -111,21 +112,21 @@ public class TestParser {
     }
 
     @Test
-    public void testDeleteCommand1() {
+    public void testDeleteCommand1() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("delete 4");
         assertEquals(CommandType.DELETE_TASK, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
     }
 
     @Test
-    public void testDeleteCommand2() {
+    public void testDeleteCommand2() throws CommandParseException {
         CommandDetail commandDetail = Parser.parseCommand("-d 4");
         assertEquals(CommandType.DELETE_TASK, commandDetail.getCommandType());
         assertEquals(4, commandDetail.getTaskIndex());
     }
 
     @Test
-    public void testViewMultipleTasksCommand1() { // View multiple task
+    public void testViewMultipleTasksCommand1() throws CommandParseException { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view on monday");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
@@ -134,7 +135,7 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand2() { // View multiple task
+    public void testViewMultipleTasksCommand2() throws CommandParseException { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view tasks completed from tuesday 2pm to 5pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
@@ -143,7 +144,7 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand3() { // View multiple task
+    public void testViewMultipleTasksCommand3() throws CommandParseException { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("-v completed by tuesday 2pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.DUE_BY, commandDetail.getViewTaskOption());
@@ -152,7 +153,7 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand4() { // View multiple task
+    public void testViewMultipleTasksCommand4() throws CommandParseException { // View multiple task
         CommandDetail commandDetail = Parser.parseCommand("view all");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.ALL, commandDetail.getViewTaskOption());
@@ -161,14 +162,14 @@ public class TestParser {
     }
 
     @Test
-    public void testViewSingleTaskCommand1() { // View single task
+    public void testViewSingleTaskCommand1() throws CommandParseException { // View single task
         CommandDetail commandDetail = Parser.parseCommand("view task 3");
         assertEquals(CommandType.VIEW_TASK_WITH_ID, commandDetail.getCommandType());
         assertEquals(3, commandDetail.getTaskIndex());
     }
 
     @Test
-    public void testOtherCommand() {
+    public void testOtherCommand() throws CommandParseException {
         // undo
         CommandDetail undoCommand = Parser.parseCommand("undo");
         assertEquals(CommandType.UNDO, undoCommand.getCommandType());

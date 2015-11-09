@@ -11,6 +11,7 @@ import katnote.utils.KatDateTime;
 
 public class DateParser {
 
+    // relative time strings
     private static final String STR_EMPTY = "";
     private static final String RELATIVE_TIME_TODAY = "today";
     private static final String RELATIVE_TIME_TOMORROW = "tomorrow";
@@ -52,6 +53,9 @@ public class DateParser {
     public static final int MIDDLE_OF_DAY = 0;
     public static final int BEGIN_OF_DAY = 1;
     public static final int END_OF_DAY = 2;
+    
+    // exception message
+    private static final String STR_INVALID_DATE_FORMAT = "\"%1$s\" is not recognized as a date time value";
 
     /**
      * Gets today Date time
@@ -254,18 +258,22 @@ public class DateParser {
      * @param time
      * 
      * @return New KatDateTime object representing the time string
+     * @throws CommandParseException 
      */
-    public static KatDateTime parseDateTime(String time) {
+    public static KatDateTime parseDateTime(String time) throws CommandParseException {
         // get time of day and trim
         LocalTime timeOfDay = extractTimeOfDay(time);
-        time = trimTimeOfDay(time);
+        String remainingTime = trimTimeOfDay(time);
         // check if time is relative time
-        LocalDate date = parseRelativeDate(time);
+        LocalDate date = parseRelativeDate(remainingTime);
         if (date != null) { // date == null means it is not relative time
             return new KatDateTime(date, timeOfDay);
         }
         // check some absolute time format
-        date = parseAbsoluteDate(time);
+        date = parseAbsoluteDate(remainingTime);
+        if (date == null && timeOfDay == null){
+            throw new CommandParseException(String.format(STR_INVALID_DATE_FORMAT, time));
+        }
         return new KatDateTime(date, timeOfDay);
 
     }

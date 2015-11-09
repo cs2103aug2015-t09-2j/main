@@ -48,10 +48,14 @@ public class CommandKeywords {
     // keywords for view, add properties
     public static final String KW_SET = "set";
 
-    public static final String[] START_KEYWORDS_LIST = new String[] { KW_ADD, KW_ADD_SHORT, KW_MARK,
-            KW_MARK_SHORT, KW_POSTPONE, KW_POSTPONE_SHORT, KW_EDIT, KW_EDIT_SHORT, KW_CHANGE, KW_DELETE,
-            KW_DELETE_SHORT, KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK, KW_VIEW, KW_VIEW_MULTIPLE_TASK_SHORT,
-            KW_FIND, KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT };
+    public static final String[] START_KEYWORDS_LIST = new String[] {
+            KW_ADD, KW_ADD_SHORT,
+            KW_MARK, KW_MARK_SHORT, KW_POSTPONE, KW_POSTPONE_SHORT,
+            KW_EDIT, KW_EDIT_SHORT, KW_CHANGE,
+            KW_DELETE, KW_DELETE_SHORT,
+            KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK, KW_VIEW, KW_VIEW_MULTIPLE_TASK_SHORT,
+            KW_FIND, KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT
+    };
 
     private static final String[] MAIN_KEYWORDS_LIST = new String[] {
             KW_BY, KW_FROM, KW_TO, KW_ON, KW_AT,

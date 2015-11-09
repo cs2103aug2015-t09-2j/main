@@ -49,20 +49,27 @@ public class EditTaskOption {
     }
 
     /**
-     * Returns option value as an object based on the option name
+     * Returns option value as an object based on the option name. If the option value
+     * cannot be converted, returns null instead.
      * 
      * @return New Object representing the option value
      */
     public Object getOptionValueObject() {
-        return PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
+        try{
+            return PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
     /**
-     * Returns option value as an KatDateTime object based on the option name
+     * Returns option value as an KatDateTime object based on the option name. If the option
+     * value cannot be converted, returns null instead.
      * 
      * @return New KatDateTime object representing the option value
      */
     public KatDateTime getOptionValueDate() {
-        return (KatDateTime) PropertyParser.parseOptionValue(taskOptionName, taskOptionValue);
+        return (KatDateTime) getOptionValueObject();
     }
 }
