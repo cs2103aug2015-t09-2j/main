@@ -39,18 +39,22 @@ public class Logic {
 
     // Error Messages
     private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; // %s is the command type
+    private static final String MSG_ERR_INVALID_INDEX = "Invalid index!";
     
     // Response Messages
     private static final String MSG_RESPONSE_SEARCH_KEYWORD = "Found %d tasks with keyword %s.";
-    private static final String MSG_RESPONSE_SEARCH_DEFAULT = "Found %d tasks.";
     private static final String MSG_RESPONSE_VIEW = "Displaying %d tasks.";
 
     // Source Paths
     private static final String MSG_SOURCE_PATH = "sourcepath.txt";
     private static final String MSG_DEFAULT_SOURCE_PATH = "";
+    
+    // Error Index
+    private static final int ERR_INDEX = -1;
 
-    // Constructor
-    public Logic() throws Exception {
+    /* Constructors */
+    public Logic() throws Exception {        
+        tracker_ = new Tracker();
         
         // Create Model object
         File sourcePath = new File(MSG_SOURCE_PATH);
@@ -69,10 +73,7 @@ public class Logic {
         br.close();
 
         assert (sourcePathStr != null);
-        model_ = new Model(sourcePathStr);
-        
-        // Create Tracker object
-        tracker_ = new Tracker();
+        model_ = new Model(sourcePathStr);        
     }
     
     public Logic(String path) throws Exception {
@@ -115,6 +116,14 @@ public class Logic {
         return tracker_.getIDList();
     }
     
+    public ArrayList<Task> getModelData() {
+        return model_.getData();
+    }
+    
+    public ArrayList<Task> getModelEventData() {
+        return model_.getEventTasks();
+    }
+    
     /**
      * Updates tracker's ID list with the latest information based on the input ArrayList of Tasks
      * @param taskList The list of tasks whose ID is to be updated to the tracker
@@ -148,37 +157,59 @@ public class Logic {
 
             case EDIT_MODIFY :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
-                EditTaskOption editOptions = commandDetail.getEditTaskOption();
                 
-                feedback.setResponse(model_.editModify(taskID, editOptions));               
+                if (taskID != ERR_INDEX) {
+                    EditTaskOption editOptions = commandDetail.getEditTaskOption();                    
+                    feedback.setResponse(model_.editModify(taskID, editOptions)); 
+                } else {
+                    feedback.setError(true);
+                    feedback.setResponse(MSG_ERR_INVALID_INDEX);
+                }
+                                              
                 feedback.setViewState(getDefaultViewState());            
                 break;
 
             case EDIT_COMPLETE :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
-                if (commandDetail.getTaskCompletedOption()) {
-                    feedback.setResponse(model_.editComplete(taskID));  
+                
+                if (taskID != ERR_INDEX) {
+                    markTask(commandDetail, feedback, taskID);
                 } else {
-                    feedback.setResponse(model_.editIncomplete(taskID));
+                    feedback.setError(true);
+                    feedback.setResponse(MSG_ERR_INVALID_INDEX);
                 }
+
                 feedback.setViewState(getDefaultViewState());
                 break; 
             
             case POSTPONE:
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());               
-                feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));                
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex()); 
+                
+                if (taskID != ERR_INDEX) {
+                    feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));
+                } else {
+                    feedback.setError(true);
+                    feedback.setResponse(MSG_ERR_INVALID_INDEX);
+                }
+                                               
                 feedback.setViewState(getDefaultViewState());
                 break;
 
             case DELETE_TASK :
-                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());                
-                feedback.setResponse(model_.editDelete(taskID));               
+                taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
+                
+                if (taskID != ERR_INDEX) {
+                    feedback.setResponse(model_.editDelete(taskID));
+                } else {
+                    feedback.setError(true);
+                    feedback.setResponse(MSG_ERR_INVALID_INDEX);
+                }
+                                               
                 feedback.setViewState(getDefaultViewState());             
                 break;
 
             case VIEW_TASK :             
                 feedback.setViewState(find(commandDetail));
-                //feedback.setSearch(true);
                 
                 tasksFound = feedback.getViewState().getViewStateSize();               
                 feedback.setResponse(String.format(MSG_RESPONSE_VIEW, tasksFound));
@@ -198,7 +229,7 @@ public class Logic {
             case FIND_TASKS :
                 feedback.setViewState(find(commandDetail));
                 feedback.setSearch(true);
-
+                
                 tasksFound = feedback.getViewState().getViewStateSize();            
                 String keyword = commandDetail.getFindKeywords();               
                 feedback.setResponse(String.format(MSG_RESPONSE_SEARCH_KEYWORD, tasksFound, keyword));
@@ -206,7 +237,7 @@ public class Logic {
                 break;
 
             case SET_LOCATION :
-                String newSaveLocation = (String) commandDetail.getFilePath();
+                String newSaveLocation = (String) commandDetail.getFilePath();               
                 feedback.setResponse(model_.setLocation(commandDetail));
                 setSourcePath(newSaveLocation);
                 feedback.setViewState(getDefaultViewState());
@@ -263,6 +294,24 @@ public class Logic {
     } 
 
     /*-- Helper Functions --*/
+    
+    /**
+     * Calls the correct editComplete/Incomplete function according to the input CommandDetail,
+     * and sets the corresponding response message for the input UIFeedback object. 
+     * @param cmdDetail CommandDetail object that contains information on whether the command is 
+     *                  an edit complete or edit incomplete.
+     * @param feedback  UIFeedback object whose response message will be set after the command is
+     *                  executed.
+     * @param taskID    ID of the task to be edited.
+     * @throws Exception 
+     */
+    private void markTask(CommandDetail cmdDetail, UIFeedback feedback, int taskID) throws Exception {
+        if (cmdDetail.getTaskCompletedOption()) {
+            feedback.setResponse(model_.editComplete(taskID));  
+        } else {
+            feedback.setResponse(model_.editIncomplete(taskID));
+        }
+    }
     
     /**
      * Searches through Model data based on the input Search object and returns
@@ -352,7 +401,6 @@ public class Logic {
         if (commandDetail.getDueDate() == null) {          
             dueDate = null;
         } else {  
-            //System.out.println("dueDate from command detail not null.");
             KatDateTime katDate = commandDetail.getDueDate();
             
             // if time isn't specified, set a default time 23:59
@@ -372,7 +420,12 @@ public class Logic {
         }
         return dueDate;
     }
-
+    
+    /**
+     * Sets the input path as the source path for KatNote
+     * @param newPath   path name to be set
+     * @throws FileNotFoundException   
+     */
     private void setSourcePath(String newPath) throws FileNotFoundException {
 
         File sourcePath = new File(MSG_SOURCE_PATH);
@@ -511,6 +564,8 @@ public class Logic {
 class Tracker {
     
     private static final int INDEX_OFFSET = 1;
+    private static final int ERR_INDEX = -1;
+    
     private ArrayList<Integer> taskIDList_; // The list of tasksIDs that is currently displayed
        
     public Tracker() {
@@ -529,12 +584,12 @@ class Tracker {
      */
     public int getTaskID(int index) {
         index -= INDEX_OFFSET;
-        if (taskIDList_.size() > index) {
+        if (index < 0 || index >= taskIDList_.size()) {
+            return ERR_INDEX;
+        } else
             return taskIDList_.get(index);
-        } else {
-            return -1;
-        }
     }
+
     
     /**
      * Updates the taskIDList_ with the latest information based on the input ArrayList of Tasks
@@ -626,9 +681,8 @@ class Search {
         for (int i = 0; i < data.size(); i++) {
             Task task = data.get(i);
             String taskTitle = task.getTitle();
-            //String taskDescription = task.getDescription();
 
-            if (isContain(taskTitle, keyword_)) { //TODO: Include comparison for taskDescription
+            if (isContain(taskTitle, keyword_)) {
                 tasksFound.add(task);
             }
         }
@@ -664,7 +718,6 @@ class Search {
      *         input date. 
      */
     private ArrayList<Task> findDueBy(ArrayList<Task> data) {
-        //System.out.println("Starting findDueBy for " + data.get(0).getTitle());
         ArrayList<Task> tasksFound = new ArrayList<Task>();
         LocalDateTime duedate = due_;
         LocalDateTime taskDue;
@@ -710,7 +763,6 @@ class Search {
             TaskType type = task.getTaskType();
             
             if (type == TaskType.FLOATING || task.getEndDate() == null) {
-                //System.out.println("Is floating task.");
                 break;
             }
             
@@ -721,7 +773,6 @@ class Search {
             }
             
             if (!taskStart.isBefore(start)) {
-                //System.out.println(task.getTitle() + " is added");
                 tasksFound.add(task);
             }
         }
@@ -736,7 +787,6 @@ class Search {
             return false;
         }
         
-        //System.out.printf("Starting isContain(%s, %s)...\n", line, word);
         String lowerCaseWord = word.toLowerCase();
         String lowerCaseLine = line.toLowerCase();
 
@@ -744,7 +794,6 @@ class Search {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(lowerCaseLine);
         boolean ans = m.find();
-        //System.out.printf("isContain(%s, %s) = %s\n", line, word, ans);
         return ans;
     }
 

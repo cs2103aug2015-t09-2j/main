@@ -43,7 +43,7 @@ public class TaskDetailedRow extends AnchorPane {
         this.index = viewIndex;
         this.isDateHidden = isDateHidden;
 
-        setIndexProperty(viewIndex);    
+        setIndexProperty(viewIndex);
         setDescriptionProperty();
         setDateTimeProperty();
         setCompletedProperty();
@@ -64,7 +64,7 @@ public class TaskDetailedRow extends AnchorPane {
     public String getDateString() {
         return dateTimeLabel.getText();
     }
-    
+
     public String getIndexString() {
         return viewIndexLabel.getText();
     }

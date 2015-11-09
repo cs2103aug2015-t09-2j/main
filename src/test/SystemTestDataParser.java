@@ -14,10 +14,11 @@ import java.util.Locale;
 import test.ViewDataPackage.TaskGroupPackage;
 
 public class SystemTestDataParser {
+    private static final String DATE_OUTPUT = "DATE_OUTPUT";
     private static final String DATE_HEADER = "%1s      %2s";
     private static final String EVENT_ROW_KEYWORD = "EVENT";
-    private static final String DIRECT_OUTPUT_KEYWORD = "DIRECT_OUTPUT";
-    private static final String DATE_OUTPUT_KEYWORD = "DATE_OUTPUT";
+    private static final String DIRECT_OUTPUT_KEYWORD = "DIRECT_OUTPUT_HEADER";
+    private static final String DATE_OUTPUT_KEYWORD = "DATE_OUTPUT_HEADER";
     private static final String SPACE_STRING = " ";
     private static final String DATE_INPUT_WITH_TIME_KEYWORD = "DATE_INPUT_2";
     private static final String DATE_INPUT_KEYWORD = "DATE_INPUT";
@@ -202,22 +203,22 @@ public class SystemTestDataParser {
                 LocalDateTime dateEnd = LocalDateTime.now().plusDays(days);
                 String dateEndString = dateEnd.format(dateFormat);
                 String timeEndString = readLine();
-                String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString, timeStartString,
-                        dateEndString, timeEndString);
+                String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString,
+                        timeStartString, dateEndString, timeEndString);
                 dateStrings.add(eventDateString);
 
-            } else if (line.equals("DATE_OUTPUT")) {
+            } else if (line.equals(DATE_OUTPUT)) {
                 indexString.add(readLine());
                 description.add(readLine());
-                
+
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
-                String dueDateString = readLine() + SPACE_STRING; //"Due:"
+                String dueDateString = readLine() + SPACE_STRING; // "Due:"
                 int days = Integer.parseInt(readLine());
                 LocalDateTime date = LocalDateTime.now().plusDays(days);
                 dueDateString += date.format(dateFormat) + SPACE_STRING;
                 dueDateString += readLine();
                 dateStrings.add(dueDateString);
-                
+
             } else {
                 indexString.add(line);
                 description.add(readLine());

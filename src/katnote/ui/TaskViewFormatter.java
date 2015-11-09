@@ -34,11 +34,11 @@ public class TaskViewFormatter {
         ArrayList<Task> floatingTasks = viewState.getFloatingTasks();
         ArrayList<Task> normalTasks = viewState.getNormalTasks();
         ArrayList<Task> events = viewState.getEventTasks();
-        if(isSearch){
+        if (isSearch) {
             processSearchListing(floatingTasks, normalTasks, events);
         } else {
             processFloatingTask(floatingTasks);
-            processNormalTasksAndEvents(normalTasks, events);            
+            processNormalTasksAndEvents(normalTasks, events);
         }
     }
 
@@ -61,7 +61,8 @@ public class TaskViewFormatter {
         return _viewList;
     }
 
-    private void processSearchListing(ArrayList<Task> floatingTasks, ArrayList<Task> normalTasksList, ArrayList<Task> eventList) {
+    private void processSearchListing(ArrayList<Task> floatingTasks, ArrayList<Task> normalTasksList,
+            ArrayList<Task> eventList) {
         processFloatingTask(floatingTasks);
         ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTasksList, eventList);
         if (combinedList.isEmpty()) {
@@ -92,7 +93,8 @@ public class TaskViewFormatter {
                 continue;
             }
 
-            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList, eventRemainingWeekList);
+            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList,
+                    eventRemainingWeekList);
 
             if (i == 0) {
                 TaskViewGroup taskGroupForToday = createTaskTodayGroup(combinedList);
@@ -117,19 +119,21 @@ public class TaskViewFormatter {
             Task event = (eventCopy.size() > 0) ? eventCopy.get(0) : null;
             LocalDate eventDateStart = (event != null) ? event.getStartDate().toLocalDate() : null;
             date = normalTask.getEndDate().toLocalDate();
-            if(eventDateStart != null && date.isAfter(eventDateStart)){
+            if (eventDateStart != null && date.isAfter(eventDateStart)) {
                 date = eventDateStart;
                 isEventSelected = true;
             }
             ArrayList<Task> normalTaskListThisDate = extractTaskDueThisDate(normalTasksQueue, date);
-            ArrayList<Task> eventListThisDate = extractEventsHappeningThisDate(eventCopy, date, isEventSelected);
-            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTaskListThisDate, eventListThisDate);
+            ArrayList<Task> eventListThisDate = extractEventsHappeningThisDate(eventCopy, date,
+                    isEventSelected);
+            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTaskListThisDate,
+                    eventListThisDate);
 
             String dayOfWeekString = getDayString(date.getDayOfWeek());
             dayOfWeekString += "      " + date.format(DATE_FORMAT);
 
             _viewList.add(createTaskGroupDetailed(dayOfWeekString, combinedList, true));
-            
+
         }
         while (!eventQueue.isEmpty()) {
             Task event = eventQueue.peek();
@@ -166,7 +170,8 @@ public class TaskViewFormatter {
         processRemainingTask(normalTasksQueue, eventCopy);
     }
 
-    private ArrayList<Task> combineNormalAndEventsOrdered(ArrayList<Task> normalList, ArrayList<Task> eventList) {
+    private ArrayList<Task> combineNormalAndEventsOrdered(ArrayList<Task> normalList,
+            ArrayList<Task> eventList) {
         ArrayList<Task> combinedList = new ArrayList<Task>();
 
         while (!normalList.isEmpty() || !eventList.isEmpty()) {
@@ -216,7 +221,8 @@ public class TaskViewFormatter {
         }
     }
 
-    private ArrayList<Task> extractEventsHappeningThisDate(ArrayList<Task> eventList, LocalDate eventDate, boolean isToRemoveStartDate) {
+    private ArrayList<Task> extractEventsHappeningThisDate(ArrayList<Task> eventList, LocalDate eventDate,
+            boolean isToRemoveStartDate) {
         ArrayList<Task> newEventList = new ArrayList<Task>();
         LocalDate startDate;
         LocalDate endDate;
@@ -231,7 +237,7 @@ public class TaskViewFormatter {
                 if (eventDate.isEqual(endDate)) {
                     eventList.remove(i);
                     i--;
-                } else if(isToRemoveStartDate && eventDate.equals(startDate)){
+                } else if (isToRemoveStartDate && eventDate.equals(startDate)) {
                     eventList.remove(i);
                     i--;
                 }
@@ -306,7 +312,8 @@ public class TaskViewFormatter {
         return linkedList;
     }
 
-    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list, boolean isDateHidden) {
+    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list,
+            boolean isDateHidden) {
         TaskViewGroup viewGroup = new TaskViewGroup(groupTitle);
 
         for (int i = 0; i < list.size(); i++) {

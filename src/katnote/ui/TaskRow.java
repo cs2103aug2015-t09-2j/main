@@ -19,17 +19,16 @@ public class TaskRow extends AnchorPane {
 
     @FXML
     private Label timeLabel;
-    
+
     @FXML
     private Label viewIndexLabel;
 
     @FXML
     private Pane checkmarkPane;
 
-
     public TaskRow(int viewIndex, String taskDescription, boolean isDone) {
         loadFXML();
-        setIndexProperty(viewIndex);        
+        setIndexProperty(viewIndex);
         setTaskDescription(taskDescription);
         setCompletedProperty(isDone);
     }

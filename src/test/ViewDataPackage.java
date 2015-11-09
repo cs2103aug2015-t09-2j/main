@@ -10,29 +10,32 @@ public class ViewDataPackage {
         private String[] taskDescription;
         private String[] dateString;
         private String[] indexString;
-        
-        public TaskGroupPackage(String groupHeader, String[] taskDescription, String[] dateString, String[] indexString){
+
+        public TaskGroupPackage(String groupHeader, String[] taskDescription, String[] dateString,
+                String[] indexString) {
             this.groupHeader = groupHeader;
             this.taskDescription = taskDescription;
             this.dateString = dateString;
             this.indexString = indexString;
         }
-        
-        public String getGroupHeader(){
+
+        public String getGroupHeader() {
             return groupHeader;
         }
-        public String[] getTaskDesciptions(){
+
+        public String[] getTaskDesciptions() {
             return taskDescription;
         }
-        public String[] getDateString(){
+
+        public String[] getDateString() {
             return dateString;
         }
-        public String[] getIndexString(){
+
+        public String[] getIndexString() {
             return indexString;
-        }        
-    }   
-    
-    
+        }
+    }
+
     String response = null;
     TaskGroupPackage[] viewList = null;
 

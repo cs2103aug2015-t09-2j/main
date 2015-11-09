@@ -17,15 +17,15 @@ public class KatNoteLogger {
     private static final String KATNOTE_LOG_FILENAME = "katnote.log";
     private static final LogManager logManager = LogManager.getLogManager();
     private static final Logger log = Logger.getLogger("katnote");
-    
+
     private static FileHandler fh = null;
-    
+
     public static KatNoteLogger instance = null;
 
-    private KatNoteLogger() {        
+    private KatNoteLogger() {
         try {
             File logFile = new File(LOGGING_PROPERTIES_FILENAME);
-            if(!logFile.exists()){
+            if (!logFile.exists()) {
                 InputStream defaultFile = getClass().getResourceAsStream(DEFAULT_LOGGING_PROPERTIES_FILENAME);
                 FileOutputStream outStream = new FileOutputStream(logFile);
                 int readBytes;

@@ -11,6 +11,7 @@ import katnote.utils.KatDateTime;
 
 public class DateParser {
 
+    // relative time strings
     private static final String STR_EMPTY = "";
     private static final String RELATIVE_TIME_TODAY = "today";
     private static final String RELATIVE_TIME_TOMORROW = "tomorrow";
@@ -24,11 +25,8 @@ public class DateParser {
     private static final String RELATIVE_TIME_FRIDAY = "friday";
     private static final String RELATIVE_TIME_SATURDAY = "saturday";
     private static final String RELATIVE_TIME_SUNDAY = "sunday";
-    private static final String[] MONTHS_OF_YEAR = {
-            "january", "february", "march", "april", "may",
-            "june", "july", "august", "september",
-            "october", "november", "december"
-    };
+    private static final String[] MONTHS_OF_YEAR = { "january", "february", "march", "april", "may", "june",
+            "july", "august", "september", "october", "november", "december" };
     private static final int MONTH_MIN_LENGTH = 3;
 
     // Date pattern and properties positions
@@ -36,15 +34,15 @@ public class DateParser {
     private static final int ABSOLUTE_DATE_PATTERN_POS_DAY = 1;
     private static final int ABSOLUTE_DATE_PATTERN_POS_MONTH = 2;
     private static final int ABSOLUTE_DATE_PATTERN_POS_YEAR = 3;
-    
-    //Time pattern and properties positions
+
+    // Time pattern and properties positions
     private static final String ABSOLUTE_DATE_TIME_PATTERN = "(\\d{1,2})(?::(\\d+)(am|pm|)|(am|pm))";
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR = 1;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_MINUTE = 2;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM = 3;
     private static final int ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM_L = 4;
-    
-    //Special constants related to time
+
+    // Special constants related to time
     private static final String DAY_PERIOD_PM = "pm";
     private static final int DAY_HALF_NUMBER_OF_HOURS = 12;
     private static final int NUMBER_OF_MONTHS = 12;
@@ -54,12 +52,16 @@ public class DateParser {
     // default hours of day when no hour given
     public static final int MIDDLE_OF_DAY = 0;
     public static final int BEGIN_OF_DAY = 1;
-    public static final int END_OF_DAY = 2;       
+    public static final int END_OF_DAY = 2;
+    
+    // exception message
+    private static final String STR_INVALID_DATE_FORMAT = "\"%1$s\" is not recognized as a date time value";
 
     /**
      * Gets today Date time
      * 
-     * @return the current date using the system clock and default time-zone, not null
+     * @return the current date using the system clock and default time-zone,
+     *         not null
      */
     public static LocalDate getToday() {
         return LocalDate.now();
@@ -68,7 +70,8 @@ public class DateParser {
     /**
      * Gets tomorrow Date time
      * 
-     * @return the date after the current date using the system clock and default time-zone, not null
+     * @return the date after the current date using the system clock and
+     *         default time-zone, not null
      */
     public static LocalDate getTomorrow() {
         LocalDate date = LocalDate.now();
@@ -79,7 +82,8 @@ public class DateParser {
     /**
      * Gets next week Date time
      * 
-     * @return the date which is 7 days after the current date using the system clock and default time-zone, not null
+     * @return the date which is 7 days after the current date using the system
+     *         clock and default time-zone, not null
      */
     public static LocalDate getNextWeek() {
         LocalDate date = LocalDate.now();
@@ -90,8 +94,10 @@ public class DateParser {
     /**
      * Finds the next desired weekday
      * 
-     * @param desiredWeekday the next desired weekday
-     * @return the next desired weekday date after the current date using the system clock and default time-zone, not null
+     * @param desiredWeekday
+     *            the next desired weekday
+     * @return the next desired weekday date after the current date using the
+     *         system clock and default time-zone, not null
      */
     public static LocalDate getNextWeekDay(DayOfWeek desiredWeekday) {
         LocalDate date = LocalDate.now();
@@ -106,7 +112,8 @@ public class DateParser {
     /**
      * Gets next month Date time
      * 
-     * @return the date which is 1 month after the current date using the system clock and default time-zone, not null
+     * @return the date which is 1 month after the current date using the system
+     *         clock and default time-zone, not null
      */
     public static LocalDate getNextMonth() {
         LocalDate date = LocalDate.now();
@@ -117,7 +124,8 @@ public class DateParser {
     /**
      * Gets next year Date time
      * 
-     * @return the date which is 1 year after the current date using the system clock and default time-zone, not null
+     * @return the date which is 1 year after the current date using the system
+     *         clock and default time-zone, not null
      */
     public static LocalDate getNextYear() {
         LocalDate date = LocalDate.now();
@@ -130,9 +138,9 @@ public class DateParser {
      */
     private static LocalDate parseRelativeDate(String time) {
         switch (time.toLowerCase()) {
-            case STR_EMPTY:
+            case STR_EMPTY :
                 return LocalDate.MIN;
-            case RELATIVE_TIME_TODAY :            
+            case RELATIVE_TIME_TODAY :
                 return getToday();
             case RELATIVE_TIME_TOMORROW :
                 return getTomorrow();
@@ -159,11 +167,11 @@ public class DateParser {
         }
         return null;
     }
-    
-    private static String emptyIfNull(String s){
+
+    private static String emptyIfNull(String s) {
         return (s == null) ? STR_EMPTY : s;
     }
-    
+
     /**
      * Converts month string to number. Returns -1 if the value is invalid
      * 
@@ -171,17 +179,16 @@ public class DateParser {
      * 
      * @return
      */
-    private static int parseMonth(String monthStr){
+    private static int parseMonth(String monthStr) {
         monthStr = monthStr.toLowerCase();
-        try{
+        try {
             return Integer.parseInt(monthStr);
-        }
-        catch (NumberFormatException e){
-            if (monthStr.length() < MONTH_MIN_LENGTH){
+        } catch (NumberFormatException e) {
+            if (monthStr.length() < MONTH_MIN_LENGTH) {
                 return -1; // invalid months
-            }            
-            for (int i = 0; i < NUMBER_OF_MONTHS; i++){
-                if (MONTHS_OF_YEAR[i].startsWith(monthStr)){
+            }
+            for (int i = 0; i < NUMBER_OF_MONTHS; i++) {
+                if (MONTHS_OF_YEAR[i].startsWith(monthStr)) {
                     return i + 1;
                 }
             }
@@ -201,8 +208,8 @@ public class DateParser {
             int month = parseMonth(m.group(ABSOLUTE_DATE_PATTERN_POS_MONTH));
             int year = m.group(ABSOLUTE_DATE_PATTERN_POS_YEAR) != null
                     ? Integer.parseInt(m.group(ABSOLUTE_DATE_PATTERN_POS_YEAR)) : currentYear;
-                    
-            if (year < YEAR_TWO_DIGIT_LIMIT){
+
+            if (year < YEAR_TWO_DIGIT_LIMIT) {
                 year += YEAR_TWO_DIGIT_OFFSET;
             }
 
@@ -211,12 +218,12 @@ public class DateParser {
 
         return null;
     }
-    
+
     /*
-     * Extracts time of day from time string. If no time of day found, return null
-     * instead
+     * Extracts time of day from time string. If no time of day found, return
+     * null instead
      */
-    private static LocalTime extractTimeOfDay(String time){
+    private static LocalTime extractTimeOfDay(String time) {
         Matcher m = Pattern.compile(ABSOLUTE_DATE_TIME_PATTERN).matcher(time);
         if (m.find()) {
             int hour = Integer.parseInt(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_HOUR));
@@ -225,23 +232,23 @@ public class DateParser {
             String dayPM = emptyIfNull(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM))
                     + emptyIfNull(m.group(ABSOLUTE_DATE_TIME_PATTERN_POS_DAY_PM_L));
             boolean isPM = DAY_PERIOD_PM.equals(dayPM);
-            if (dayPM != STR_EMPTY && hour == 12){ //special case 12am and 12pm
+            if (dayPM != STR_EMPTY && hour == 12) { // special case 12am and
+                                                    // 12pm
                 hour = 0;
             }
             if (isPM) {
                 hour = (hour + DAY_HALF_NUMBER_OF_HOURS) % 24;
             }
             return LocalTime.of(hour, minute);
-        }
-        else{ // when time of day not found, return null
+        } else { // when time of day not found, return null
             return null;
         }
     }
-    
+
     /*
      * Trims time of day from the string
      */
-    private static String trimTimeOfDay(String time){
+    private static String trimTimeOfDay(String time) {
         return time.replaceFirst(ABSOLUTE_DATE_TIME_PATTERN, "").trim();
     }
 
@@ -250,20 +257,24 @@ public class DateParser {
      * 
      * @param time
      * 
-     * @return New KatDateTime object representing the time string 
+     * @return New KatDateTime object representing the time string
+     * @throws CommandParseException 
      */
-    public static KatDateTime parseDateTime(String time) {
+    public static KatDateTime parseDateTime(String time) throws CommandParseException {
         // get time of day and trim
         LocalTime timeOfDay = extractTimeOfDay(time);
-        time = trimTimeOfDay(time);
+        String remainingTime = trimTimeOfDay(time);
         // check if time is relative time
-        LocalDate date = parseRelativeDate(time);
+        LocalDate date = parseRelativeDate(remainingTime);
         if (date != null) { // date == null means it is not relative time
-            return new KatDateTime(date,  timeOfDay);
+            return new KatDateTime(date, timeOfDay);
         }
         // check some absolute time format
-        date = parseAbsoluteDate(time);
-        return new KatDateTime(date,  timeOfDay);
+        date = parseAbsoluteDate(remainingTime);
+        if (date == null && timeOfDay == null){
+            throw new CommandParseException(String.format(STR_INVALID_DATE_FORMAT, time));
+        }
+        return new KatDateTime(date, timeOfDay);
 
     }
 

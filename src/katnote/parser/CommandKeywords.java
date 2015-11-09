@@ -35,7 +35,8 @@ public class CommandKeywords {
     public static final String KW_TASKS = "tasks";
     public static final String KW_ALL = "all";
     public static final String KW_COMPLETED = "completed";
-    public static final String KW_INCOMPLETED = "incompleted";
+    public static final String KW_DONE = "done";
+    public static final String KW_INCOMPLETE = "incomplete";
 
     // keywords for time properties
     public static final String KW_BY = "by";
@@ -46,28 +47,26 @@ public class CommandKeywords {
 
     // keywords for view, add properties
     public static final String KW_SET = "set";
-    
 
     public static final String[] START_KEYWORDS_LIST = new String[] {
             KW_ADD, KW_ADD_SHORT,
             KW_MARK, KW_MARK_SHORT, KW_POSTPONE, KW_POSTPONE_SHORT,
             KW_EDIT, KW_EDIT_SHORT, KW_CHANGE,
             KW_DELETE, KW_DELETE_SHORT,
-            KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK, 
-            KW_VIEW, KW_VIEW_MULTIPLE_TASK_SHORT,
-            KW_FIND,
-            KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT
+            KW_VIEW_MULTIPLE_TASK, KW_VIEW_SINGLE_TASK, KW_VIEW, KW_VIEW_MULTIPLE_TASK_SHORT,
+            KW_FIND, KW_UNDO, KW_REDO, KW_IMPORT, KW_EXPORT, KW_HELP, KW_SET_LOCATION, KW_EXIT
     };
 
     private static final String[] MAIN_KEYWORDS_LIST = new String[] {
             KW_BY, KW_FROM, KW_TO, KW_ON, KW_AT,
-            KW_SET,
     };
 
-    private static final HashSet<String> MAIN_KEYWORDS_SET = new HashSet<String>(Arrays.asList(MAIN_KEYWORDS_LIST));
+    private static final HashSet<String> MAIN_KEYWORDS_SET = new HashSet<String>(
+            Arrays.asList(MAIN_KEYWORDS_LIST));
 
     /**
      * Checks a token whether it is a main keyword or not
+     * 
      * @param token
      * @return true if token is in main keywords list, otherwise false
      */

@@ -28,46 +28,46 @@ public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final String TEST_FILE_PATH = "TestFiles/SystemTestFiles/";
     TextField commandInput;
-    GraphicalUserInterface app;     
-    
-    public void verifyTaskGroup(TaskGroupPackage expectedDataSet, TaskViewGroup taskGroup){
+    GraphicalUserInterface app;
+
+    public void verifyTaskGroup(TaskGroupPackage expectedDataSet, TaskViewGroup taskGroup) {
         String groupHeader = taskGroup.getGroupHeaderText();
         assertEquals(groupHeader, expectedDataSet.getGroupHeader());
         int noOfChildren = taskGroup.getListChildren().getChildren().size();
-        
+
         String[] expectedTaskDescription = expectedDataSet.getTaskDesciptions();
         String[] expectedDateString = expectedDataSet.getDateString();
         String[] expectedIndexString = expectedDataSet.getIndexString();
         assertEquals(expectedTaskDescription.length, noOfChildren);
         ObservableList<Node> list = taskGroup.getListChildren().getChildren();
-        
-        if(groupHeader.equals(GROUP_TITLE_FLOATING_TASKS)){
-            for(int i = 0; i < noOfChildren; i++){
-                TaskRow row = (TaskRow)list.get(i);
+
+        if (groupHeader.equals(GROUP_TITLE_FLOATING_TASKS)) {
+            for (int i = 0; i < noOfChildren; i++) {
+                TaskRow row = (TaskRow) list.get(i);
                 assertEquals(expectedTaskDescription[i], row.getDescription());
-            }     
-            
+            }
+
         } else {
-            for(int i = 0; i < noOfChildren; i++){
-                TaskDetailedRow row = (TaskDetailedRow)list.get(i);
+            for (int i = 0; i < noOfChildren; i++) {
+                TaskDetailedRow row = (TaskDetailedRow) list.get(i);
                 assertEquals(expectedTaskDescription[i], row.getDescription());
                 assertEquals(expectedDateString[i], row.getDateString());
                 assertEquals(expectedIndexString[i], row.getIndexString());
-            }               
+            }
         }
-             
+
     }
 
-    public void verifyTaskGroupList(TaskGroupPackage[] testDataPackageArray, VBox taskGroupList){
+    public void verifyTaskGroupList(TaskGroupPackage[] testDataPackageArray, VBox taskGroupList) {
         ObservableList<Node> nodes = taskGroupList.getChildren();
         assertEquals(testDataPackageArray.length, nodes.size());
-        for(int i = 0; i < nodes.size(); i++){
+        for (int i = 0; i < nodes.size(); i++) {
             TaskViewGroup viewGroup = (TaskViewGroup) nodes.get(i);
             verifyTaskGroup(testDataPackageArray[i], viewGroup);
-        }        
+        }
     }
-    
-    public void verifyView(ViewDataPackage data){
+
+    public void verifyView(ViewDataPackage data) {
         Label responseLabel = (Label) find("#responseLabel");
         VBox taskGroupList = (VBox) find("#TaskList");
         assertEquals(data.getResponse(), responseLabel.getText());
@@ -75,61 +75,61 @@ public class TestGraphicalUserInterface extends GuiTest {
     }
 
     @Test
-    public void systemTest(){
+    public void systemTest() {
         SystemTestDataParser testData = new SystemTestDataParser();
         ArrayList<String> inputs = testData.getInputs();
         ArrayList<ViewDataPackage> outputs = testData.getOutputs();
-        
+
         assertEquals(inputs.size(), outputs.size());
-        
-        //mouse test
+
+        // mouse test
         String input = inputs.get(0);
         ViewDataPackage data = outputs.get(0);
         commandInput.setText(input);
         System.out.println(String.format("Testing: \"%s\"", input));
-        click("#inputButton"); 
-        click("#commandInputBox");       
-        
-        for(int i = 1; i < inputs.size(); i++){
+        click("#inputButton");
+        click("#commandInputBox");
+
+        for (int i = 1; i < inputs.size(); i++) {
             input = inputs.get(i);
             data = outputs.get(i);
-            //type(input).push(KeyCode.ENTER);
+            // type(input).push(KeyCode.ENTER);
             commandInput.setText(input);
             System.out.println(String.format("Testing: \"%s\"", input));
             sleep(250, TimeUnit.MILLISECONDS);
             push(KeyCode.ENTER);
             sleep(250, TimeUnit.MILLISECONDS);
-            
-            verifyView(data);            
+
+            verifyView(data);
         }
-        
+
     }
-    
+
     @Override
     protected Parent getRootNode() {
         return null;
     }
-    
+
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         File f = new File(TEST_FILE_PATH + "data.txt");
-        if(f.exists()){
+        if (f.exists()) {
             f.delete();
         }
     }
 
     @Override
     public void setupStage() throws Throwable {
-        GraphicalUserInterface.configureTestMode(true, TEST_FILE_PATH);        
-        
+        GraphicalUserInterface.configureTestMode(true, TEST_FILE_PATH);
+
         new Thread(() -> {
-            GraphicalUserInterface.launch(GraphicalUserInterface.class);            
+            GraphicalUserInterface.launch(GraphicalUserInterface.class);
         }).start();
         // let the application load
-        sleep(2, TimeUnit.SECONDS);        
+        sleep(2, TimeUnit.SECONDS);
         click("#commandInputBox");
-        commandInput = (TextField)find("#commandInputBox");
-        
+        commandInput = (TextField) find("#commandInputBox");
+
         app = GraphicalUserInterface.getInstance();
     }
 }
