@@ -20,7 +20,9 @@ public class TestLogic {
 
     private static final String INPUT_EDIT_MODIFY = "edit 1 title Feed cat";
     private static final String INPUT_MARK_COMPLETE = "mark 1 completed";
+    private static final String INPUT_MARK_INCOMPLETE = "mark 1 incompleted";
     private static final String INPUT_DELETE = "delete 1";
+    private static final String INPUT_DELETE_INVALID = "delete 0";
     private static final String INPUT_POSTPONE = "postpone 1 to 9/11/2015";
     private static final String INPUT_UNDO = "undo";
     private static final String INPUT_REDO = "redo";
@@ -131,6 +133,8 @@ public class TestLogic {
     /*-----------------------------------------------*/
 
     /* Test that command switch cases are correctly executed */
+    
+    // Equivalence Partition Case 
     @Test
     public void testExecuteAdd() {
         try {
@@ -146,7 +150,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
 
-    
+    // Equivalence Partition Case 
     @Test
     public void testExecuteEditModify() {
         try {
@@ -167,6 +171,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
+    // Equivalence Partition Case 
     @Test
     public void testExecuteEditComplete() {
         try {
@@ -187,6 +192,49 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
+    // Equivalence Partition Case 
+    @Test
+    public void testExecuteEditIncomplete() {
+        try {
+            Logic logic = new Logic(TEST_SOURCE_PATH);
+            fillSchedule(logic);
+            
+            UIFeedback fb = logic.execute(INPUT_VIEW_COMPLETED);
+            logic.setViewMapping(fb.getViewState().getFloatingTasks());
+            UIFeedback actual = logic.execute(INPUT_MARK_INCOMPLETE);
+
+            String expectedMsg = "Task: float1 is marked incomplete.";
+            assertEquals(actual.getMessage(), expectedMsg);  
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            fail("Exception!");
+        }
+        clearExistingData(TEST_SOURCE_PATH);
+    }
+    
+    // Equivalence Partition Case - Invalid Index Exception Handling
+    @Test
+    public void testExecuteDeleteInvalidIndex() {
+        try {
+            Logic logic = new Logic(TEST_SOURCE_PATH);
+            fillSchedule(logic);
+            
+            UIFeedback fb = logic.execute(INPUT_VIEW);
+            logic.setViewMapping(fb.getViewState().getFloatingTasks());
+            UIFeedback actual = logic.execute(INPUT_DELETE_INVALID);
+
+            String expectedMsg = "Invalid index!";
+            assertEquals(actual.getMessage(), expectedMsg);  
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            fail("Exception!");
+        }
+        clearExistingData(TEST_SOURCE_PATH);
+    }
+    
+    // Equivalence Partition Case 
     @Test
     public void testExecuteDelete() {
         try {
@@ -207,6 +255,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
+    // Equivalence Partition Case 
     @Test
     public void testExecutePostpone() {
         try {
@@ -227,7 +276,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
-    
+    // Equivalence Partition Case 
     @Test
     public void testExecuteUndo() {
         try {
@@ -248,6 +297,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
+    // Equivalence Partition Case 
     @Test
     public void testExecuteRedo() {
         try {
@@ -269,6 +319,7 @@ public class TestLogic {
         clearExistingData(TEST_SOURCE_PATH);
     }
     
+    // Equivalence Partition Case 
     @Test
     public void testExecuteExit() {
         try {
@@ -283,7 +334,8 @@ public class TestLogic {
         }
         clearExistingData(TEST_SOURCE_PATH);
     }
-
+    
+    // Equivalence Partition Case 
     @Test
     public void testSetViewMapping() {
         try {
