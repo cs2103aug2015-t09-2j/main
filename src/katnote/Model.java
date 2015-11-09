@@ -457,7 +457,8 @@ public class Model {
 	
 	/**
 	 * Imports the data.txt file from the specified location and saves it to the local version.
-	 * This function is not undo-able. However it will create a backup of the old data.
+	 * This function is not undo-able. However it will create a backup of the old data. This will also
+	 * reset the undo and redo logs.
 	 * @param commandDetail with the IMPORT_LOCATION property.
 	 * @return the response message of a successful import of data.
 	 * @throws Exception 
@@ -881,8 +882,6 @@ public class Model {
 	private void modifyTask(String optionName, Task editedTask, EditTaskOption editOption) throws Exception {
 	    
 	    switch (optionName) {
-//            case CommandProperties.TASK_ID :
-//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
             case CommandProperties.TASK_TITLE :
                 editedTask.setTitle(editOption.getOptionValue());
                 break;
@@ -893,22 +892,6 @@ public class Model {
             case CommandProperties.TIME_TO :
                 dueDateEdit(editedTask, editOption);
                 break;
-//            case CommandProperties.TIME_REPEAT :
-//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//                editedTask.setRepeatOption(editOption.getOptionValue());
-//                break;
-//            case CommandProperties.TIME_UNTIL :
-//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//                editedTask.setTerminateDate(editOption.getOptionValueDate());
-//                break;
-//            case CommandProperties.TASK_DESCRIPTION :
-//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//                editedTask.setDescription(editOption.getOptionValue());
-//                break;
-//            case CommandProperties.TASK_CATEGORY :
-//                handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
-//                editedTask.setCategory(editOption.getOptionValue());
-//                break;
             default:
                 handleException(null, MSG_ERR_TASK_NOT_MODIFIED);
         }
@@ -957,6 +940,9 @@ public class Model {
 	
 	private void createDataOld() throws Exception {
 	    
+	    _undoLog.clear();
+	    _undoTaskObjLog.clear();
+	    resetRedoLog();
 	    _data.createBackup();
 	}
 	
@@ -1092,7 +1078,7 @@ public class Model {
 			return taskArray;
 		}
 		
-		// Helper Method
+		// Helper Methods
 		private void interpret(String[] tokenArray) {
 		    
 		    // Add Definitions to hash table.

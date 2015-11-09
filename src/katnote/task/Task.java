@@ -41,15 +41,12 @@ public class Task {
     public Task(CommandDetail commandDetail) throws Exception {
         // Currently choosing DATE_FORMAT_LONG for all dates.
         try {
-            // TODO: setID(some_number);
             setTitle(commandDetail.getTitle());
             setTaskType(commandDetail.getTaskType());
             
             if (commandDetail.getStartDate() != null) {
                 setStartDate(commandDetail.getStartDate().toLocalDateTime());
             }
-            
-            // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
             
             if (commandDetail.getEndDate() != null) {
                 setEndDate(commandDetail.getEndDate().toLocalDateTime());
@@ -59,10 +56,6 @@ public class Task {
                 setEndDate(commandDetail.getDueDate().toLocalDateTime());
             }
             
-            // TODO:
-            // setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
-            // TODO: setCategory(args[INDEX_CATEGORY]);
-            // TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
