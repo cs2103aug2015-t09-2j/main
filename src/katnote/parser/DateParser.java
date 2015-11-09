@@ -53,7 +53,7 @@ public class DateParser {
     public static final int MIDDLE_OF_DAY = 0;
     public static final int BEGIN_OF_DAY = 1;
     public static final int END_OF_DAY = 2;
-    
+
     // exception message
     private static final String STR_INVALID_DATE_FORMAT = "\"%1$s\" is not recognized as a date time value";
 
@@ -94,8 +94,7 @@ public class DateParser {
     /**
      * Finds the next desired weekday
      * 
-     * @param desiredWeekday
-     *            the next desired weekday
+     * @param desiredWeekday the next desired weekday
      * @return the next desired weekday date after the current date using the
      *         system clock and default time-zone, not null
      */
@@ -258,7 +257,7 @@ public class DateParser {
      * @param time
      * 
      * @return New KatDateTime object representing the time string
-     * @throws CommandParseException 
+     * @throws CommandParseException
      */
     public static KatDateTime parseDateTime(String time) throws CommandParseException {
         // get time of day and trim
@@ -271,7 +270,7 @@ public class DateParser {
         }
         // check some absolute time format
         date = parseAbsoluteDate(remainingTime);
-        if (date == null && timeOfDay == null){
+        if (date == null && timeOfDay == null) {
             throw new CommandParseException(String.format(STR_INVALID_DATE_FORMAT, time));
         }
         return new KatDateTime(date, timeOfDay);

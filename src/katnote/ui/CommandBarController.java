@@ -39,6 +39,7 @@ public class CommandBarController {
 
     /**
      * Binds the main UI to the controller for forwarding controller events
+     * 
      * @param mainUI
      */
     public void setMainUI(GraphicalUserInterface mainUI) {
@@ -46,7 +47,8 @@ public class CommandBarController {
     }
 
     /**
-     * Display the error response and in red 
+     * Display the error response and in red
+     * 
      * @param response Error response message
      */
     public void setErrorText(String response) {
@@ -55,6 +57,7 @@ public class CommandBarController {
 
     /**
      * Display response message and set its color.
+     * 
      * @param response Response message to display
      * @param isError true for red and false for black
      */

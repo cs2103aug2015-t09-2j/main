@@ -126,7 +126,9 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand1() throws CommandParseException { // View multiple task
+    public void testViewMultipleTasksCommand1() throws CommandParseException { // View
+                                                                               // multiple
+                                                                               // task
         CommandDetail commandDetail = Parser.parseCommand("view on monday");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
@@ -135,7 +137,9 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand2() throws CommandParseException { // View multiple task
+    public void testViewMultipleTasksCommand2() throws CommandParseException { // View
+                                                                               // multiple
+                                                                               // task
         CommandDetail commandDetail = Parser.parseCommand("view tasks completed from tuesday 2pm to 5pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.START_FROM, commandDetail.getViewTaskOption());
@@ -144,7 +148,9 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand3() throws CommandParseException { // View multiple task
+    public void testViewMultipleTasksCommand3() throws CommandParseException { // View
+                                                                               // multiple
+                                                                               // task
         CommandDetail commandDetail = Parser.parseCommand("-v completed by tuesday 2pm");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.DUE_BY, commandDetail.getViewTaskOption());
@@ -153,7 +159,9 @@ public class TestParser {
     }
 
     @Test
-    public void testViewMultipleTasksCommand4() throws CommandParseException { // View multiple task
+    public void testViewMultipleTasksCommand4() throws CommandParseException { // View
+                                                                               // multiple
+                                                                               // task
         CommandDetail commandDetail = Parser.parseCommand("view all");
         assertEquals(CommandType.VIEW_TASK, commandDetail.getCommandType());
         assertEquals(ViewTaskOption.ALL, commandDetail.getViewTaskOption());
@@ -162,7 +170,9 @@ public class TestParser {
     }
 
     @Test
-    public void testViewSingleTaskCommand1() throws CommandParseException { // View single task
+    public void testViewSingleTaskCommand1() throws CommandParseException { // View
+                                                                            // single
+                                                                            // task
         CommandDetail commandDetail = Parser.parseCommand("view task 3");
         assertEquals(CommandType.VIEW_TASK_WITH_ID, commandDetail.getCommandType());
         assertEquals(3, commandDetail.getTaskIndex());

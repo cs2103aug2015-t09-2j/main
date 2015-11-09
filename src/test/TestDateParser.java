@@ -11,16 +11,16 @@ import katnote.utils.KatDateTime;
 public class TestDateParser {
 
     /*
-     * Test DateParser.parseDateTime method with relative date. 
+     * Test DateParser.parseDateTime method with relative date.
      */
     @Test
     public void testRelativeParse() throws CommandParseException {
         KatDateTime date;
-        
+
         date = DateParser.parseDateTime("7pm tomorrow");
         assertNotNull(date);
-        //System.out.println(date.toString());
-        
+        // System.out.println(date.toString());
+
         date = DateParser.parseDateTime("next week 9am");
         assertNotNull(date);
     }

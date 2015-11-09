@@ -27,7 +27,7 @@ import test.ViewDataPackage.TaskGroupPackage;
 public class TestGraphicalUserInterface extends GuiTest {
     private static final String GROUP_TITLE_FLOATING_TASKS = "Task to do";
     private static final String TEST_FILE_PATH = "TestFiles/SystemTestFiles/";
-    TextField commandInput;
+    private TextField commandInput;
 
     public void verifyTaskGroup(TaskGroupPackage expectedDataSet, TaskViewGroup taskGroup) {
         String groupHeader = taskGroup.getGroupHeaderText();

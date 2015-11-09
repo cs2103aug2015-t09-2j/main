@@ -36,8 +36,8 @@ public class ViewDataPackage {
         }
     }
 
-    String response = null;
-    TaskGroupPackage[] viewList = null;
+    private String response = null;
+    private TaskGroupPackage[] viewList = null;
 
     public ViewDataPackage(ArrayList<TaskGroupPackage> viewList, String response) {
         this.response = response;

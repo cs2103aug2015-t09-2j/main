@@ -33,8 +33,7 @@ public class CommandDetail {
     /**
      * Sets the type of command
      * 
-     * @param commandType
-     *            New command type
+     * @param commandType New command type
      */
     public void setCommandType(CommandType commandType) {
         this.commandType = commandType;
@@ -63,8 +62,7 @@ public class CommandDetail {
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key.
      *
-     * @param key
-     *            The key whose presence in this map is to be tested
+     * @param key The key whose presence in this map is to be tested
      * 
      * @return <tt>true</tt> if this map contains a mapping for the specified
      *         key.

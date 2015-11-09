@@ -15,10 +15,8 @@ public class KatDateTime {
     /**
      * Obtains an instance of {@code KatDateTime} from a date and time.
      *
-     * @param date
-     *            the local date
-     * @param time
-     *            the local time
+     * @param date the local date
+     * @param time the local time
      * @return the date-time, not null
      */
     public KatDateTime(LocalDate date, LocalTime time) {

@@ -18,20 +18,20 @@ public class PropertyParser {
      * propertyName. For example, parseProperty(“from”, “24/10/2015”) will
      * return a Date object representing 24/10/2015.
      * 
-     * @param propertyName
-     *            Command property keyword (can be "from", "to", "by",...)
+     * @param propertyName Command property keyword (can be "from", "to",
+     *            "by",...)
      * 
-     * @param propertyValue
-     *            Value of command property inputed by user input value
+     * @param propertyValue Value of command property inputed by user input
+     *            value
      * 
-     * @param command
-     *            the CommandDetail object which is currently working on. The
-     *            result object of this property will be added as an option to
-     *            this CommandDetail object
-     * @throws CommandParseException 
+     * @param command the CommandDetail object which is currently working on.
+     *            The result object of this property will be added as an option
+     *            to this CommandDetail object
+     * @throws CommandParseException
      * 
      */
-    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command) throws CommandParseException {
+    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command)
+            throws CommandParseException {
         switch (propertyName) {
             case CommandKeywords.KW_FROM :
                 command.setProperty(CommandProperties.TIME_FROM,
@@ -68,10 +68,11 @@ public class PropertyParser {
      * @param optionName
      * @param optionValue
      * @return
-     * @throws CommandParseException 
+     * @throws CommandParseException
      * 
      */
-    public static Object parseOptionValue(String optionName, String optionValue) throws CommandParseException {
+    public static Object parseOptionValue(String optionName, String optionValue)
+            throws CommandParseException {
         switch (optionName) {
             case CommandProperties.TIME_FROM :
             case CommandProperties.TIME_BY :

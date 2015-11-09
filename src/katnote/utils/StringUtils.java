@@ -28,8 +28,7 @@ public class StringUtils {
      * Removes the first word from input string For example: if input string is
      * "hello I am a programmer", the returned output is "I am a programmer"
      * 
-     * @param input
-     *            the input string
+     * @param input the input string
      * 
      * @return The resulting string
      */
@@ -41,8 +40,7 @@ public class StringUtils {
      * Returns the first word of input string For example: if input string is
      * "hello I am a programmer", the returned output is "hello"
      * 
-     * @param input
-     *            the input string
+     * @param input the input string
      * 
      * @return The resulting string
      */

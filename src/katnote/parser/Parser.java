@@ -19,7 +19,7 @@ public class Parser {
     // Exception and log messages
     private static final String EXCEPTION_MSG_INVALID_COMMAND_FORMAT = "Invalid format for %1$s command";
     private static final String LOG_MSG_PARSE_COMMAND = "Parse command: %1$s";
-    
+
     // command split patterns
     private static final String COMMAND_SPLIT_PATTERN = "(?:([^\"]\\S*)|\"(.+?)\")\\s*";
     private static final int COMMAND_SPLIT_PATTERN_NORMAL_POS = 1;
@@ -41,12 +41,11 @@ public class Parser {
      * Converts the input command string into CommandDetail format containing
      * command type as well as all data field related to that type of command.
      * 
-     * @param commandStr
-     *            the command you want to parse
+     * @param commandStr the command you want to parse
      * 
      * @return CommandDetail object containing the command type and all data
      *         fields related to that type of command
-     * @throws CommandParseException 
+     * @throws CommandParseException
      */
     public static CommandDetail parseCommand(String commandStr) throws CommandParseException {
         log.info(String.format(LOG_MSG_PARSE_COMMAND, commandStr));
@@ -103,19 +102,19 @@ public class Parser {
                 default :
                     return new CommandDetail(CommandType.UNKNOWN);
             }
-        } catch (CommandParseException parseException){
+        } catch (CommandParseException parseException) {
             throw parseException;
         } catch (Exception e) {
-            throw new CommandParseException(String.format(EXCEPTION_MSG_INVALID_COMMAND_FORMAT, startKeyword), e);
+            throw new CommandParseException(String.format(EXCEPTION_MSG_INVALID_COMMAND_FORMAT, startKeyword),
+                    e);
         }
     }
 
     /**
      * Determines the start keyword of the command
      * 
-     * @param truncatedCommand
-     *            This StringBuilder object used to store the command after
-     *            truncated its start keyword
+     * @param truncatedCommand This StringBuilder object used to store the
+     *            command after truncated its start keyword
      * 
      * @return The start keyword of the command
      * 
@@ -142,8 +141,7 @@ public class Parser {
      * Splits the command string based on space but take quoted substrings as
      * one word
      * 
-     * @param commandStr
-     *            The command string passed from Logic
+     * @param commandStr The command string passed from Logic
      * 
      * @return List of result tokens
      */
@@ -176,8 +174,8 @@ public class Parser {
     }
 
     /*
-     * Parses Add command. Command format:
-     *        add TASK_TITLE [by TIME_BY] [from TIME_FROM to TIME_TO]
+     * Parses Add command. Command format: add TASK_TITLE [by TIME_BY] [from
+     * TIME_FROM to TIME_TO]
      * 
      * 
      */
@@ -212,8 +210,8 @@ public class Parser {
     }
 
     /*
-     * Parses view command (multiple tasks). Command format:
-     *   - view [completed/incomplete/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
+     * Parses view command (multiple tasks). Command format: - view
+     * [completed/incomplete/all] [on TIME_ON] [from TIME_FROM to TIME_TO]
      * 
      */
     private static CommandDetail parseViewCommand(List<String> tokens) throws Exception {
@@ -284,9 +282,8 @@ public class Parser {
     }
 
     /*
-     * Parses mark command. Command format:
-     *   - mark TASK_ID completed/incomplete
-     *   - mark completed/incomplete TASK_ID
+     * Parses mark command. Command format: - mark TASK_ID completed/incomplete
+     * - mark completed/incomplete TASK_ID
      */
     private static CommandDetail parseMarkCommand(List<String> tokens) throws Exception {
         CommandDetail command = new CommandDetail(CommandType.EDIT_COMPLETE);
@@ -310,8 +307,8 @@ public class Parser {
     }
 
     /*
-     * Parses postpone command. Command format:
-     *  - postpone TASK_ID NEW_START_DATE
+     * Parses postpone command. Command format: - postpone TASK_ID
+     * NEW_START_DATE
      * 
      */
     private static CommandDetail parsePostponeCommand(List<String> tokens) throws Exception {

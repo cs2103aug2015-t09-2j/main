@@ -33,7 +33,6 @@ public class GraphicalUserInterface extends Application {
 
     private static boolean _isTestMode = false;
     private static String _testFilePath = null;
-    private static GraphicalUserInterface instance;
 
     private StackPane rootLayout;
     private BorderPane coreLayout;
@@ -46,7 +45,9 @@ public class GraphicalUserInterface extends Application {
 
     /**
      * Used to setup a custom file path for testing requirements.
-     * @param isTestMode boolean to mark if the app will be starting up in test mode
+     * 
+     * @param isTestMode boolean to mark if the app will be starting up in test
+     *            mode
      * @param testFilePath the test file path for the app to write data to
      */
     public static void configureTestMode(boolean isTestMode, String testFilePath) {
@@ -56,7 +57,6 @@ public class GraphicalUserInterface extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        instance = this;
         loadResources();
         initialize(primaryStage);
 
@@ -66,11 +66,8 @@ public class GraphicalUserInterface extends Application {
 
     private void loadResources() {
         LOG.log(Level.INFO, MSG_LOG_LOADING_RESOURCES);
-        Font.loadFont(
-                getClass().getResource(RESOURCE_PATH_SEN_EXTRABOLD).toExternalForm(),
-                10);
-        Font.loadFont(getClass().getResource(RESOURCE_PATH_SEN_BOLD).toExternalForm(),
-                10);
+        Font.loadFont(getClass().getResource(RESOURCE_PATH_SEN_EXTRABOLD).toExternalForm(), 10);
+        Font.loadFont(getClass().getResource(RESOURCE_PATH_SEN_BOLD).toExternalForm(), 10);
     }
 
     private void initialize(Stage primaryStage) {
