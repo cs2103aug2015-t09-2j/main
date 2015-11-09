@@ -55,13 +55,7 @@ public class Task {
             if (commandDetail.getStartDate() != null) {
                 setStartDate(commandDetail.getStartDate().toLocalDateTime());
             }
-<<<<<<< HEAD
-            
-=======
 
-            // TODO: setRepeatOption(args[INDEX_REPEAT_OPTION]);
-
->>>>>>> origin/master
             if (commandDetail.getEndDate() != null) {
                 setEndDate(commandDetail.getEndDate().toLocalDateTime());
             }
@@ -69,15 +63,7 @@ public class Task {
             if (commandDetail.getDueDate() != null) {
                 setEndDate(commandDetail.getDueDate().toLocalDateTime());
             }
-<<<<<<< HEAD
-            
-=======
 
-            // TODO:
-            // setDescription(commandDetail.getString(CommandProperties.TASK_DESCRIPTION));
-            // TODO: setCategory(args[INDEX_CATEGORY]);
-            // TODO: setCompleted(Boolean.parseBoolean(args[INDEX_COMPLETED]));
->>>>>>> origin/master
         } catch (Exception e) {
             throw new Exception(MSG_ERR_PARSE_EXCEPTION + e);
         }
