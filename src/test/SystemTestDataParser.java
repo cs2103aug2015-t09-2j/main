@@ -203,22 +203,22 @@ public class SystemTestDataParser {
                 LocalDateTime dateEnd = LocalDateTime.now().plusDays(days);
                 String dateEndString = dateEnd.format(dateFormat);
                 String timeEndString = readLine();
-                String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString, timeStartString,
-                        dateEndString, timeEndString);
+                String eventDateString = String.format(EVENT_DATE_TIME_FORMAT, dateStartString,
+                        timeStartString, dateEndString, timeEndString);
                 dateStrings.add(eventDateString);
 
             } else if (line.equals(DATE_OUTPUT)) {
                 indexString.add(readLine());
                 description.add(readLine());
-                
+
                 DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATE_PATTERN);
-                String dueDateString = readLine() + SPACE_STRING; //"Due:"
+                String dueDateString = readLine() + SPACE_STRING; // "Due:"
                 int days = Integer.parseInt(readLine());
                 LocalDateTime date = LocalDateTime.now().plusDays(days);
                 dueDateString += date.format(dateFormat) + SPACE_STRING;
                 dueDateString += readLine();
                 dateStrings.add(dueDateString);
-                
+
             } else {
                 indexString.add(line);
                 description.add(readLine());

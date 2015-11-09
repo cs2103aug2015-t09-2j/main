@@ -93,7 +93,8 @@ public class TaskViewFormatter {
                 continue;
             }
 
-            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList, eventRemainingWeekList);
+            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(remainingList,
+                    eventRemainingWeekList);
 
             if (i == 0) {
                 TaskViewGroup taskGroupForToday = createTaskTodayGroup(combinedList);
@@ -123,8 +124,10 @@ public class TaskViewFormatter {
                 isEventSelected = true;
             }
             ArrayList<Task> normalTaskListThisDate = extractTaskDueThisDate(normalTasksQueue, date);
-            ArrayList<Task> eventListThisDate = extractEventsHappeningThisDate(eventCopy, date, isEventSelected);
-            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTaskListThisDate, eventListThisDate);
+            ArrayList<Task> eventListThisDate = extractEventsHappeningThisDate(eventCopy, date,
+                    isEventSelected);
+            ArrayList<Task> combinedList = combineNormalAndEventsOrdered(normalTaskListThisDate,
+                    eventListThisDate);
 
             String dayOfWeekString = getDayString(date.getDayOfWeek());
             dayOfWeekString += "      " + date.format(DATE_FORMAT);
@@ -167,7 +170,8 @@ public class TaskViewFormatter {
         processRemainingTask(normalTasksQueue, eventCopy);
     }
 
-    private ArrayList<Task> combineNormalAndEventsOrdered(ArrayList<Task> normalList, ArrayList<Task> eventList) {
+    private ArrayList<Task> combineNormalAndEventsOrdered(ArrayList<Task> normalList,
+            ArrayList<Task> eventList) {
         ArrayList<Task> combinedList = new ArrayList<Task>();
 
         while (!normalList.isEmpty() || !eventList.isEmpty()) {
@@ -308,7 +312,8 @@ public class TaskViewFormatter {
         return linkedList;
     }
 
-    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list, boolean isDateHidden) {
+    private TaskViewGroup createTaskGroupDetailed(String groupTitle, ArrayList<Task> list,
+            boolean isDateHidden) {
         TaskViewGroup viewGroup = new TaskViewGroup(groupTitle);
 
         for (int i = 0; i < list.size(); i++) {

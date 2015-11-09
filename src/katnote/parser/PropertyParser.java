@@ -18,18 +18,20 @@ public class PropertyParser {
      * propertyName. For example, parseProperty(“from”, “24/10/2015”) will
      * return a Date object representing 24/10/2015.
      * 
-     * @param propertyName Command property keyword (can be "from", "to",
-     * "by",...)
+     * @param propertyName
+     *            Command property keyword (can be "from", "to", "by",...)
      * 
-     * @param propertyValue Value of command property inputed by user input
-     * value
+     * @param propertyValue
+     *            Value of command property inputed by user input value
      * 
-     * @param command the CommandDetail object which is currently working on.
-     * The result object of this property will be added as an option to this
-     * CommandDetail object
+     * @param command
+     *            the CommandDetail object which is currently working on. The
+     *            result object of this property will be added as an option to
+     *            this CommandDetail object
+     * @throws CommandParseException 
      * 
      */
-    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command) {
+    public static void parseProperty(String propertyName, String propertyValue, CommandDetail command) throws CommandParseException {
         switch (propertyName) {
             case CommandKeywords.KW_FROM :
                 command.setProperty(CommandProperties.TIME_FROM,
@@ -66,32 +68,22 @@ public class PropertyParser {
      * @param optionName
      * @param optionValue
      * @return
+     * @throws CommandParseException 
      * 
      */
-    public static Object parseOptionValue(String optionName, String optionValue) {
-        KatDateTime date;
+    public static Object parseOptionValue(String optionName, String optionValue) throws CommandParseException {
         switch (optionName) {
             case CommandProperties.TIME_FROM :
             case CommandProperties.TIME_BY :
             case CommandProperties.TIME_TO :
-            case CommandProperties.TIME_UNTIL :            
+            case CommandProperties.TIME_UNTIL :
                 // Date time value
-                date = DateParser.parseDateTime(optionValue);
+                KatDateTime date = DateParser.parseDateTime(optionValue);
                 return date;
-            case CommandProperties.TASKS_COMPLETED_OPTION:
-                // completed option: true, false and null (null is for both completed and incompleted) 
-                Boolean completedValue = false;
-                switch (optionValue){
-                    case CommandKeywords.KW_COMPLETED :
-                        completedValue = true;
-                        break;
-                    case CommandKeywords.KW_INCOMPLETED :
-                        completedValue = false;
-                        break;
-                    case CommandKeywords.KW_ALL :
-                        completedValue = null;
-                        break;
-                }
+            case CommandProperties.TASKS_COMPLETED_OPTION :
+                // completed option: true, false and null (null is for both
+                // completed and incomplete)
+                Boolean completedValue = parseCompletedOption(optionValue);
                 return completedValue;
             default :
                 // String value
@@ -99,30 +91,49 @@ public class PropertyParser {
         }
     }
 
+    private static Boolean parseCompletedOption(String optionValue) {
+        Boolean completedValue = false;
+        switch (optionValue) {
+            case CommandKeywords.KW_COMPLETED :
+            case CommandKeywords.KW_DONE :
+                completedValue = true;
+                break;
+            case CommandKeywords.KW_INCOMPLETE :
+                completedValue = false;
+                break;
+            case CommandKeywords.KW_ALL :
+                completedValue = null;
+                break;
+        }
+        return completedValue;
+    }
+
     /**
-     * Automatically fills in the missing parts DateTime value of CommandDetail object
+     * Automatically fills in the missing parts DateTime value of CommandDetail
+     * object
      * 
      * @param command
      */
     public static void synchronizeDateTimeValues(CommandDetail command) {
         KatDateTime startDate = command.getStartDate();
         KatDateTime endDate = command.getEndDate();
-        KatDateTime dueDate = command.getDueDate();        
+        KatDateTime dueDate = command.getDueDate();
         // If command has only due date
-        if (dueDate != null){
+        if (dueDate != null) {
             // if no date specified, considered it as today
-            if (!dueDate.hasDate()){
+            if (!dueDate.hasDate()) {
                 dueDate.changeDate();
-            }            
+            }
             // if there is no time field, consider the time as end of day
-            if (!dueDate.hasTime()){
+            if (!dueDate.hasTime()) {
                 dueDate.changeTime(KatDateTime.END_OF_DAY_TIME);
             }
         }
-        // for command view tasks, if there is no end date, considered it as a very far time,
-        if (command.getCommandType() == CommandType.VIEW_TASK){
-            if (startDate != null){
-                if (endDate == null){
+        // for command view tasks, if there is no end date, considered it as a
+        // very far time,
+        if (command.getCommandType() == CommandType.VIEW_TASK) {
+            if (startDate != null) {
+                if (endDate == null) {
                     endDate = new KatDateTime(LocalDateTime.MAX);
                     command.setProperty(CommandProperties.TIME_TO, endDate);
                 }
@@ -132,20 +143,23 @@ public class PropertyParser {
             }
         }
         // If command has startDate and endDate
-        if (startDate != null && endDate != null){                       
-            if (!startDate.hasDate() || !endDate.hasDate()){ // at least one of them does not have date
+        if (startDate != null && endDate != null) {
+            if (!startDate.hasDate() || !endDate.hasDate()) { // at least one of
+                                                              // them does not
+                                                              // have date
                 LocalDate laterDate = DateTimeUtils.getLater(startDate.getDate(), endDate.getDate());
                 startDate.changeDate(laterDate);
                 endDate.changeDate(laterDate);
             }
-            // if there is no time field, consider start date as begin of day and 
+            // if there is no time field, consider start date as begin of day
+            // and
             // end date as end of day
-            if (!startDate.hasTime()){
+            if (!startDate.hasTime()) {
                 startDate.changeTime(LocalTime.MIDNIGHT);
-            }            
-            if (!endDate.hasTime()){
+            }
+            if (!endDate.hasTime()) {
                 endDate.changeTime(KatDateTime.END_OF_DAY_TIME);
-            }                     
+            }
         }
     }
 }

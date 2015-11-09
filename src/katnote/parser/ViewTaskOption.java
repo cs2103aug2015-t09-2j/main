@@ -3,6 +3,6 @@ package katnote.parser;
 
 public enum ViewTaskOption {
     ALL,
-    COMPLETED, INCOMPLETED,
+    COMPLETED, INCOMPLETE,
     DUE_BY, START_FROM,
 }
