@@ -17,9 +17,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import katnote.KatNoteLogger;
 import katnote.Model;
 import katnote.command.CommandDetail;
 import katnote.command.CommandType;
@@ -32,10 +35,6 @@ import katnote.task.TaskType;
 import katnote.utils.KatDateTime;
 
 public class Logic {
-
-    private Model model_;
-    private Tracker tracker_;
-    private String sourcePathStr;
 
     // Error Messages
     private static final String MSG_ERR_INVALID_TYPE = "Invalid command type: %s"; // %s is the command type
@@ -51,6 +50,29 @@ public class Logic {
     
     // Error Index
     private static final int ERR_INDEX = -1;
+    
+    // Logging
+    private static final Logger LOG = KatNoteLogger.getLogger(Logic.class.getName());
+    private static final String LOG_EXECUTE = "Executing Command: %s"; // %s is the command
+    private static final String LOGGING_MARK_INCOMPLETE = "Command Type: MARK INCOMPLETE";
+    private static final String LOGGING_MARK_COMPLETE = "Command Type: MARK COMPLETE";
+    private static final String LOGGING_INVALID = "Command Type: INVALID";
+    private static final String LOGGING_EXIT = "Command Type: EXIT";
+    private static final String LOGGING_IMPORT = "Command Type: IMPORT";
+    private static final String LOGGING_SET_LOCATION = "Command Type: SET LOCATION";
+    private static final String LOGGING_FIND = "Command Type: FIND";
+    private static final String LOGGING_REDO = "Command Type: REDO";
+    private static final String LOGGING_UNDO = "Command Type: UNDO";
+    private static final String LOGGING_VIEW = "Command Type: VIEW";
+    private static final String LOGGING_DELETE = "Command Type: DELETE";
+    private static final String LOGGING_POSTPONE = "Command Type: POSTPONE";
+    private static final String LOGGING_EDIT = "Command Type: EDIT";
+    private static final String LOGGING_ADD = "Command Type: ADD";
+   
+    // Private Class Variables
+    private Model model_;
+    private Tracker tracker_;
+    private String sourcePathStr;
 
     /* Constructors */
     public Logic() throws Exception {        
@@ -95,6 +117,7 @@ public class Logic {
      * @throws Exception
      */
     public UIFeedback execute(String command) throws Exception {
+        LOG.log(Level.INFO, String.format(LOG_EXECUTE, command));
         CommandDetail parsedTask = Parser.parseCommand(command);
         UIFeedback feedback = process(parsedTask);
         return feedback;
@@ -110,7 +133,7 @@ public class Logic {
     }
     
     /**
-     * For testing purpose
+     * For testing purposes
      */
     public ArrayList<Integer> getTrackerIDList() {
         return tracker_.getIDList();
@@ -150,12 +173,14 @@ public class Logic {
         
         switch (type) {
             case ADD_TASK :
+                LOG.log(Level.INFO, LOGGING_ADD);
                 Task task = new Task(commandDetail);
                 feedback.setResponse(model_.addTask(task));
                 feedback.setViewState(getDefaultViewState());
                 break;
 
             case EDIT_MODIFY :
+                LOG.log(Level.INFO, LOGGING_EDIT);
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
                 if (taskID != ERR_INDEX) {
@@ -169,7 +194,7 @@ public class Logic {
                 feedback.setViewState(getDefaultViewState());            
                 break;
 
-            case EDIT_COMPLETE :
+            case EDIT_COMPLETE :              
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
                 if (taskID != ERR_INDEX) {
@@ -183,6 +208,7 @@ public class Logic {
                 break; 
             
             case POSTPONE:
+                LOG.log(Level.INFO, LOGGING_POSTPONE);
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex()); 
                 
                 if (taskID != ERR_INDEX) {
@@ -196,6 +222,7 @@ public class Logic {
                 break;
 
             case DELETE_TASK :
+                LOG.log(Level.INFO, LOGGING_DELETE);
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
                 if (taskID != ERR_INDEX) {
@@ -208,7 +235,8 @@ public class Logic {
                 feedback.setViewState(getDefaultViewState());             
                 break;
 
-            case VIEW_TASK :             
+            case VIEW_TASK :
+                LOG.log(Level.INFO, LOGGING_VIEW);
                 feedback.setViewState(find(commandDetail));
                 
                 tasksFound = feedback.getViewState().getViewStateSize();               
@@ -217,16 +245,19 @@ public class Logic {
                 break;
 
             case UNDO :
+                LOG.log(Level.INFO, LOGGING_UNDO);
                 feedback.setResponse(model_.undo());
                 feedback.setViewState(getDefaultViewState()); 
                 break;
 
             case REDO :
+                LOG.log(Level.INFO, LOGGING_REDO);
                 feedback.setResponse(model_.redo());
                 feedback.setViewState(getDefaultViewState());
                 break;
 
             case FIND_TASKS :
+                LOG.log(Level.INFO, LOGGING_FIND);
                 feedback.setViewState(find(commandDetail));
                 feedback.setSearch(true);
                 
@@ -237,6 +268,7 @@ public class Logic {
                 break;
 
             case SET_LOCATION :
+                LOG.log(Level.INFO, LOGGING_SET_LOCATION);
                 String newSaveLocation = (String) commandDetail.getFilePath();               
                 feedback.setResponse(model_.setLocation(commandDetail));
                 setSourcePath(newSaveLocation);
@@ -244,15 +276,18 @@ public class Logic {
                 break;
                 
             case IMPORT :
+                LOG.log(Level.INFO, LOGGING_IMPORT);
                 feedback.setResponse(model_.importData(commandDetail));                
                 feedback.setViewState(getDefaultViewState());
                 break;
                 
             case EXIT :
+                LOG.log(Level.INFO, LOGGING_EXIT);
                 feedback.setExit(true);
                 break;
 
             default :
+                LOG.log(Level.INFO, LOGGING_INVALID);
                 feedback.setError(true);
                 feedback.setResponse(String.format(MSG_ERR_INVALID_TYPE, type));
                 feedback.setViewState(getDefaultViewState());
@@ -307,8 +342,10 @@ public class Logic {
      */
     private void markTask(CommandDetail cmdDetail, UIFeedback feedback, int taskID) throws Exception {
         if (cmdDetail.getTaskCompletedOption()) {
+            LOG.log(Level.INFO, LOGGING_MARK_COMPLETE);
             feedback.setResponse(model_.editComplete(taskID));  
         } else {
+            LOG.log(Level.INFO, LOGGING_MARK_INCOMPLETE);
             feedback.setResponse(model_.editIncomplete(taskID));
         }
     }
@@ -363,11 +400,11 @@ public class Logic {
      */
     private LocalDateTime getSearchStartDateFromCommandDetail (CommandDetail commandDetail) {
         LocalDateTime startDate;
+        KatDateTime katDate = commandDetail.getStartDate();
         
-        if (commandDetail.getStartDate() == null) {
+        if (katDate == null) {
             startDate = null;
         } else {           
-            KatDateTime katDate = commandDetail.getStartDate();
             
             // if time isn't specified, set a default time 00:00
             if (katDate.getTime() == null) { 
@@ -381,7 +418,7 @@ public class Logic {
                 LocalTime time = katDate.getTime();
                 startDate = LocalDateTime.of(defaultDate, time);
             } else{
-                startDate = commandDetail.getStartDate().toLocalDateTime();
+                startDate = katDate.toLocalDateTime();
             }
         }
         return startDate;
@@ -397,11 +434,11 @@ public class Logic {
      */
     private LocalDateTime getSearchDueDateFromCommandDetail (CommandDetail commandDetail) {
         LocalDateTime dueDate;
+        KatDateTime katDate = commandDetail.getDueDate();
         
-        if (commandDetail.getDueDate() == null) {          
+        if (katDate == null) {          
             dueDate = null;
         } else {  
-            KatDateTime katDate = commandDetail.getDueDate();
             
             // if time isn't specified, set a default time 23:59
             if (katDate.getTime() == null) { 
@@ -415,7 +452,7 @@ public class Logic {
                 LocalTime time = katDate.getTime();
                 dueDate = LocalDateTime.of(defaultDate, time);
             } else{
-                dueDate = commandDetail.getDueDate().toLocalDateTime();
+                dueDate = katDate.toLocalDateTime();
             }
         }
         return dueDate;

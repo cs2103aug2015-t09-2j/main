@@ -68,7 +68,6 @@ public class TestLogic {
     /* Utility Methods */
     public boolean isEqualTask(Task t1, Task t2) {
         boolean ans = t1.getTitle().equals(t2.getTitle()) && t1.getTaskType() == t2.getTaskType();
-        //System.out.println(t1.getTitle() + "  " + t2.getTitle() + ": " + ans);
         return ans;
     }
 
