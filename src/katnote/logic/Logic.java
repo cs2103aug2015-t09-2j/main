@@ -48,6 +48,9 @@ public class Logic {
     // Source Paths
     private static final String MSG_SOURCE_PATH = "sourcepath.txt";
     private static final String MSG_DEFAULT_SOURCE_PATH = "";
+    
+    // Error Index
+    private static final int ERR_INDEX = -1;
 
     /* Constructors */
     public Logic() throws Exception {        
@@ -155,11 +158,11 @@ public class Logic {
             case EDIT_MODIFY :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
-                if (taskID != -1) {
+                if (taskID != ERR_INDEX) {
                     EditTaskOption editOptions = commandDetail.getEditTaskOption();                    
                     feedback.setResponse(model_.editModify(taskID, editOptions)); 
-                    feedback.setError(true);
                 } else {
+                    feedback.setError(true);
                     feedback.setResponse(MSG_ERR_INVALID_INDEX);
                 }
                                               
@@ -169,10 +172,10 @@ public class Logic {
             case EDIT_COMPLETE :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
-                if (taskID != -1) {
+                if (taskID != ERR_INDEX) {
                     markTask(commandDetail, feedback, taskID);
-                    feedback.setError(true);
                 } else {
+                    feedback.setError(true);
                     feedback.setResponse(MSG_ERR_INVALID_INDEX);
                 }
 
@@ -182,10 +185,10 @@ public class Logic {
             case POSTPONE:
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex()); 
                 
-                if (taskID != -1) {
+                if (taskID != ERR_INDEX) {
                     feedback.setResponse(model_.postpone(taskID, commandDetail.getStartDate()));
-                    feedback.setError(true);
                 } else {
+                    feedback.setError(true);
                     feedback.setResponse(MSG_ERR_INVALID_INDEX);
                 }
                                                
@@ -195,10 +198,10 @@ public class Logic {
             case DELETE_TASK :
                 taskID = tracker_.getTaskID(commandDetail.getTaskIndex());
                 
-                if (taskID != -1) {
+                if (taskID != ERR_INDEX) {
                     feedback.setResponse(model_.editDelete(taskID));
-                    feedback.setError(true);
                 } else {
+                    feedback.setError(true);
                     feedback.setResponse(MSG_ERR_INVALID_INDEX);
                 }
                                                
@@ -561,6 +564,8 @@ public class Logic {
 class Tracker {
     
     private static final int INDEX_OFFSET = 1;
+    private static final int ERR_INDEX = -1;
+    
     private ArrayList<Integer> taskIDList_; // The list of tasksIDs that is currently displayed
        
     public Tracker() {
@@ -578,13 +583,13 @@ class Tracker {
      * @return  ID of request task, -1 if index is out of bounds.
      */
     public int getTaskID(int index) {
-        try {
-            index -= INDEX_OFFSET;
+        index -= INDEX_OFFSET;
+        if (index < 0 || index >= taskIDList_.size()) {
+            return ERR_INDEX;
+        } else
             return taskIDList_.get(index);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return -1;    
-        }
     }
+
     
     /**
      * Updates the taskIDList_ with the latest information based on the input ArrayList of Tasks
