@@ -21,7 +21,6 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 
-import sun.rmi.runtime.Log;
 import katnote.command.CommandDetail;
 import katnote.command.CommandProperties;
 import katnote.parser.EditTaskOption;
