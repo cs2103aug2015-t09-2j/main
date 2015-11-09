@@ -22,3 +22,4 @@ build/project/
 build/dist/
 build/externalLibs/
 logging.properties
+build/dist_bundle/
